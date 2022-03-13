@@ -1,9 +1,9 @@
-package controllers;
+package com.esgi.api_project_annuel.controller;
 
-import entities.User;
-import exceptions.UserNotFoundException;
+import com.esgi.api_project_annuel.model.User;
+import com.esgi.api_project_annuel.exceptions.UserNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import repositories.UserRepository;
+import com.esgi.api_project_annuel.repositories.UserRepository;
 
 import java.util.List;
 
