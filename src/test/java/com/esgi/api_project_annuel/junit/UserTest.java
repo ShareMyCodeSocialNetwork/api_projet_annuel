@@ -1,5 +1,5 @@
 package com.esgi.api_project_annuel.junit;
-import com.esgi.api_project_annuel.integration.User;
+import com.esgi.api_project_annuel.model.User;
 import org.junit.Before;
 import org.junit.Test;
 

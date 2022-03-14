@@ -1,4 +1,4 @@
-package com.esgi.api_project_annuel.integration;
+package com.esgi.api_project_annuel.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -32,5 +32,6 @@ public class Group {
     }
 }
 
+//TODO ADD UserId for CREATOR OF GROUP
 //TODO ADD LIST OF MEMBERS IN THE GROUP
-//TODO ADD ROLES FOR USERS : OWNER AND MEMBERS
+//TODO GROUP CONTAINS AT LEAST ONE MEMBER : CREATOR

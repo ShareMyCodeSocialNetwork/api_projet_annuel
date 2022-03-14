@@ -1,4 +1,4 @@
-package com.esgi.api_project_annuel.integration;
+package com.esgi.api_project_annuel.model;
 
 import javax.persistence.*;
 
@@ -48,3 +48,4 @@ public class User {
 }
 
 //TODO ADD LIST OF FRIENDS AND FOLLOWORS AND GROUPS
+//TODO ADD ROUTES TO LOCALHOST POSTGRES DATABASE IN SYSTEM PROPERTIES
