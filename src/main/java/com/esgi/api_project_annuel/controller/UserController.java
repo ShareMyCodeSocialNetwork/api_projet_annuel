@@ -1,40 +1,53 @@
 package com.esgi.api_project_annuel.controller;
 
 import com.esgi.api_project_annuel.model.User;
-import com.esgi.api_project_annuel.exceptions.UserNotFoundException;
+import com.esgi.api_project_annuel.service.UserService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.esgi.api_project_annuel.repositories.UserRepository;
 
+import java.io.InvalidObjectException;
 import java.util.List;
 
+@RestController
+@RequestMapping(value = "/user")
 public class UserController {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping("/users")
-    List<User> all() {
-        return userRepository.findAll();
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PostMapping("/users")
-    User addUser(@RequestBody User user) {
-        return userRepository.save(user);
+    @GetMapping({"/{userId}"})
+    public ResponseEntity<User> getUser(@PathVariable Long userId) {
+        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
-    @GetMapping("/users/{id}")
-    User findUser(@PathVariable Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(id));
+    @PostMapping
+    public ResponseEntity<User> saveUser(@RequestBody User user) throws InvalidObjectException {
+        User userCreated = userService.createUser(user);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("user", "/user/" + userCreated.getId());
+        return new ResponseEntity<>(userCreated, httpHeaders, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/users/{id}")
-    void deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id);
+    @PutMapping({"/{userId}"})
+    public ResponseEntity<User> updateUser(@PathVariable("userId") Long userId, @RequestBody User user) throws InvalidObjectException {
+        userService.updateUser(userId, user);
+        return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);
     }
 
-
+    @DeleteMapping({"/{userId}"})
+    public ResponseEntity<User> deleteUser(@PathVariable("userId") Long userId) {
+        userService.deleteUser(userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 
 }
