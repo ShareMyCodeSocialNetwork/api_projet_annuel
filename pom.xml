@@ -52,7 +52,8 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+        
+    </dependencies>
 
 	<build>
 		<testSourceDirectory>src/test/java</testSourceDirectory>
