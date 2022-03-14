@@ -1,4 +1,4 @@
-package com.esgi.api_project_annuel.model;
+package com.esgi.api_project_annuel.integration;
 
 import javax.persistence.*;
 
@@ -20,15 +20,15 @@ public class User {
 
     @NonNull
     @Column(nullable = false, unique = true)
+    private String email;
+
+    @NonNull
+    @Column(nullable = false, unique = true)
     private String firstName;
 
     @NonNull
     @Column(nullable = false, unique = true)
     private String lastName;
-
-    @NonNull
-    @Column(nullable = false, unique = true)
-    private String email;
 
     @NonNull
     @Column(nullable = false)
@@ -41,7 +41,8 @@ public class User {
                 "(?:[a-zA-Z0-9-]+\\.)+[a-z" +
                 "A-Z]{2,7}$";
         Pattern pat = Pattern.compile(emailRegex);
-        return  ( !firstName.isBlank() && !lastName.isBlank() && pat.matcher(email).matches() && password.length() >= 8 && password.length() <= 30);
+        return  !firstName.isBlank() && !lastName.isBlank() && pat.matcher(email).matches() && password.length() >= 8 && password.length() <= 30;
+
     }
 
 }

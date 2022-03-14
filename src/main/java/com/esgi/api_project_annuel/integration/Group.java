@@ -1,4 +1,4 @@
-package com.esgi.api_project_annuel.model;
+package com.esgi.api_project_annuel.integration;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -28,6 +28,9 @@ public class Group {
 
     @JsonIgnore
     public boolean isValid() {
-        return  !name.isBlank();
+        return (!name.isBlank());
     }
 }
+
+//TODO ADD LIST OF MEMBERS IN THE GROUP
+//TODO ADD ROLES FOR USERS : OWNER AND MEMBERS

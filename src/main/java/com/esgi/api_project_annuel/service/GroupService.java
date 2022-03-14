@@ -1,6 +1,6 @@
 package com.esgi.api_project_annuel.service;
 
-import com.esgi.api_project_annuel.model.Group;
+import com.esgi.api_project_annuel.integration.Group;
 
 import java.io.InvalidObjectException;
 import java.util.List;
