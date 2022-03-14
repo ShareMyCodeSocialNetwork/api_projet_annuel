@@ -1,10 +1,6 @@
 package com.esgi.api_project_annuel.junit;
-<<<<<<< HEAD
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
-=======
-import com.esgi.api_project_annuel.model.User;
->>>>>>> master
 import org.junit.Before;
 import org.junit.Test;
 
