@@ -9,7 +9,6 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiProjectAnnuelApplication.class, args);
-		System.out.println("TEST CI");
 	}
 
 }
