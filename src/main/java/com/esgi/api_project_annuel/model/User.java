@@ -45,3 +45,5 @@ public class User {
     }
 
 }
+
+//TODO ADD LIST OF FRIENDS AND FOLLOWORS AND GROUPS
