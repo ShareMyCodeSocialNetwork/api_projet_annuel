@@ -1,6 +1,6 @@
 package com.esgi.api_project_annuel.service;
 
-import com.esgi.api_project_annuel.model.User;
+import com.esgi.api_project_annuel.integration.User;
 import com.esgi.api_project_annuel.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +27,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User createUser(User user) throws InvalidObjectException {
-        if (!user.isValid())
+        if (user.isValid())
             throw new InvalidObjectException("Invalid user properties");
         return userRepository.save(user);
     }
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService{
         userFromDB.setLastName(user.getLastName());
         userFromDB.setEmail(user.getEmail());
         userFromDB.setPassword(user.getPassword());
-        if (!userFromDB.isValid())
+        if (userFromDB.isValid())
             throw new InvalidObjectException("Invalid user properties");
         userRepository.save(userFromDB);
     }

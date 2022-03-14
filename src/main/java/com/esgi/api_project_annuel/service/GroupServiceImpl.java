@@ -1,6 +1,6 @@
 package com.esgi.api_project_annuel.service;
 
-import com.esgi.api_project_annuel.model.Group;
+import com.esgi.api_project_annuel.integration.Group;
 import com.esgi.api_project_annuel.repositories.GroupRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +28,7 @@ public class GroupServiceImpl implements GroupService{
 
     @Override
     public Group createGroup(Group group) throws InvalidObjectException {
-        if (!group.isValid())
+        if (group.isValid())
             throw new InvalidObjectException("Invalid user properties");
         return groupRepository.save(group);
     }
@@ -37,7 +37,7 @@ public class GroupServiceImpl implements GroupService{
     public void updateGroup(long id, Group group) throws InvalidObjectException {
         Group groupFromDB = groupRepository.findById(id).get();
         groupFromDB.setName(group.getName());
-        if (!groupFromDB.isValid())
+        if (groupFromDB.isValid())
             throw new InvalidObjectException("Invalid user properties");
         groupRepository.save(groupFromDB);
     }

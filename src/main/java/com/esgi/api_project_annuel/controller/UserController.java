@@ -1,6 +1,6 @@
 package com.esgi.api_project_annuel.controller;
 
-import com.esgi.api_project_annuel.model.User;
+import com.esgi.api_project_annuel.integration.User;
 import com.esgi.api_project_annuel.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
