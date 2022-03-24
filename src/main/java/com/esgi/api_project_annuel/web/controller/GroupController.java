@@ -5,6 +5,7 @@ package com.esgi.api_project_annuel.web.controller;
 import com.esgi.api_project_annuel.Domain.entities.Group;
 import com.esgi.api_project_annuel.application.command.GroupCommand;
 import com.esgi.api_project_annuel.application.query.GroupQuery;
+import com.esgi.api_project_annuel.application.validation.GroupValidationService;
 import com.esgi.api_project_annuel.web.request.GroupRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ public class GroupController {
 
     @Autowired
     private final GroupQuery groupQuery;
+
+    private GroupValidationService groupValidationService;
 
 
     public GroupController(GroupCommand groupCommand, GroupQuery demandQuery){
@@ -56,7 +59,7 @@ public class GroupController {
     }
 
     @GetMapping("/group/{groupId}")
-    public ResponseEntity<?> getgroupById(@PathVariable int groupId) {
+    public ResponseEntity<?> getGroupById(@PathVariable int groupId) {
         Group group = groupQuery.getById(groupId);
         if (group != null && groupId > 0) {
             return new ResponseEntity<Group>(group, HttpStatus.OK);
@@ -67,7 +70,7 @@ public class GroupController {
 
 
     @PutMapping("/group/update/{groupId}")
-    public ResponseEntity<?> updategroup(@PathVariable int groupId, @RequestBody Group updatedgroup) throws InvalidObjectException {
+    public ResponseEntity<?> updateGroup(@PathVariable int groupId, @RequestBody Group updatedgroup) throws InvalidObjectException {
         Group group = groupCommand.update(groupId, updatedgroup);
         if (group != null) {
             return new ResponseEntity<Group>(group, HttpStatus.OK);
@@ -76,7 +79,7 @@ public class GroupController {
     }
 
     @DeleteMapping("/group/delete/{groupId}")
-    public ResponseEntity<String> deletegroup(@PathVariable int groupId) {
+    public ResponseEntity<String> deleteGroup(@PathVariable int groupId) {
         groupCommand.delete(groupId);
         return new ResponseEntity<>(
                 "group " + groupId + " deleted",

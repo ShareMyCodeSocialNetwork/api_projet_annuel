@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Getter
-@Setter
+@Getter @Setter
 @Entity
 @Table(name = "group_share")
 public class Group {
@@ -28,8 +27,6 @@ public class Group {
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<User> Users  = new ArrayList<>();
-
-
 
 }
 
