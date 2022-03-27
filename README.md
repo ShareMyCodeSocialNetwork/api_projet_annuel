@@ -44,6 +44,7 @@ api_project_annuel
 - id
 - contentId
 - id post
+- idUser
 
 #code
 - id
