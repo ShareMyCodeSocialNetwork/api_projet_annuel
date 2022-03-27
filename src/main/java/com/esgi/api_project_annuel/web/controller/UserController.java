@@ -1,5 +1,6 @@
 package com.esgi.api_project_annuel.web.controller;
 
+import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
 
 import com.esgi.api_project_annuel.application.command.UserCommand;
@@ -64,6 +65,20 @@ public class UserController {
             return new ResponseEntity<User>(user, HttpStatus.OK);
         }
         return new ResponseEntity<String>("L'id de cette utilisateur n'existe pas",HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/post/user/")
+    public ResponseEntity<?> getPostByUserId(@RequestBody int userId){
+        User user = userQuery.getById(userId);
+        if(user == null)
+            return new ResponseEntity<String>("User not exist", HttpStatus.NOT_ACCEPTABLE);
+        else{
+            List<Post> userPosts = userQuery.getPosts(user);
+            if(userPosts.size() == 0)
+                return new ResponseEntity<List<Post>>(userPosts, HttpStatus.NO_CONTENT);
+            else
+                return new ResponseEntity<List<Post>>(userPosts, HttpStatus.OK);
+        }
     }
 
 

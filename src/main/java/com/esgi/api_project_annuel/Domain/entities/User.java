@@ -45,6 +45,6 @@ public class User {
     @ManyToOne(cascade=CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group GroupOfUser;
-
+    //todo : user peut etre dans plusieurs groupes
 
 }
