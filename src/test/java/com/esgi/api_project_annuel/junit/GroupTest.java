@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class GroupTest {
+
     private Group validGroup;
     private Group invalidGroup;
     private final GroupValidationService groupValidationService = new GroupValidationService();
@@ -29,14 +30,16 @@ public class GroupTest {
       invalidGroup = new Group();
     }
 
-//    @Test
-//    public void isValidGroup() {
-//        assertTrue(groupValidationService.isValid(validGroup));
-//    }
-//
-//    @Test
-//    public void isInvalidGroup() {
-//        assertFalse(groupValidationService.isValid(invalidGroup));
-//    }
+/*
+    @Test
+    public void isValidGroup() {
+        assertTrue(groupValidationService.isValid(validGroup));
+    }
+
+    @Test
+    public void isInvalidGroup() {
+        assertFalse(groupValidationService.isValid(invalidGroup));
+    }
+*/
 
 }
