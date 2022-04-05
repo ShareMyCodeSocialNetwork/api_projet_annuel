@@ -15,12 +15,12 @@ public class Message {
     @Getter
     private int id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sender_id")
     @Getter @Setter
     private User sender;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "recipient_id")
     @Getter @Setter
     private User recipient;

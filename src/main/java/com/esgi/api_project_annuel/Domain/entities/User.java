@@ -71,4 +71,12 @@ public class User {
     @Getter @Setter @JsonIgnore
     private Set<User> friendOf = new HashSet<>();
 
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "followers",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id"))
+    @Getter @Setter @JsonIgnore
+    private Set<User> followers = new HashSet<>();
+
 }

@@ -15,11 +15,11 @@ public class Role {
 
     @ManyToOne
     @JoinColumn(name = "admin_id")
-    public static final Role ADMIN = new Role(1, "ROLE_ADMIN", "admin");
+    public static final Role ADMIN = new Role(1, "ADMIN");
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    public static final Role USER = new Role(2, "ROLE_USER", "user");
+    public static final Role USER = new Role(2, "USER");
 
 
     @Id
@@ -32,20 +32,15 @@ public class Role {
     @Getter @Setter
     private String name;
 
-    @Column(name = "description")
-    @Getter @Setter
-    private String description;
-
 
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<User> users;
 
 
-    public Role(int id, String name, String description) {
+    public Role(int id, String name) {
         this.id = id;
         this.name = name;
-        this.description = description;
     }
 
 

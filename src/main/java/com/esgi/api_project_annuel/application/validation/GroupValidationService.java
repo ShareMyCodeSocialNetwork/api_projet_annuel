@@ -15,4 +15,6 @@ public class GroupValidationService {
     public boolean isValid(Group group) {
         return (!group.getGroupName().isBlank() );
     }
+
+    //TODO ADD CONDITION GROUP CONTAINS AT LEAST A MEMEBER
 }

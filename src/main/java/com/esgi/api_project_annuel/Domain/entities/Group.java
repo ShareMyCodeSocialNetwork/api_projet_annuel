@@ -26,8 +26,6 @@ public class Group {
     @JsonIgnore
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id")
-    private List<User> Users  = new ArrayList<>();
+    private List<User> UsersOfGroup  = new ArrayList<>();
 
 }
-
-//TODO ADD ROLES FOR USERS : OWNER AND MEMBERS
