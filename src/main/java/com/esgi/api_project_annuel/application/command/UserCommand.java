@@ -31,7 +31,7 @@ public final class UserCommand {
 
     public User create(UserRequest userRequest){
         User user = new User();
-
+/*
         user.setEmail(userRequest.email);
         user.setFirstName(userRequest.firstName);
         user.setLastName(userRequest.lastName);
@@ -45,7 +45,8 @@ public final class UserCommand {
 
         if (!userValidationService.isUserValid(user)){
             throw new RuntimeException("Invalid user properties");
-        }
+        }*/
+        //todo : user create
         return userRepository.save(user);
     }
 

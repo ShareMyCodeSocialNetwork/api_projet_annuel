@@ -2,6 +2,7 @@ package com.esgi.api_project_annuel.application.command;
 
 import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
+import com.esgi.api_project_annuel.Domain.repository.LikeRepository;
 import com.esgi.api_project_annuel.Domain.repository.PostRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.validation.PostValidationService;
@@ -20,15 +21,19 @@ public class PostCommand {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    LikeRepository likeRepository;
+
+
+    LikeCommand likeCommand;
     PostValidationService postValidationService;
     UserValidationService userValidationService;
 
     public Post create(PostRequest postRequest){
         Post post = new Post();
-
+        //post.setDislikeId(dislikeRepository.findById(postRequest.dislikeId));
+        //post.setLikeId(likeRepository.findById(postRequest.likeId));
         post.setContent(postRequest.content);
-        post.setDislike(postRequest.dislike);
-        post.setLike(postRequest.like);
         User user = userRepository.getById(postRequest.user_id);
 
         if(!userValidationService.isUserValid(user))
@@ -41,15 +46,45 @@ public class PostCommand {
 
     public Post update(int postId, PostRequest postRequest){
         Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
-        Post post = new Post();
-        post.setLike(postRequest.like);
-        post.setDislike(postRequest.dislike);
-        post.setContent(postRequest.content);
-        //todo : le optional check si ca existe ou pas ?
-        if(!postValidationService.isValid(post))
-            throw new RuntimeException("invalid post properties");
-        post.setId(dbPost.get().getId());
-        return postRepository.save(post);
+        if(dbPost.isPresent()){
+            Post post = new Post();
+            post.setContent(postRequest.content);
+            post.setId(dbPost.get().getId());
+            if(!postValidationService.isValid(post))
+                return null;
+            //throw new RuntimeException("invalid post properties");
+            return postRepository.save(post);
+        }
+        return null;
+
+    }
+
+    public Post like(int postId){
+
+        //todo : like passer en obj donc a changer
+        Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
+        if(dbPost.isPresent()){
+            Post post = new Post();
+            //todo a faire
+            // post.setLikeId(likeCommand.userLike(post.getLikeId()));
+            post.setId(dbPost.get().getId());
+            //throw new RuntimeException("invalid post properties");
+            return postRepository.save(post);
+        }
+        return null;
+    }
+
+    public Post dislike(int postId){
+        //todo : dislike passer en obj donc a changer
+        Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
+        if(dbPost.isPresent()){
+            Post post = new Post();
+            //post.setLike(post.getLike() + 1);
+            post.setId(dbPost.get().getId());
+            //throw new RuntimeException("invalid post properties");
+            return postRepository.save(post);
+        }
+        return null;
     }
 
     public void delete(int postId){
