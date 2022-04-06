@@ -3,20 +3,22 @@ api_project_annuel
 
 #User
 - id
-- firstname
-- lastname
 - email
 - password
-- profilePicture
+- firstname
+- lastname
+- profilePicture //todo pas encore mit
+- userRoleGroupId manytomany
 
 #follow
-- user qui follow (l'id)
-- user se fait follow (l'id)
+- id(car obliger)
+- follower userid
+- follow (l'id)
 
 #UserRoleGroup
 - id
+- idGroup 
 - idUser
-- idGroup
 - idRole
 
 #Role (user dans un groupe)
@@ -26,23 +28,25 @@ api_project_annuel
 #group
 - id
 - nom
-- idUserGroupRole
-
 
 #Post
 - id
 - userId
-- contentId 
-- like
-- dislike
-	
-#Content
-- id
-- image / code / text / data / son / code / snipet 
+- image / codeId / text / son / snippetId
+
+#Like
+- id(car obliger)
+- userid
+- postId
+
+
+#Dislike 
+- userId
+- postId
 
 #Comment
 - id
-- contentId
+- content (string)
 - id post
 - idUser
 
@@ -51,13 +55,14 @@ api_project_annuel
 - id language
 - content
 - userId
+- nb de vue
 
 #language
 - id
 - nom
 
 
-#snipet
+#Snippet
 - id
 - id language
 - nom
