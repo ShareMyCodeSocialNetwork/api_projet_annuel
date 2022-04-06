@@ -6,6 +6,9 @@ on:
   push:
     branches:
       - master
+      - dev
+      - dev-Lucas
+      - devMezianne
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
