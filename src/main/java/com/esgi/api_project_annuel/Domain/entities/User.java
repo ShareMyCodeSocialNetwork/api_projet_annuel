@@ -1,14 +1,6 @@
 package com.esgi.api_project_annuel.Domain.entities;
-
 import javax.persistence.*;
-
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
-
-import java.util.List;
-
-
 
 @Getter
 @Setter
@@ -24,27 +16,19 @@ public class User {
     )
     private int id;
 
-
     @Column(name = "email")
     private String Email;
-
 
     @Column(name = "firstname")
     private String FirstName;
 
-
-    @Column(name = "lastName")
+    @Column(name = "lastname")
     private String LastName;
-
 
     @Column(name = "password")
     private String Password;
 
-
-    @JsonIgnore
-    @ManyToOne(cascade=CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    private Group GroupOfUser;
-    //todo : user peut etre dans plusieurs groupes
+    @Column(name = "profile_picture")
+    private String profilePicture;
 
 }

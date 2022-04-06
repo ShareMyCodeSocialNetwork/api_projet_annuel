@@ -6,9 +6,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "post_share")
-public class Post {
-
+@Table(name = "role_share")
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
@@ -17,10 +16,6 @@ public class Post {
     )
     private int id;
 
-    @Column(name = "content")
-    private String content;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "name")
+    private String name;
 }

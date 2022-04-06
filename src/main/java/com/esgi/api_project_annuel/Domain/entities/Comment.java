@@ -6,8 +6,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "post_share")
-public class Post {
+@Table(name = "comment_share")
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +21,11 @@ public class Post {
     private String content;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post Post;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
 }
