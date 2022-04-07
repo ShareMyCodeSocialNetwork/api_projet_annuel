@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InvalidObjectException;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -29,40 +30,59 @@ public final class UserCommand {
 
     UserValidationService userValidationService = new UserValidationService();
 
+    //todo FAIRE LES VERIFICATIONS DANS LE CONTROLLEUR
+
     public User create(UserRequest userRequest){
-        User user = new User();
-/*
+        var user = new User();
         user.setEmail(userRequest.email);
         user.setFirstName(userRequest.firstName);
         user.setLastName(userRequest.lastName);
         user.setPassword(userRequest.password);
-
-        System.out.println(userRequest.group_id);
-        if(userRequest.group_id != 0){
-            Group group = groupRepository.findById(userRequest.group_id);
-            user.setGroupOfUser(group);
-        }
-
+        user.setProfilePicture(
+                Objects.requireNonNullElse(userRequest.profilePicture, "default_profile_picture")
+        );
         if (!userValidationService.isUserValid(user)){
             throw new RuntimeException("Invalid user properties");
-        }*/
-        //todo : user create
+        }
         return userRepository.save(user);
     }
 
 
-    public User update(int userId, User updateUser) throws InvalidObjectException {
-        Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
-        if(!userValidationService.isUserValid(updateUser)){
-            throw new InvalidObjectException("Invalid user properties");
-        }
-        if (userFromDB.isEmpty()) {
-            throw new InvalidObjectException("Invalid userId properties");
-        }
-        updateUser.setId(userFromDB.get().getId());
-        return userRepository.save(updateUser);
+    public User changePassword(int userId, String password){
+        Optional<User> dbUser = Optional.ofNullable(userRepository.findById(userId));
+        if(dbUser.isPresent()){
+            var user = dbUser.get();
+            user.setPassword(password);
+            return userRepository.save(user);
+        }else
+            return null;
     }
 
+    public User changeFirstname(int userId, UserRequest userRequest) {
+        Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
+        if(userFromDB.isEmpty())
+            return null;
+        else{
+            var user = userFromDB.get();
+            user.setFirstName(userRequest.firstName);
+            if(userValidationService.isUserValid(user))
+                userRepository.save(user);
+        }
+        return null;
+    }
+
+    public User changeLastname(int userId, UserRequest userRequest) {
+        Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
+        if(userFromDB.isEmpty())
+            return null;
+        else{
+            var user = userFromDB.get();
+            user.setFirstName(userRequest.firstName);
+            if(userValidationService.isUserValid(user))
+                userRepository.save(user);
+        }
+        return null;
+    }
 
     public void delete(int userId) {
         Optional<User> userFromDb = Optional.ofNullable(userRepository.findById(userId));
