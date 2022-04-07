@@ -20,9 +20,10 @@ public class Comment {
     @Column(name = "content")
     private String content;
 
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post Post;
+    private Post post;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
