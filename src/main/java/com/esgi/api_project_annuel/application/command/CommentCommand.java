@@ -1,8 +1,6 @@
 package com.esgi.api_project_annuel.application.command;
 
 import com.esgi.api_project_annuel.Domain.entities.Comment;
-import com.esgi.api_project_annuel.Domain.entities.Post;
-import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.CommentRepository;
 import com.esgi.api_project_annuel.Domain.repository.PostRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
@@ -31,15 +29,15 @@ public class CommentCommand {
     CommentValidationService commentValidationService;
 
     public Comment create(CommentRequest commentRequest){
-        Comment comment = new Comment();
+        var comment = new Comment();
         comment.setContent(comment.getContent());
 
-        Post post = postRepository.findById(commentRequest.post_id);
+        var post = postRepository.findById(commentRequest.post_id);
         if(!postValidationService.isValid(post))
             throw new RuntimeException("Invalid post");
         comment.setPost(post);
 
-        User user = userRepository.findById(commentRequest.user_id);
+        var user = userRepository.findById(commentRequest.user_id);
         if(!userValidationService.isUserValid(user))
             throw new RuntimeException("Invalid user");
 
@@ -48,19 +46,21 @@ public class CommentCommand {
         return commentRepository.save(comment);
     }
 
-    public Comment update(int commentId, CommentRequest commentRequest){
+    public Comment changeContent(int commentId, String content){
         Optional<Comment> dbComment = Optional.ofNullable(commentRepository.findById(commentId));
-        Comment comment = new Comment();
-        comment.setContent(commentRequest.content);
 
-        Post post = postRepository.findById(commentRequest.post_id);
-        if(!postValidationService.isValid(post))
-            throw new RuntimeException("invalid post");
+        if(dbComment.isEmpty())
+            return null; //todo : error to do
 
-        User user = userRepository.findById(commentRequest.user_id);
-        if(!userValidationService.isUserValid(user))
-            throw new RuntimeException("invalid user");
+        var comment = new Comment();
+        comment.setContent(content);
+        comment.setId(commentId);
 
         return commentRepository.save(comment);
+    }
+
+    public void delete(int commentId){
+        var comment = commentRepository.findById(commentId);
+        commentRepository.delete(comment);
     }
 }
