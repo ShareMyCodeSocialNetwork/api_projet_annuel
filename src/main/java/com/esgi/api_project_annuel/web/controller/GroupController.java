@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.InvalidObjectException;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping
+@RequestMapping("/group")
 public class GroupController {
 
     @Autowired
@@ -32,7 +32,7 @@ public class GroupController {
         this.groupQuery = demandQuery;
     }
 
-    @PostMapping("/group/create")
+    @PostMapping("/")
     public ResponseEntity<?> addGroup(@RequestBody GroupRequest groupRequest) throws InvalidObjectException {
         Group group = groupCommand.create(groupRequest);
         if(group != null)
@@ -45,7 +45,7 @@ public class GroupController {
         }
     }
 
-    @GetMapping(value = "/group", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
+    @GetMapping(value = "/", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
     public ResponseEntity<?> getGroupAll(){
         Iterable<Group> groupAll = groupQuery.getAll();
         try {
@@ -55,7 +55,7 @@ public class GroupController {
         }
     }
 
-    @GetMapping("/group/{groupId}")
+    @GetMapping("/{groupId}")
     public ResponseEntity<?> getgroupById(@PathVariable int groupId) {
         Group group = groupQuery.getById(groupId);
         if (group != null && groupId > 0) {
@@ -66,7 +66,7 @@ public class GroupController {
 
 
 
-    @PutMapping("/group/update/{groupId}")
+    @PutMapping("/{groupId}")
     public ResponseEntity<?> updategroup(@PathVariable int groupId, @RequestBody Group updatedgroup) throws InvalidObjectException {
         Group group = groupCommand.update(groupId, updatedgroup);
         if (group != null) {
@@ -75,7 +75,7 @@ public class GroupController {
         return new ResponseEntity<String>("Verifier le body ou l'entete envoyer",HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/group/delete/{groupId}")
+    @DeleteMapping("/{groupId}")
     public ResponseEntity<String> deletegroup(@PathVariable int groupId) {
         groupCommand.delete(groupId);
         return new ResponseEntity<>(
