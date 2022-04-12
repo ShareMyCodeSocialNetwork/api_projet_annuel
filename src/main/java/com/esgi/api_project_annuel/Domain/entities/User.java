@@ -16,19 +16,18 @@ public class User {
     )
     private int id;
 
-    @Column(name = "email")
-    private String Email;
+    @Column(name = "email", unique = true)
+    private String email;
 
     @Column(name = "firstname")
-    private String FirstName;
+    private String firstname;
 
     @Column(name = "lastname")
-    private String LastName;
+    private String lastname;
 
     @Column(name = "password")
-    private String Password;
+    private String password;
 
     @Column(name = "profile_picture")
     private String profilePicture;
-
 }

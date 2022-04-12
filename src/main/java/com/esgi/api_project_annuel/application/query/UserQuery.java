@@ -34,4 +34,12 @@ public class UserQuery {
     public List<Post> getPosts(User user) {
         return postRepository.findByUser(user);
     }
+
+    public Boolean userEmailExist(String mail){
+        return userRepository.findByEmail(mail) != null;
+    }
+
+    public User getByEmailAndPassword(String email, String password){
+        return userRepository.findUserByEmailAndPassword(email, password);
+    }
 }
