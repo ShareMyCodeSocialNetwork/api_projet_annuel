@@ -15,13 +15,13 @@ public class UserTest {
     private User invalidUserWithBadMail;
     private User invalidUserWithBadFirstname;
     private User invalidUserWithBadLastname;
-    private  UserValidationService userValidationService = new UserValidationService();
+    private final UserValidationService userValidationService = new UserValidationService();
 
     public User UserObject(String lastName, String firstName,String password,String email){
         User userObject = new User();
         userObject.setEmail(email);
-        userObject.setFirstName(firstName);
-        userObject.setLastName(lastName);
+        userObject.setFirstname(firstName);
+        userObject.setLastname(lastName);
         userObject.setPassword(password);
         return userObject;
     }
