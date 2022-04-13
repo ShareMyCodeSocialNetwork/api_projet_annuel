@@ -17,7 +17,7 @@ import java.util.Optional;
  * Command object
  */
 @Service
-public final class UserCommand {
+public class UserCommand {
 
     @Autowired
     UserRepository userRepository;
@@ -27,7 +27,6 @@ public final class UserCommand {
 
     UserValidationService userValidationService = new UserValidationService();
 
-    //todo FAIRE LES VERIFICATIONS DANS LE CONTROLLEUR
 
     public User create(UserRequest userRequest){
         var user = new User();
