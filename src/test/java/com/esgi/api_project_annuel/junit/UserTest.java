@@ -1,5 +1,6 @@
 package com.esgi.api_project_annuel.junit;
-import com.esgi.api_project_annuel.model.User;
+import com.esgi.api_project_annuel.Domain.entities.User;
+import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,6 +15,17 @@ public class UserTest {
     private User invalidUserWithBadMail;
     private User invalidUserWithBadFirstname;
     private User invalidUserWithBadLastname;
+    private final UserValidationService userValidationService = new UserValidationService();
+
+    public User UserObject(String lastName, String firstName,String password,String email){
+        User userObject = new User();
+        userObject.setEmail(email);
+        userObject.setFirstname(firstName);
+        userObject.setLastname(lastName);
+        userObject.setPassword(password);
+        return userObject;
+    }
+
 
     @Before
     public void init() {
@@ -27,42 +39,49 @@ public class UserTest {
         String validLastname = "Lastname";
         String invalidLastname = "";
 
-        validUser = new User(validMail, validFirstname, validLastname, validPassword);
-        invalidUser = new User(invalidMail, invalidFirstname, invalidLastname, invalidTooSmallPassword);
-        invalidUserWithLongPassword = new User(validMail, validFirstname, validLastname, invalidTooLongPassword);
-        invalidUserWithShortPassword = new User(validMail, validFirstname, validLastname, invalidTooSmallPassword);
-        invalidUserWithBadMail = new User(invalidMail, validFirstname, validLastname, validPassword);
-        invalidUserWithBadFirstname = new User(validMail, invalidFirstname, validLastname, validPassword);
-        invalidUserWithBadLastname = new User(validMail, validFirstname, invalidLastname, validPassword);
+
+        validUser =  UserObject(validFirstname, validLastname, validPassword,validMail);
+        invalidUser = UserObject(invalidFirstname, invalidLastname, invalidTooSmallPassword,invalidMail);
+        invalidUserWithLongPassword = UserObject( validFirstname, validLastname, invalidTooLongPassword,validMail);
+        invalidUserWithShortPassword = UserObject( validFirstname, validLastname, invalidTooSmallPassword,validMail);
+        invalidUserWithBadMail = UserObject(validFirstname, validLastname, validPassword,invalidMail);
+        invalidUserWithBadFirstname = UserObject( invalidFirstname, validLastname, validPassword,validMail);
+        invalidUserWithBadLastname = UserObject( validFirstname, invalidLastname, validPassword,validMail);
     }
 
     @Test
     public void isValidUser() {
-        assertTrue(validUser.isValid());
+        assertTrue(userValidationService.isUserValid(validUser));
     }
 
     @Test
     public void isInvalidUser() {
-        assertFalse(invalidUser.isValid());
+        assertFalse(userValidationService.isUserValid(invalidUser));
     }
 
     @Test
     public void isInvalidMail() {
-        assertFalse(invalidUserWithBadMail.isValid());
+        assertFalse(userValidationService.isUserValid(invalidUserWithBadMail));
     }
 
     @Test
     public void isTooShortPassword() {
-        assertFalse(invalidUserWithShortPassword.isValid());
+        assertFalse(userValidationService.isUserValid(invalidUserWithShortPassword));
     }
 
     @Test
-    public void isTooLongPassword() {assertFalse(invalidUserWithLongPassword.isValid());}
+    public void isTooLongPassword() {
+        assertFalse(userValidationService.isUserValid(invalidUserWithLongPassword));
+    }
 
     @Test
-    public void isInvalidFirstname() {assertFalse(invalidUserWithBadFirstname.isValid());}
+    public void isInvalidFirstname() {
+        assertFalse(userValidationService.isUserValid(invalidUserWithBadFirstname));
+    }
 
     @Test
-    public void isInvalidLastname() {assertFalse(invalidUserWithBadLastname.isValid());}
+    public void isInvalidLastname() {
+        assertFalse(userValidationService.isUserValid(invalidUserWithBadLastname));
+    }
 
 }

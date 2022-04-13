@@ -1,4 +1,4 @@
-package com.esgi.api_project_annuel.junit;
+/*package com.esgi.api_project_annuel.junit;
 
 import com.esgi.api_project_annuel.model.Group;
 import org.junit.Before;
@@ -31,3 +31,4 @@ public class GroupTest {
     }
 
 }
+*/
