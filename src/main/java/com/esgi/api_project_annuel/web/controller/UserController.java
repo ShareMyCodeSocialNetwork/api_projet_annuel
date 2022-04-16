@@ -101,10 +101,7 @@ public class UserController {
     }
 
 
-
-
-    //todo : to test
-    @GetMapping("/posts/{userId}")
+    @GetMapping("/{userId}/posts")
     public ResponseEntity<?> getPostByUserId(@PathVariable int userId){
         var user = userQuery.getById(userId);
         if(user == null)

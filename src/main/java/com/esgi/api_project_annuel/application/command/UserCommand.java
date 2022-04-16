@@ -1,22 +1,13 @@
 package com.esgi.api_project_annuel.application.command;
-
-
-
 import com.esgi.api_project_annuel.Domain.entities.User;
-import com.esgi.api_project_annuel.Domain.repository.GroupRepository;
-import com.esgi.api_project_annuel.Domain.repository.PostRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import com.esgi.api_project_annuel.web.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Objects;
 import java.util.Optional;
 
-/**
- * Command object
- */
 @Service
 public class UserCommand {
 
