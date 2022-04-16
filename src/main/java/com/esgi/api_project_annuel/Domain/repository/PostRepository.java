@@ -9,9 +9,7 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
-    Post findById(long postId);
+    Post findById(int postId);
 
     List<Post> findByUser(User user);
-
-
 }
