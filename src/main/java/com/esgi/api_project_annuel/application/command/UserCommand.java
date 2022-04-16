@@ -4,6 +4,7 @@ package com.esgi.api_project_annuel.application.command;
 
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.GroupRepository;
+import com.esgi.api_project_annuel.Domain.repository.PostRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import com.esgi.api_project_annuel.web.request.UserRequest;
@@ -21,9 +22,6 @@ public class UserCommand {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    GroupRepository groupRepository;
 
     UserValidationService userValidationService = new UserValidationService();
 
@@ -56,7 +54,7 @@ public class UserCommand {
 
     public User changeFirstname(int userId, UserRequest userRequest) {
         Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
-        if(!userFromDB.isEmpty()){
+        if(userFromDB.isPresent()){
             var user = userFromDB.get();
             user.setFirstname(userRequest.firstname);
             return userRepository.save(user);
@@ -66,7 +64,7 @@ public class UserCommand {
 
     public User changeLastname(int userId, UserRequest userRequest) {
         Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
-        if(!userFromDB.isEmpty()){
+        if(userFromDB.isPresent()){
             var user = userFromDB.get();
             user.setLastname(userRequest.lastname);
             return userRepository.save(user);
@@ -76,7 +74,7 @@ public class UserCommand {
 
     public User changeEmail(int userId, UserRequest userRequest){
         Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
-        if(!userFromDB.isEmpty()){
+        if(userFromDB.isPresent()){
             var user = userFromDB.get();
             user.setEmail(userRequest.email);
             if(userValidationService.isUserValid(user))
@@ -87,10 +85,9 @@ public class UserCommand {
 
     public void delete(int userId) {
         Optional<User> userFromDb = Optional.ofNullable(userRepository.findById(userId));
-        if (!userFromDb.isEmpty()){
-            User user = userFromDb.get();
-            userRepository.delete(user);
-        }
+        userFromDb.ifPresent(user ->
+                userRepository.delete(user)
+        );
     }
 
 
