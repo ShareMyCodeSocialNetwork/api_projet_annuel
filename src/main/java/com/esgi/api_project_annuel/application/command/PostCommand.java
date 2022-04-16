@@ -1,19 +1,12 @@
 package com.esgi.api_project_annuel.application.command;
-
 import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
-import com.esgi.api_project_annuel.Domain.repository.LikeRepository;
 import com.esgi.api_project_annuel.Domain.repository.PostRepository;
-import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.validation.PostValidationService;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import com.esgi.api_project_annuel.web.request.PostRequest;
-import com.esgi.api_project_annuel.web.response.PostResponse;
-import com.esgi.api_project_annuel.web.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,12 +14,6 @@ import java.util.Optional;
 public class PostCommand {
     @Autowired
     PostRepository postRepository;
-
-    @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    LikeRepository likeRepository;
 
 
     LikeCommand likeCommand;
