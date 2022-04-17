@@ -5,6 +5,6 @@ import com.esgi.api_project_annuel.Domain.entities.Comment;
 public class CommentValidationService {
 
     public boolean isValid(Comment comment){
-        return !comment.getContent().isBlank();
+        return comment != null && !comment.getContent().isBlank();
     }
 }

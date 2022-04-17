@@ -1,6 +1,8 @@
 package com.esgi.api_project_annuel.application.command;
 
 import com.esgi.api_project_annuel.Domain.entities.Comment;
+import com.esgi.api_project_annuel.Domain.entities.Post;
+import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.CommentRepository;
 import com.esgi.api_project_annuel.Domain.repository.PostRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
@@ -24,25 +26,24 @@ public class CommentCommand {
     @Autowired
     UserRepository userRepository;
 
-    PostValidationService postValidationService;
-    UserValidationService userValidationService;
-    CommentValidationService commentValidationService;
+    PostValidationService postValidationService = new PostValidationService();
+    UserValidationService userValidationService = new UserValidationService();
+    CommentValidationService commentValidationService = new CommentValidationService();
 
-    public Comment create(CommentRequest commentRequest){
+    public Comment create(CommentRequest commentRequest, Post post, User user){
         var comment = new Comment();
-        comment.setContent(comment.getContent());
+        comment.setContent(commentRequest.content);
 
-        var post = postRepository.findById(commentRequest.post_id);
         if(!postValidationService.isValid(post))
-            throw new RuntimeException("Invalid post");
+            return null;
         comment.setPost(post);
 
-        var user = userRepository.findById(commentRequest.user_id);
         if(!userValidationService.isUserValid(user))
-            throw new RuntimeException("Invalid user");
+            return null;
+        comment.setUser(user);
 
         if(!commentValidationService.isValid(comment))
-            throw new RuntimeException("Invalid comment properties");
+            return null;
         return commentRepository.save(comment);
     }
 
@@ -50,7 +51,7 @@ public class CommentCommand {
         Optional<Comment> dbComment = Optional.ofNullable(commentRepository.findById(commentId));
 
         if(dbComment.isEmpty())
-            return null; //todo : error to do
+            return null;
 
         var comment = new Comment();
         comment.setContent(content);
