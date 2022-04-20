@@ -6,22 +6,28 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+
+@Getter
+@Setter
 @Entity
-@Table(name = "code")
+@Table(name = "code_share")
 public class Code {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter@Setter
-    @Column(name = "id", nullable = false)
+    @Column(
+            name = "id",
+            updatable = false
+    )
     private int id;
 
     @Column(name = "content")
-    @Getter @Setter
     private String content;
 
-    @JsonIgnore
-    @ManyToOne(cascade=CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "programming_langage_id")
-    private ProgrammingLangage programmingLangage;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "language_id")
+    private Language language;
 }

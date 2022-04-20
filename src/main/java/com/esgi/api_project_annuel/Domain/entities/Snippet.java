@@ -1,41 +1,29 @@
 package com.esgi.api_project_annuel.Domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "snippet")
+@Table(name = "snippet_share")
 public class Snippet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    @Getter @Setter
+    @Column(name = "id", updatable = false)
     private int id;
 
-    @Column(name = "snippet_name")
-    private String name;
-
-    @Column(name = "snippet_content")
+    @Column(name = "content")
     private String content;
 
-    @Column(updatable = false, nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @Getter
-    private Date createdAt = new Date();
-
-
-    @JsonIgnore
-    @ManyToOne(cascade=CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonIgnore
-    @ManyToOne(cascade=CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "programming_langage_id")
-    private ProgrammingLangage programmingLangage;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "language_id")
+    private Language language;
 
 }
