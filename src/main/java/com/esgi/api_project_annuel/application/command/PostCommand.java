@@ -15,22 +15,21 @@ public class PostCommand {
     @Autowired
     PostRepository postRepository;
 
-
-    LikeCommand likeCommand;
+    @Autowired
+    CommentCommand commentCommand;
     PostValidationService postValidationService = new PostValidationService();
     UserValidationService userValidationService = new UserValidationService();
 
     public Post create(PostRequest postRequest, User user){
         Post post = new Post();
         post.setContent(postRequest.content);
-        post.setUser(user);
 
         if(!userValidationService.isUserValid(user))
             return null;
+        post.setUser(user);
 
         if(!postValidationService.isValid(post))
             return null;
-            //throw new RuntimeException("Invalid post properties");
 
         return postRepository.save(post);
     }
@@ -64,7 +63,6 @@ public class PostCommand {
     public void delete(int postId){
         Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
         dbPost.ifPresent(post ->{
-            //on supprime le lien du post avec l' utilisateur avant de supprimer le post sinon on ne peut pas supprimer le post
             post.setUser(null);
             postRepository.save(post);
             postRepository.delete(post);
@@ -75,7 +73,12 @@ public class PostCommand {
     public void deleteAllUserPosts(User user){
         Optional<List<Post>> dbPosts = Optional.ofNullable(postRepository.findByUser(user));
         dbPosts.ifPresent(posts ->
-            postRepository.deleteAll(posts)
+            posts.forEach(post -> {
+                commentCommand.deleteCommentsInPost(post);
+                post.setUser(null);
+                postRepository.save(post);
+                postRepository.delete(post);
+            })
         );
     }
 

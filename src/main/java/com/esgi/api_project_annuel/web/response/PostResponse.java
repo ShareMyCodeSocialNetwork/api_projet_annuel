@@ -1,9 +1,11 @@
 package com.esgi.api_project_annuel.web.response;
 
+import com.esgi.api_project_annuel.Domain.entities.User;
+
 public class PostResponse {
     public int id;
     public String content;
-    public int user_id;
+    public User user;
 
     //public PostResponse() {}
 
@@ -26,12 +28,12 @@ public class PostResponse {
         return this;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public User getUser() {
+        return user;
     }
 
-    public PostResponse setUser_id(int user_id) {
-        this.user_id = user_id;
+    public PostResponse setUser(User user) {
+        this.user = user;
         return this;
     }
 }

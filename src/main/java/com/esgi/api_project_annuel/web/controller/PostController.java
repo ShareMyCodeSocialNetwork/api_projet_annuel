@@ -42,22 +42,23 @@ public class PostController {
             return new ResponseEntity<>("missing properties", HttpStatus.BAD_REQUEST);
 
         var user = userQuery.getById(postRequest.user_id);
-        if(user == null)
-            return new ResponseEntity<>("invalid properties", HttpStatus.BAD_REQUEST);
+        var post = postCommand.create(postRequest, user);
 
-
-        var postResponse = postToPostResponse(postCommand.create(postRequest, user));
-        if(postResponse == null)
+        if(post == null)
             return new ResponseEntity<>("Post not created",HttpStatus.NOT_ACCEPTABLE);
-        else
-            return new ResponseEntity<>(postResponse, HttpStatus.CREATED);
+
+        return new ResponseEntity<>(postToPostResponse(post), HttpStatus.CREATED);
     }
 
     @GetMapping("/{postId}")
     public ResponseEntity<PostResponse> getPostById(@PathVariable int postId){
+        var post = postQuery.getById(postId);
+        if(post == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(postToPostResponse(
-                postQuery.getById(postId)),
-                HttpStatus.OK);
+                post),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/")
@@ -112,7 +113,7 @@ public class PostController {
     private PostResponse postToPostResponse(Post post){
         return new PostResponse()
                 .setId(post.getId())
-                .setUser_id(post.getUser().getId())
+                .setUser(post.getUser())
                 .setContent(post.getContent());
     }
 
