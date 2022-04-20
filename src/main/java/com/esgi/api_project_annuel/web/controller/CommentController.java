@@ -39,12 +39,33 @@ public class CommentController {
 
     /**
      * todo :
-     *      - findByUser
-     *      - findByPost
      *      - changeContent
-     *      - delete
      */
 
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<CommentResponse>> getByUser(@PathVariable int userId){
+        return new ResponseEntity<>(
+                listCommentToListCommentResponse(
+                        commentQuery.findByUser(
+                                userQuery.getById(userId)
+                        )
+                ),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<List<CommentResponse>> getByPost(@PathVariable int postId){
+        return new ResponseEntity<>(
+                listCommentToListCommentResponse(
+                        commentQuery.findByPost(
+                                postQuery.getById(postId)
+                        )
+                ),
+                HttpStatus.OK
+        );
+    }
 
     @GetMapping(value = "/", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
     public ResponseEntity<List<CommentResponse>> getAll(){

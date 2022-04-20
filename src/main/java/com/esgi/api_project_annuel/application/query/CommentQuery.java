@@ -30,7 +30,7 @@ public class CommentQuery {
         return commentRepository.findCommentsByUser(user);
     }
 
-    /*public List<Comment> findByPost(Post post){
+    public List<Comment> findByPost(Post post){
         return commentRepository.findCommentsByPost(post);
-    }*/
+    }
 }
