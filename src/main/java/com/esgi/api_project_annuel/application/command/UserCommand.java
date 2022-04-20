@@ -38,9 +38,10 @@ public class UserCommand {
         if(dbUser.isPresent()){
             var user = dbUser.get();
             user.setPassword(password);
-            return userRepository.save(user);
-        }else
-            return null;
+            if(userValidationService.isUserValid(user))
+                return userRepository.save(user);
+        }
+        return null;
     }
 
     public User changeFirstname(int userId, UserRequest userRequest) {
@@ -48,7 +49,8 @@ public class UserCommand {
         if(userFromDB.isPresent()){
             var user = userFromDB.get();
             user.setFirstname(userRequest.firstname);
-            return userRepository.save(user);
+            if(userValidationService.isUserValid(user))
+                return userRepository.save(user);
         }
         return null;
     }
@@ -58,7 +60,8 @@ public class UserCommand {
         if(userFromDB.isPresent()){
             var user = userFromDB.get();
             user.setLastname(userRequest.lastname);
-            return userRepository.save(user);
+            if(userValidationService.isUserValid(user))
+                return userRepository.save(user);
         }
         return null;
     }

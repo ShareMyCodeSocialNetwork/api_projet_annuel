@@ -2,6 +2,7 @@ package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
+import com.esgi.api_project_annuel.application.command.CommentCommand;
 import com.esgi.api_project_annuel.application.command.PostCommand;
 import com.esgi.api_project_annuel.application.command.UserCommand;
 import com.esgi.api_project_annuel.application.query.UserQuery;
@@ -27,6 +28,9 @@ public class UserController {
 
     @Autowired
     PostCommand postCommand;
+
+    @Autowired
+    CommentCommand commentCommand;
 
     private final UserValidationService userValidationService = new UserValidationService();
 
@@ -212,6 +216,7 @@ public class UserController {
                     "User " + userId + " not exist",
                     HttpStatus.BAD_REQUEST
             );
+        commentCommand.deleteAllUserComments(user);
         postCommand.deleteAllUserPosts(user);
         userCommand.delete(userId);
         return new ResponseEntity<>(
