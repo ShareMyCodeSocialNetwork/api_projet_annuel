@@ -1,10 +1,13 @@
 package com.esgi.api_project_annuel.web.response;
 
+import com.esgi.api_project_annuel.Domain.entities.Post;
+import com.esgi.api_project_annuel.Domain.entities.User;
+
 public class CommentResponse {
     public int id;
     public String content;
-    public int user_id;
-    public int post_id;
+    public User user;
+    public Post post;
 
     public CommentResponse() {}
 
@@ -26,21 +29,21 @@ public class CommentResponse {
         return this;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public User getUser() {
+        return user;
     }
 
-    public CommentResponse setUser_id(int user_id) {
-        this.user_id = user_id;
+    public CommentResponse setUser(User user) {
+        this.user = user;
         return this;
     }
 
-    public int getPost_id() {
-        return post_id;
+    public Post getPost() {
+        return post;
     }
 
-    public CommentResponse setPost_id(int post_id) {
-        this.post_id = post_id;
+    public CommentResponse setPost(Post post) {
+        this.post = post;
         return this;
     }
 }

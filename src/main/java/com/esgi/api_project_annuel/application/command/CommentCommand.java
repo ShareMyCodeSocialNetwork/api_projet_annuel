@@ -4,8 +4,6 @@ import com.esgi.api_project_annuel.Domain.entities.Comment;
 import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.CommentRepository;
-import com.esgi.api_project_annuel.Domain.repository.PostRepository;
-import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.validation.CommentValidationService;
 import com.esgi.api_project_annuel.application.validation.PostValidationService;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
@@ -13,18 +11,13 @@ import com.esgi.api_project_annuel.web.request.CommentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CommentCommand {
     @Autowired
     CommentRepository commentRepository;
-
-    @Autowired
-    PostRepository postRepository;
-
-    @Autowired
-    UserRepository userRepository;
 
     PostValidationService postValidationService = new PostValidationService();
     UserValidationService userValidationService = new UserValidationService();
@@ -60,8 +53,30 @@ public class CommentCommand {
         return commentRepository.save(comment);
     }
 
+    public void deleteAllUserComments(User user){
+        Optional<List<Comment>> dbComments = Optional.ofNullable(commentRepository.findCommentsByUser(user));
+        dbComments.ifPresent(comments->
+                comments.forEach(comment -> {
+                    comment.setPost(null);
+                    comment.setUser(null);
+                    commentRepository.save(comment);
+                    commentRepository.delete(comment);
+                })
+        );
+    }
+
+    public void deleteCommentsInPost(Post post){
+        Optional<List<Comment>> comments = Optional.ofNullable(commentRepository.findCommentsByPost(post));
+        comments.ifPresent(comment -> commentRepository.deleteAll(comment));
+    }
+
     public void delete(int commentId){
-        var comment = commentRepository.findById(commentId);
-        commentRepository.delete(comment);
+        Optional<Comment> commentToDelete = Optional.ofNullable(commentRepository.findById(commentId));
+        commentToDelete.ifPresent(comment ->{
+            comment.setUser(null);
+            comment.setPost(null);
+            commentRepository.save(comment);
+            commentRepository.delete(comment);
+        });
     }
 }

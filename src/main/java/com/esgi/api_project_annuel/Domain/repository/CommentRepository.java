@@ -15,4 +15,6 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findCommentsByUser(User user);
 
     List<Comment> findCommentsByPost(Post post);
+
+
 }

@@ -18,13 +18,12 @@ public class CommentQuery {
     @Autowired
     PostRepository postRepository;
 
-    //todo : est ce vraiment utile ?
     public List<Comment> getAll(){
         return commentRepository.findAll();
     }
 
-    public Comment getById(int id){
-        return commentRepository.findById(id);
+    public Comment getById(int commentId){
+        return commentRepository.findById(commentId);
     }
 
     public List<Comment> findByUser(User user){
