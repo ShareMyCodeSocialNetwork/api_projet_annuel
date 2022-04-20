@@ -1,5 +1,6 @@
 package com.esgi.api_project_annuel.Domain.repository;
 
+import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -7,10 +8,10 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Integer> {
-    User findById(int userId);
+public interface PostRepository extends JpaRepository<Post, Integer> {
+    Post findById(long postId);
 
-    User findByEmail(String email);
+    List<Post> findByUser(User user);
 
-    User findUserByEmailAndPassword(String email, String password);
+
 }

@@ -1,4 +1,4 @@
-package com.esgi.api_project_annuel.junit;
+/*package com.esgi.api_project_annuel.junit;
 
 import com.esgi.api_project_annuel.Domain.entities.Group;
 import com.esgi.api_project_annuel.application.validation.GroupValidationService;
@@ -43,3 +43,4 @@ public class GroupTest {
 */
 
 }
+*/
