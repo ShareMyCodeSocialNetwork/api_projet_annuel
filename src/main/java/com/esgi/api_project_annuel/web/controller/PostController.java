@@ -4,7 +4,6 @@ import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.application.command.PostCommand;
 import com.esgi.api_project_annuel.application.query.PostQuery;
 import com.esgi.api_project_annuel.application.query.UserQuery;
-import com.esgi.api_project_annuel.application.validation.PostValidationService;
 import com.esgi.api_project_annuel.web.request.PostRequest;
 import com.esgi.api_project_annuel.web.response.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,6 @@ public class PostController {
 
     @Autowired
     private final UserQuery userQuery;
-
-    private PostValidationService postValidationService;
 
     public PostController(PostCommand postCommand, PostQuery postQuery, UserQuery userQuery) {
         this.postCommand = postCommand;
