@@ -41,6 +41,3 @@ public class GroupTest {
         assertFalse(groupValidationService.isValid(invalidGroup));
     }
 */
-
-}
-*/
