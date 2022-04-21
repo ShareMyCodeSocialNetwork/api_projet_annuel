@@ -47,10 +47,10 @@ public class UserController {
             return new ResponseEntity<>("Email already taken", HttpStatus.BAD_REQUEST);
 
         var user = new User();
-        user.setFirstname(firstname);
+        user.setFirstName(firstname);
         user.setPassword(password);
         user.setProfilePicture(profilePicture);
-        user.setLastname(lastname);
+        user.setLastName(lastname);
         user.setEmail(email);
 
         if(!userValidationService.isUserValid(user))
@@ -171,7 +171,7 @@ public class UserController {
         if(user == null)
             return new ResponseEntity<>("User not exist", HttpStatus.BAD_REQUEST);
 
-        user.setLastname(lastname);
+        user.setLastName(lastname);
         if(!userValidationService.isUserValid(user))
             return new ResponseEntity<>("Invalid user's properties", HttpStatus.BAD_REQUEST);
 
@@ -193,7 +193,7 @@ public class UserController {
         if(user == null)
             return new ResponseEntity<>("User not exist", HttpStatus.BAD_REQUEST);
 
-        user.setFirstname(firstname);
+        user.setFirstName(firstname);
         if(!userValidationService.isUserValid(user))
             return new ResponseEntity<>("Invalid user's properties", HttpStatus.BAD_REQUEST);
 
