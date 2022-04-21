@@ -2,6 +2,8 @@ package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
+import com.esgi.api_project_annuel.application.command.CommentCommand;
+import com.esgi.api_project_annuel.application.command.PostCommand;
 import com.esgi.api_project_annuel.application.command.UserCommand;
 import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
@@ -24,11 +26,18 @@ public class UserController {
     @Autowired
     private final UserQuery userQuery;
 
+    @Autowired
+    PostCommand postCommand;
+
+    @Autowired
+    CommentCommand commentCommand;
+
     private final UserValidationService userValidationService = new UserValidationService();
 
-    public UserController(UserCommand userCommand, UserQuery userQuery){
+    public UserController(UserCommand userCommand, UserQuery userQuery, PostCommand postCommand){
         this.userCommand = userCommand;
         this.userQuery = userQuery;
+        this.postCommand = postCommand;
     }
 
     @PostMapping("/create")
@@ -47,10 +56,10 @@ public class UserController {
             return new ResponseEntity<>("Email already taken", HttpStatus.BAD_REQUEST);
 
         var user = new User();
-        user.setFirstName(firstname);
+        user.setFirstname(firstname);
         user.setPassword(password);
         user.setProfilePicture(profilePicture);
-        user.setLastName(lastname);
+        user.setLastname(lastname);
         user.setEmail(email);
 
         if(!userValidationService.isUserValid(user))
@@ -96,10 +105,7 @@ public class UserController {
     }
 
 
-
-
-    //todo : to test
-    @GetMapping("/posts/{userId}")
+    @GetMapping("/{userId}/posts")
     public ResponseEntity<?> getPostByUserId(@PathVariable int userId){
         var user = userQuery.getById(userId);
         if(user == null)
@@ -171,7 +177,7 @@ public class UserController {
         if(user == null)
             return new ResponseEntity<>("User not exist", HttpStatus.BAD_REQUEST);
 
-        user.setLastName(lastname);
+        user.setLastname(lastname);
         if(!userValidationService.isUserValid(user))
             return new ResponseEntity<>("Invalid user's properties", HttpStatus.BAD_REQUEST);
 
@@ -193,7 +199,7 @@ public class UserController {
         if(user == null)
             return new ResponseEntity<>("User not exist", HttpStatus.BAD_REQUEST);
 
-        user.setFirstName(firstname);
+        user.setFirstname(firstname);
         if(!userValidationService.isUserValid(user))
             return new ResponseEntity<>("Invalid user's properties", HttpStatus.BAD_REQUEST);
 
@@ -207,10 +213,11 @@ public class UserController {
         var user = userQuery.getById(userId);
         if(user == null)
             return new ResponseEntity<>(
-                    " deleted",
+                    "User " + userId + " not exist",
                     HttpStatus.BAD_REQUEST
             );
-
+        commentCommand.deleteAllUserComments(user);
+        postCommand.deleteAllUserPosts(user);
         userCommand.delete(userId);
         return new ResponseEntity<>(
                 "User " + userId + " deleted",
