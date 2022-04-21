@@ -72,7 +72,7 @@ public class UserCommand {
             var user = userFromDB.get();
             user.setEmail(userRequest.email);
             if(userValidationService.isUserValid(user))
-                userRepository.save(user);
+                return userRepository.save(user);
         }
         return null;
     }
