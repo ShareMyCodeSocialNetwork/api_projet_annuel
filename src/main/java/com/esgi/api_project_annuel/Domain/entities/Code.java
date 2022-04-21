@@ -1,7 +1,11 @@
 package com.esgi.api_project_annuel.Domain.entities;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.*;
+
 
 @Getter
 @Setter

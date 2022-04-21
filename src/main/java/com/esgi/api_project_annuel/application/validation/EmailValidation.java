@@ -23,7 +23,7 @@ public class EmailValidation {
 
         return  pat.matcher(email).matches();
 
-    }
+    }   
 
 
 }

@@ -1,6 +1,11 @@
 package com.esgi.api_project_annuel.Domain.entities;
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,18 +21,19 @@ public class User {
     )
     private int id;
 
-    @Column(name = "email", unique = true)
-    private String email;
+    @Column(name = "email")
+    private String Email;
 
     @Column(name = "firstname")
-    private String firstname;
+    private String FirstName;
 
     @Column(name = "lastname")
-    private String lastname;
+    private String LastName;
 
     @Column(name = "password")
-    private String password;
+    private String Password;
 
     @Column(name = "profile_picture")
     private String profilePicture;
+
 }

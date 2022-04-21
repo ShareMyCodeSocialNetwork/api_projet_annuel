@@ -20,8 +20,8 @@ public class UserCommand {
     public User create(UserRequest userRequest){
         var user = new User();
         user.setEmail(userRequest.email);
-        user.setFirstname(userRequest.firstname);
-        user.setLastname(userRequest.lastname);
+        user.setFirstName(userRequest.firstname);
+        user.setLastName(userRequest.lastname);
         user.setPassword(userRequest.password);
         user.setProfilePicture(
                 Objects.requireNonNullElse(userRequest.profilePicture, "default_profile_picture")
@@ -51,6 +51,7 @@ public class UserCommand {
             user.setFirstname(userRequest.firstname);
             if(userValidationService.isUserValid(user))
                 return userRepository.save(user);
+
         }
         return null;
     }
@@ -62,6 +63,7 @@ public class UserCommand {
             user.setLastname(userRequest.lastname);
             if(userValidationService.isUserValid(user))
                 return userRepository.save(user);
+
         }
         return null;
     }
@@ -83,7 +85,5 @@ public class UserCommand {
                 userRepository.delete(user)
         );
     }
-
-
 
 }

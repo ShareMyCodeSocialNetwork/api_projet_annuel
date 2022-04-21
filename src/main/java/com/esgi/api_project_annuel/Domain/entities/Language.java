@@ -1,6 +1,9 @@
 package com.esgi.api_project_annuel.Domain.entities;
+
+
 import lombok.Getter;
 import lombok.Setter;
+
 import javax.persistence.*;
 
 @Getter
@@ -10,10 +13,7 @@ import javax.persistence.*;
 public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(
-            name = "id",
-            updatable = false
-    )
+    @Column(name = "id", updatable = false)
     private int id;
 
     @Column(name = "name")
