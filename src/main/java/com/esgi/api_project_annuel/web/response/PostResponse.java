@@ -7,7 +7,7 @@ public class PostResponse {
     public String content;
     public User user;
 
-    //public PostResponse() {}
+    public PostResponse() {}
 
 
     public int getId() {
