@@ -1,9 +1,9 @@
 package com.esgi.api_project_annuel.application.command;
 
 import com.esgi.api_project_annuel.Domain.entities.Comment;
+import com.esgi.api_project_annuel.Domain.entities.Post;
+import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.CommentRepository;
-import com.esgi.api_project_annuel.Domain.repository.PostRepository;
-import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.validation.CommentValidationService;
 import com.esgi.api_project_annuel.application.validation.PostValidationService;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
@@ -11,6 +11,7 @@ import com.esgi.api_project_annuel.web.request.CommentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,31 +19,24 @@ public class CommentCommand {
     @Autowired
     CommentRepository commentRepository;
 
-    @Autowired
-    PostRepository postRepository;
+    PostValidationService postValidationService = new PostValidationService();
+    UserValidationService userValidationService = new UserValidationService();
+    CommentValidationService commentValidationService = new CommentValidationService();
 
-    @Autowired
-    UserRepository userRepository;
-
-    PostValidationService postValidationService;
-    UserValidationService userValidationService;
-    CommentValidationService commentValidationService;
-
-    public Comment create(CommentRequest commentRequest){
+    public Comment create(CommentRequest commentRequest, Post post, User user){
         var comment = new Comment();
-        comment.setContent(comment.getContent());
+        comment.setContent(commentRequest.content);
 
-        var post = postRepository.findById(commentRequest.post_id);
         if(!postValidationService.isValid(post))
-            throw new RuntimeException("Invalid post");
+            return null;
         comment.setPost(post);
 
-        var user = userRepository.findById(commentRequest.user_id);
         if(!userValidationService.isUserValid(user))
-            throw new RuntimeException("Invalid user");
+            return null;
+        comment.setUser(user);
 
         if(!commentValidationService.isValid(comment))
-            throw new RuntimeException("Invalid comment properties");
+            return null;
         return commentRepository.save(comment);
     }
 
@@ -50,7 +44,7 @@ public class CommentCommand {
         Optional<Comment> dbComment = Optional.ofNullable(commentRepository.findById(commentId));
 
         if(dbComment.isEmpty())
-            return null; //todo : error to do
+            return null;
 
         var comment = new Comment();
         comment.setContent(content);
@@ -59,8 +53,30 @@ public class CommentCommand {
         return commentRepository.save(comment);
     }
 
+    public void deleteAllUserComments(User user){
+        Optional<List<Comment>> dbComments = Optional.ofNullable(commentRepository.findCommentsByUser(user));
+        dbComments.ifPresent(comments->
+                comments.forEach(comment -> {
+                    comment.setPost(null);
+                    comment.setUser(null);
+                    commentRepository.save(comment);
+                    commentRepository.delete(comment);
+                })
+        );
+    }
+
+    public void deleteCommentsInPost(Post post){
+        Optional<List<Comment>> comments = Optional.ofNullable(commentRepository.findCommentsByPost(post));
+        comments.ifPresent(comment -> commentRepository.deleteAll(comment));
+    }
+
     public void delete(int commentId){
-        var comment = commentRepository.findById(commentId);
-        commentRepository.delete(comment);
+        Optional<Comment> commentToDelete = Optional.ofNullable(commentRepository.findById(commentId));
+        commentToDelete.ifPresent(comment ->{
+            comment.setUser(null);
+            comment.setPost(null);
+            commentRepository.save(comment);
+            commentRepository.delete(comment);
+        });
     }
 }

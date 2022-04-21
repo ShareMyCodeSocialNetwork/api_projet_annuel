@@ -2,7 +2,6 @@ package com.esgi.api_project_annuel.application.command;
 
 
 import com.esgi.api_project_annuel.Domain.entities.Group;
-import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.GroupRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.validation.GroupValidationService;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.InvalidObjectException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 @Service
