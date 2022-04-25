@@ -1,6 +1,5 @@
 package com.esgi.api_project_annuel.application.command;
 
-import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.Role;
 import com.esgi.api_project_annuel.Domain.repository.RoleRepository;
 import com.esgi.api_project_annuel.application.validation.RoleValidationService;
