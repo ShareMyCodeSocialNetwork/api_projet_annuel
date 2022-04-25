@@ -1,11 +1,14 @@
 package com.esgi.api_project_annuel.application.command;
 
+import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.Role;
 import com.esgi.api_project_annuel.Domain.repository.RoleRepository;
 import com.esgi.api_project_annuel.application.validation.RoleValidationService;
 import com.esgi.api_project_annuel.web.request.RoleRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class RoleCommand {
@@ -31,4 +34,12 @@ public class RoleCommand {
         roleRepository.delete(roleRepository.findById(id));
     }
 
+    public Role changeName(RoleRequest roleRequest, int roleId) {
+        Optional<Role> dbRole = Optional.ofNullable(roleRepository.findById(roleId));
+        if(dbRole.isPresent()){
+            dbRole.get().setName(roleRequest.name);
+            return roleRepository.save(dbRole.get());
+        }
+        return null;
+    }
 }
