@@ -13,7 +13,7 @@ public class GroupValidationService {
 
     @JsonIgnore
     public boolean isValid(Group group) {
-        return (!group.getGroupName().isBlank() );
+        return (!group.getName().isBlank() );
     }
 
     //TODO ADD CONDITION GROUP CONTAINS AT LEAST A MEMEBER
