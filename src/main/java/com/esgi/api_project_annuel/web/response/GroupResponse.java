@@ -4,9 +4,7 @@ public class GroupResponse {
     public int id;
     public String name;
 
-    public GroupResponse(int id, String name) {
-        this.id = id;
-        this.name = name;
+    public GroupResponse() {
     }
 
     public int getId() {
