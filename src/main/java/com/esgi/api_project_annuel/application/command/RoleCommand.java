@@ -7,6 +7,8 @@ import com.esgi.api_project_annuel.web.request.RoleRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class RoleCommand {
     @Autowired
@@ -31,4 +33,12 @@ public class RoleCommand {
         roleRepository.delete(roleRepository.findById(id));
     }
 
+    public Role changeName(RoleRequest roleRequest, int roleId) {
+        Optional<Role> dbRole = Optional.ofNullable(roleRepository.findById(roleId));
+        if(dbRole.isPresent()){
+            dbRole.get().setName(roleRequest.name);
+            return roleRepository.save(dbRole.get());
+        }
+        return null;
+    }
 }
