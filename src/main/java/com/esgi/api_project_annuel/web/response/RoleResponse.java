@@ -1,13 +1,10 @@
 package com.esgi.api_project_annuel.web.response;
 
 public class RoleResponse {
-    int id;
-    String name;
+    public int id;
+    public String name;
 
-    public RoleResponse(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    public RoleResponse() {}
 
     public int getId() {
         return id;
