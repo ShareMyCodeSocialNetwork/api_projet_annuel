@@ -7,12 +7,7 @@ public class UserResponse {
     String email;
     String profilePicture;
 
-    public UserResponse(int id, String lastname, String firstname, String email, String profilePicture) {
-        this.id = id;
-        this.lastname = lastname;
-        this.firstname = firstname;
-        this.email = email;
-        this.profilePicture = profilePicture;
+    public UserResponse() {
     }
 
     public int getId() {

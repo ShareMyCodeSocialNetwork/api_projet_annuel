@@ -8,11 +8,15 @@ import com.esgi.api_project_annuel.application.command.UserCommand;
 import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import com.esgi.api_project_annuel.web.request.UserRequest;
+import com.esgi.api_project_annuel.web.response.PostResponse;
+import com.esgi.api_project_annuel.web.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -224,5 +228,25 @@ public class UserController {
                 HttpStatus.ACCEPTED
         );
 
+    }
+
+
+
+
+
+//todo a prendre en compte dans les routes au dessus
+    private UserResponse userToUserResponse(User user){
+        return new UserResponse()
+                .setId(user.getId())
+                .setFirstname(user.getFirstname())
+                .setEmail(user.getEmail())
+                .setLastname(user.getLastname())
+                .setProfilePicture(user.getProfilePicture());
+    }
+
+    private List<UserResponse> listUserToListUserResponse(List<User> users){
+        List<UserResponse> userResponses = new ArrayList<>();
+        users.forEach(user -> userResponses.add(userToUserResponse(user)));
+        return userResponses;
     }
 }
