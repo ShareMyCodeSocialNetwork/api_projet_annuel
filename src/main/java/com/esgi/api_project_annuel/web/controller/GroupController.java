@@ -31,7 +31,7 @@ public class GroupController {
     @Autowired
     private final GroupQuery groupQuery;
 
-
+//todo test all
     public GroupController(GroupCommand groupCommand, GroupQuery demandQuery){
         this.groupCommand = groupCommand;
         this.groupQuery = demandQuery;

@@ -28,7 +28,7 @@ public class RoleController {
         this.roleQuery = roleQuery;
     }
 
-
+//todo test all
     @RequestMapping("/create")
     public ResponseEntity<RoleResponse> addRole(@RequestBody RoleRequest roleRequest){
         var role = roleCommand.create(roleRequest);
