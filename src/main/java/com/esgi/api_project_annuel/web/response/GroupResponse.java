@@ -1,10 +1,10 @@
 package com.esgi.api_project_annuel.web.response;
 
-public class GroupeResponse {
+public class GroupResponse {
     public int id;
     public String name;
 
-    public GroupeResponse(int id, String name) {
+    public GroupResponse(int id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -13,7 +13,7 @@ public class GroupeResponse {
         return id;
     }
 
-    public GroupeResponse setId(int id) {
+    public GroupResponse setId(int id) {
         this.id = id;
         return this;
     }
@@ -22,7 +22,7 @@ public class GroupeResponse {
         return name;
     }
 
-    public GroupeResponse setName(String name) {
+    public GroupResponse setName(String name) {
         this.name = name;
         return this;
     }
