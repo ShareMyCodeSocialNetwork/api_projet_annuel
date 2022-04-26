@@ -64,6 +64,18 @@ public class GroupController {
         );
     }
 
+    @PatchMapping("/{groupId}")
+    public ResponseEntity<GroupResponse> changeName(@PathVariable int groupId, @RequestBody GroupRequest groupRequest) {
+        var group = groupQuery.getById(groupId);
+        if(group == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(
+                groupToGroupResponse(
+                        groupCommand.changeName(groupId, groupRequest)
+                ),
+                HttpStatus.OK
+        );
+    }
 
 
     @PutMapping("/{groupId}")
