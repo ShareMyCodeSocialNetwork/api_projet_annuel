@@ -8,7 +8,6 @@ import com.esgi.api_project_annuel.application.command.UserCommand;
 import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import com.esgi.api_project_annuel.web.request.UserRequest;
-import com.esgi.api_project_annuel.web.response.PostResponse;
 import com.esgi.api_project_annuel.web.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,18 +29,11 @@ public class UserController {
     @Autowired
     private final UserQuery userQuery;
 
-    @Autowired
-    PostCommand postCommand;
-
-    @Autowired
-    CommentCommand commentCommand;
-
     private final UserValidationService userValidationService = new UserValidationService();
 
-    public UserController(UserCommand userCommand, UserQuery userQuery, PostCommand postCommand){
+    public UserController(UserCommand userCommand, UserQuery userQuery){
         this.userCommand = userCommand;
         this.userQuery = userQuery;
-        this.postCommand = postCommand;
     }
 
     @PostMapping("/create")
@@ -220,8 +212,6 @@ public class UserController {
                     "User " + userId + " not exist",
                     HttpStatus.BAD_REQUEST
             );
-        commentCommand.deleteAllUserComments(user);
-        postCommand.deleteAllUserPosts(user);
         userCommand.delete(userId);
         return new ResponseEntity<>(
                 "User " + userId + " deleted",

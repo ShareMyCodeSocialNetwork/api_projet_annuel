@@ -14,6 +14,12 @@ public class UserCommand {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    PostCommand postCommand;
+
+    @Autowired
+    CommentCommand commentCommand;
+
     UserValidationService userValidationService = new UserValidationService();
 
 
@@ -79,8 +85,12 @@ public class UserCommand {
 
     public void delete(int userId) {
         Optional<User> userFromDb = Optional.ofNullable(userRepository.findById(userId));
-        userFromDb.ifPresent(user ->
-                userRepository.delete(user)
+        userFromDb.ifPresent(user ->{
+                    commentCommand.deleteAllUserComments(user);
+                    postCommand.deleteAllUserPosts(user);
+                    userRepository.delete(user);
+                }
+
         );
     }
 
