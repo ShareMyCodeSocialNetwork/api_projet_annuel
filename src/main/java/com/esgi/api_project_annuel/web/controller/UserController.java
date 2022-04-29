@@ -2,8 +2,6 @@ package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
-import com.esgi.api_project_annuel.application.command.CommentCommand;
-import com.esgi.api_project_annuel.application.command.PostCommand;
 import com.esgi.api_project_annuel.application.command.UserCommand;
 import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
@@ -29,133 +27,64 @@ public class UserController {
     @Autowired
     private final UserQuery userQuery;
 
-    private final UserValidationService userValidationService = new UserValidationService();
-
     public UserController(UserCommand userCommand, UserQuery userQuery){
         this.userCommand = userCommand;
         this.userQuery = userQuery;
     }
 
     @PostMapping("/create")
-    public  ResponseEntity<?> addUser(@RequestBody UserRequest userRequest) {
-        String password = userRequest.password;
-        String email = userRequest.email;
-        String firstname = userRequest.firstname;
-        String lastname = userRequest.lastname;
-        String profilePicture = userRequest.profilePicture;
-
-        if(password == null || email == null || profilePicture == null || lastname == null || firstname == null ||
-        password.equals("") || email.equals("") || profilePicture.equals("") || lastname.equals("") || firstname.equals(""))
-            return new ResponseEntity<>("Missing properties", HttpStatus.BAD_REQUEST);
-
-        if(userQuery.userEmailExist(userRequest.email))
-            return new ResponseEntity<>("Email already taken", HttpStatus.BAD_REQUEST);
-
-        var user = new User();
-        user.setFirstname(firstname);
-        user.setPassword(password);
-        user.setProfilePicture(profilePicture);
-        user.setLastname(lastname);
-        user.setEmail(email);
-
-        if(!userValidationService.isUserValid(user))
-            return new ResponseEntity<>("User not created, invalid properties",HttpStatus.BAD_REQUEST);
+    public  ResponseEntity<UserResponse> addUser(@RequestBody UserRequest userRequest) {
+        if(userQuery.userEmailExist(userRequest.email)) //Email Already taken
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         var createdUser = userCommand.create(userRequest);
-        return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+        if(createdUser == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userToUserResponse(createdUser), HttpStatus.CREATED);
     }
 
 
 
     @GetMapping(value = "/", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
-    public ResponseEntity<?> getUserAll(){
-        Iterable<User> userAll = userQuery.getAll();
-        try {
-            return new ResponseEntity<>(userAll, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("user recovery error",HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<List<UserResponse>> getUserAll(){
+        return new ResponseEntity<>(
+                listUserToListUserResponse(userQuery.getAll()),
+                HttpStatus.OK);
     }
-
-
 
     @GetMapping(value = "/{userId}", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
-    public ResponseEntity<?> getUserById(@PathVariable int userId) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable int userId) {
         var user = userQuery.getById(userId);
-        if (user != null && userId > 0)
-            return new ResponseEntity<>(user, HttpStatus.OK);
-        return new ResponseEntity<>("Id not found",HttpStatus.NOT_FOUND);
+        if(user == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userToUserResponse(
+                user),
+                HttpStatus.OK
+        );
     }
-
-
-
 
     @GetMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserRequest userRequest){
-        if(userRequest.email == null || userRequest.password == null)
-            return new ResponseEntity<>("Invalid properties", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<UserResponse> login(@RequestBody UserRequest userRequest){
         var user = userQuery.getByEmailAndPassword(userRequest.email, userRequest.password);
         if(user == null)
-            return new ResponseEntity<>("Invalid email or password", HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userToUserResponse(user), HttpStatus.OK);
     }
-
-
-    @GetMapping("/{userId}/posts")
-    public ResponseEntity<?> getPostByUserId(@PathVariable int userId){
-        var user = userQuery.getById(userId);
-        if(user == null)
-            return new ResponseEntity<>("User not exist", HttpStatus.BAD_REQUEST);
-        else{
-            List<Post> userPosts = userQuery.getPosts(user);
-            return new ResponseEntity<>(userPosts, HttpStatus.OK);
-        }
-    }
-
-
-
 
     @PatchMapping("/password/{userId}")
-    public ResponseEntity<?> changePassword(@PathVariable int userId, @RequestBody UserRequest userRequest){
-        String password = userRequest.password;
-
-        if(password == null || password.equals(""))
-            return new ResponseEntity<>("Missing properties", HttpStatus.BAD_REQUEST);
-
-        var user = userQuery.getById(userId);
-        if(user == null)
-            return new ResponseEntity<>("User not exist", HttpStatus.BAD_REQUEST);
-
-        var userNewPassword = userCommand.changePassword(userId, password);
+    public ResponseEntity<UserResponse> changePassword(@PathVariable int userId, @RequestBody UserRequest userRequest){
+        var userNewPassword = userCommand.changePassword(userId, userRequest);
         if(userNewPassword == null)
-            return new ResponseEntity<>("Invalid User", HttpStatus.BAD_REQUEST);
-
-        return new ResponseEntity<>(userNewPassword, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userToUserResponse(userNewPassword), HttpStatus.OK);
     }
 
-
-
-
     @PatchMapping("/email/{userId}")
-    public ResponseEntity<?> changeEmail(@PathVariable int userId, @RequestBody UserRequest userRequest){
-
-        String email = userRequest.email;
-        if(Objects.equals(email, "") || email == null)
-            return new ResponseEntity<>("Missing properties", HttpStatus.BAD_REQUEST);
-
-        var user = userQuery.getById(userId);
+    public ResponseEntity<UserResponse> changeEmail(@PathVariable int userId, @RequestBody UserRequest userRequest){
+        var user = userCommand.changeEmail(userId, userRequest);
         if(user == null)
-            return new ResponseEntity<>("User not exist", HttpStatus.BAD_REQUEST);
-
-        if(userQuery.userEmailExist(email))
-            return new ResponseEntity<>("Email already taken", HttpStatus.BAD_REQUEST);
-
-        user.setEmail(email);
-        if(!userValidationService.isUserValid(user))
-            return new ResponseEntity<>("Invalid user's properties", HttpStatus.BAD_REQUEST);
-
-        var changedUserEmail = userCommand.changeEmail(userId, userRequest);
-        return new ResponseEntity<>(changedUserEmail, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userToUserResponse(user), HttpStatus.OK);
 
     }
 
@@ -163,44 +92,22 @@ public class UserController {
 
 
     @PatchMapping("/lastname/{userId}")
-    public ResponseEntity<?> changeLastname(@PathVariable int userId, @RequestBody UserRequest userRequest){
-        String lastname = userRequest.lastname;
-
-        if(Objects.equals(lastname, "") || lastname == null)
-            return new ResponseEntity<>("Missing properties", HttpStatus.BAD_REQUEST);
-
-        var user = userQuery.getById(userId);
+    public ResponseEntity<UserResponse> changeLastname(@PathVariable int userId, @RequestBody UserRequest userRequest){
+        var user = userCommand.changeLastname(userId, userRequest);
         if(user == null)
-            return new ResponseEntity<>("User not exist", HttpStatus.BAD_REQUEST);
-
-        user.setLastname(lastname);
-        if(!userValidationService.isUserValid(user))
-            return new ResponseEntity<>("Invalid user's properties", HttpStatus.BAD_REQUEST);
-
-        var changedLastnameUser = userCommand.changeLastname(userId,userRequest);
-        return new ResponseEntity<>(changedLastnameUser, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userToUserResponse(user), HttpStatus.OK);
     }
 
 
 
 
     @PatchMapping("/firstname/{userId}")
-    public ResponseEntity<?> changeFirstname(@PathVariable int userId, @RequestBody UserRequest userRequest){
-        String firstname = userRequest.firstname;
-
-        if(Objects.equals(firstname, "") || firstname == null)
-            return new ResponseEntity<>("Missing properties", HttpStatus.BAD_REQUEST);
-
-        var user = userQuery.getById(userId);
+    public ResponseEntity<UserResponse> changeFirstname(@PathVariable int userId, @RequestBody UserRequest userRequest){
+        var user = userCommand.changeFirstname(userId, userRequest);
         if(user == null)
-            return new ResponseEntity<>("User not exist", HttpStatus.BAD_REQUEST);
-
-        user.setFirstname(firstname);
-        if(!userValidationService.isUserValid(user))
-            return new ResponseEntity<>("Invalid user's properties", HttpStatus.BAD_REQUEST);
-
-        var changedFirstnameUser = userCommand.changeFirstname(userId,userRequest);
-        return new ResponseEntity<>(changedFirstnameUser, HttpStatus.OK);
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userToUserResponse(user), HttpStatus.OK);
     }
 
 
@@ -223,8 +130,6 @@ public class UserController {
 
 
 
-
-//todo a prendre en compte dans les routes au dessus
     private UserResponse userToUserResponse(User user){
         return new UserResponse()
                 .setId(user.getId())

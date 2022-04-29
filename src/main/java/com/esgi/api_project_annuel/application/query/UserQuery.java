@@ -30,10 +30,6 @@ public class UserQuery {
         return userRepository.findById(userId);
     }
 
-    public List<Post> getPosts(User user) {
-        return postRepository.findByUser(user);
-    }
-
     public Boolean userEmailExist(String mail){
         return userRepository.findByEmail(mail) != null;
     }

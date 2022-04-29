@@ -32,18 +32,17 @@ public class UserCommand {
         user.setProfilePicture(
                 Objects.requireNonNullElse(userRequest.profilePicture, "default_profile_picture")
         );
-        if (!userValidationService.isUserValid(user)){
-            throw new RuntimeException("Invalid user properties");
-        }
+        if (!userValidationService.isUserValid(user))
+            return null;
         return userRepository.save(user);
     }
 
 
-    public User changePassword(int userId, String password){
+    public User changePassword(int userId, UserRequest userRequest){
         Optional<User> dbUser = Optional.ofNullable(userRepository.findById(userId));
         if(dbUser.isPresent()){
             var user = dbUser.get();
-            user.setPassword(password);
+            user.setPassword(userRequest.password);
             if(userValidationService.isUserValid(user))
                 return userRepository.save(user);
         }
