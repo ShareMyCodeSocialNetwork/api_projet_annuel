@@ -28,7 +28,6 @@ public class RoleController {
         this.roleQuery = roleQuery;
     }
 
-//todo test all
     @RequestMapping("/create")
     public ResponseEntity<RoleResponse> addRole(@RequestBody RoleRequest roleRequest){
         var role = roleCommand.create(roleRequest);
@@ -44,6 +43,7 @@ public class RoleController {
                 HttpStatus.OK);
     }
 
+    //to test
     @GetMapping("/{roleId}")
     public ResponseEntity<RoleResponse> getRoleById(@PathVariable int roleId){
         var role = roleQuery.getById(roleId);
@@ -55,12 +55,12 @@ public class RoleController {
         );
     }
 
-    @GetMapping("/{roleName}")
-    public ResponseEntity<RoleResponse> getRoleByName(@PathVariable String roleName){
+    @GetMapping("/name/{roleName}")
+    public ResponseEntity<List<RoleResponse>> getRoleByName(@PathVariable String roleName){
         var role = roleQuery.getByName(roleName);
         if(role == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(roleToRoleResponse(
+        return new ResponseEntity<>(listRoleToListRoleResponse(
                 role),
                 HttpStatus.OK
         );
