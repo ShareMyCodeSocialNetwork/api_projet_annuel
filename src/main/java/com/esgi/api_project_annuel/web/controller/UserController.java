@@ -1,10 +1,8 @@
 package com.esgi.api_project_annuel.web.controller;
 
-import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.application.command.UserCommand;
 import com.esgi.api_project_annuel.application.query.UserQuery;
-import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import com.esgi.api_project_annuel.web.request.UserRequest;
 import com.esgi.api_project_annuel.web.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
