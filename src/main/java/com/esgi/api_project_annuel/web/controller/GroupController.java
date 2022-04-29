@@ -3,20 +3,16 @@ package com.esgi.api_project_annuel.web.controller;
 
 
 import com.esgi.api_project_annuel.Domain.entities.Group;
-import com.esgi.api_project_annuel.Domain.entities.Role;
 import com.esgi.api_project_annuel.application.command.GroupCommand;
 import com.esgi.api_project_annuel.application.query.GroupQuery;
-import com.esgi.api_project_annuel.application.validation.GroupValidationService;
 import com.esgi.api_project_annuel.web.request.GroupRequest;
 import com.esgi.api_project_annuel.web.response.GroupResponse;
-import com.esgi.api_project_annuel.web.response.RoleResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.InvalidObjectException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +47,17 @@ public class GroupController {
         return new ResponseEntity<>(
                 listGroupToListGroupResponse(groupQuery.getAll()),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/name/{groupName}")
+    public ResponseEntity<List<GroupResponse>> getRoleByName(@PathVariable String groupName){
+        var groups = groupQuery.getByName(groupName);
+        if(groups == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(listGroupToListGroupResponse(
+                groups),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/{groupId}")
