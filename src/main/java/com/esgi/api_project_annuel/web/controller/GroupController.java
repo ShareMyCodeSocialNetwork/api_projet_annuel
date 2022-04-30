@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/group")
 public class GroupController {
@@ -27,7 +27,6 @@ public class GroupController {
     @Autowired
     private final GroupQuery groupQuery;
 
-//todo test all
     public GroupController(GroupCommand groupCommand, GroupQuery demandQuery){
         this.groupCommand = groupCommand;
         this.groupQuery = demandQuery;
