@@ -1,4 +1,5 @@
 package com.esgi.api_project_annuel.application.command;
+import com.esgi.api_project_annuel.Domain.entities.Follow;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
@@ -13,12 +14,12 @@ public class UserCommand {
 
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     PostCommand postCommand;
-
     @Autowired
     CommentCommand commentCommand;
+    @Autowired
+    FollowCommand followCommand;
 
     UserValidationService userValidationService = new UserValidationService();
 
@@ -87,6 +88,8 @@ public class UserCommand {
         userFromDb.ifPresent(user ->{
                     commentCommand.deleteAllUserComments(user);
                     postCommand.deleteAllUserPosts(user);
+                    followCommand.deleteAllByFollowed(user);
+                    followCommand.deleteAllByFollower(user);
                     userRepository.delete(user);
                 }
 
