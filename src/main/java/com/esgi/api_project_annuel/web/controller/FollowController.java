@@ -45,7 +45,7 @@ public class FollowController {
 
     }
 
-    //todo  A FINIR TOUT CE QUI EST EN DESSOUS
+
     @GetMapping(value = "/", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
     public ResponseEntity<List<FollowResponse>> getFollowAll(){
         return new ResponseEntity<>(
@@ -94,7 +94,7 @@ public class FollowController {
                     "Role " + followId + " not exist",
                     HttpStatus.BAD_REQUEST
             );
-        followCommand.delete(followId);
+        followCommand.deleteById(followId);
         return new ResponseEntity<>(
                 "follow " + followId + " deleted",
                 HttpStatus.NO_CONTENT
