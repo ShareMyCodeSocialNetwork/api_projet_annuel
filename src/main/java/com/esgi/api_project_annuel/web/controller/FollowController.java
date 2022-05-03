@@ -33,7 +33,6 @@ public class FollowController {
         this.followQuery = demandQuery;
     }
 
-    //todo, to test
     @PostMapping("/create")
     public ResponseEntity<FollowResponse> addFollow(@RequestBody FollowRequest followRequest) {
         var follower = userQuery.getById(followRequest.followerUserId);
@@ -53,7 +52,7 @@ public class FollowController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/followers/{followedId}")
+    @GetMapping("/followed/{followedId}")
     public ResponseEntity<List<FollowResponse>> getFollowers(@PathVariable int followedId){
         var followers = followQuery.getAllByFollowedUser(userQuery.getById(followedId));
         if(followers == null)
@@ -64,7 +63,7 @@ public class FollowController {
         );
     }
 
-    @GetMapping("/followed/{followerId}")
+    @GetMapping("/follower/{followerId}")
     public ResponseEntity<List<FollowResponse>> getFollowed(@PathVariable int followerId){
         var followed = followQuery.getAllByFollowerUser(userQuery.getById(followerId));
         if(followed == null)
@@ -105,6 +104,7 @@ public class FollowController {
 
     private FollowResponse followToFollowResponse(Follow follow){
         return new FollowResponse()
+                .setId(follow.getId())
                 .setFollowed(follow.getFollowedUser())
                 .setFollower(follow.getFollowerUser());
     }

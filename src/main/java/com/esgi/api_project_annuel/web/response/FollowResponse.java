@@ -3,6 +3,7 @@ package com.esgi.api_project_annuel.web.response;
 import com.esgi.api_project_annuel.Domain.entities.User;
 
 public class FollowResponse {
+    int id;
     public User follower;
     public User followed;
 
@@ -23,6 +24,15 @@ public class FollowResponse {
 
     public FollowResponse setFollowed(User followed) {
         this.followed = followed;
+        return this;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public FollowResponse setId(int id) {
+        this.id = id;
         return this;
     }
 }
