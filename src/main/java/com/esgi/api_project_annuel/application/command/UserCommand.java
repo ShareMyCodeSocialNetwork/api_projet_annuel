@@ -87,6 +87,18 @@ public class UserCommand {
         return null;
     }
 
+    public User changePseudo(int userId, UserRequest userRequest){
+        Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
+        if(userFromDB.isPresent()){
+            var user = userFromDB.get();
+            user.setEmail(userRequest.pseudo);
+            if(userValidationService.isUserValid(user))
+                if(!userQuery.userPseudoExist(user.getEmail()))
+                    return userRepository.save(user);
+        }
+        return null;
+    }
+
     public void delete(int userId) {
         Optional<User> userFromDb = Optional.ofNullable(userRepository.findById(userId));
         userFromDb.ifPresent(user ->{

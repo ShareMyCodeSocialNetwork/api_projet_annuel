@@ -5,6 +5,7 @@ public class UserResponse {
     String lastname;
     String firstname;
     String email;
+    String pseudo;
     String profilePicture;
 
     public UserResponse() {
@@ -43,6 +44,15 @@ public class UserResponse {
 
     public UserResponse setEmail(String email) {
         this.email = email;
+        return this;
+    }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public UserResponse setPseudo(String pseudo) {
+        this.pseudo = pseudo;
         return this;
     }
 

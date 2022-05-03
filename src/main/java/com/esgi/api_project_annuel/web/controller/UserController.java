@@ -85,6 +85,15 @@ public class UserController {
 
     }
 
+    @PatchMapping("/pseudo/{userId}")
+    public ResponseEntity<UserResponse> changePseudo(@PathVariable int userId, @RequestBody UserRequest userRequest){
+        var user = userCommand.changePseudo(userId, userRequest);
+        if(user == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userToUserResponse(user), HttpStatus.OK);
+
+    }
+
 
 
 
@@ -133,6 +142,7 @@ public class UserController {
                 .setFirstname(user.getFirstname())
                 .setEmail(user.getEmail())
                 .setLastname(user.getLastname())
+                .setPseudo(user.getPseudo())
                 .setProfilePicture(user.getProfilePicture());
     }
 
