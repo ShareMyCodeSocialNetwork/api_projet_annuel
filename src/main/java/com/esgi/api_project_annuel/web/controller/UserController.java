@@ -31,7 +31,7 @@ public class UserController {
 
     @PostMapping("/create")
     public  ResponseEntity<UserResponse> addUser(@RequestBody UserRequest userRequest) {
-        if(userQuery.userEmailExist(userRequest.email)) //Email Already taken
+        if(userQuery.userEmailExist(userRequest.email) || userQuery.userPseudoExist(userRequest.pseudo))
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         var createdUser = userCommand.create(userRequest);

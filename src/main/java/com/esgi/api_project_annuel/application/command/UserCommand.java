@@ -33,6 +33,7 @@ public class UserCommand {
         user.setFirstname(userRequest.firstname);
         user.setLastname(userRequest.lastname);
         user.setPassword(userRequest.password);
+        user.setPseudo(userRequest.pseudo);
         user.setProfilePicture(
                 Objects.requireNonNullElse(userRequest.profilePicture, "default_profile_picture")
         );
@@ -91,9 +92,9 @@ public class UserCommand {
         Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
         if(userFromDB.isPresent()){
             var user = userFromDB.get();
-            user.setEmail(userRequest.pseudo);
+            user.setPseudo(userRequest.pseudo);
             if(userValidationService.isUserValid(user))
-                if(!userQuery.userPseudoExist(user.getEmail()))
+                if(!userQuery.userPseudoExist(user.getPseudo()))
                     return userRepository.save(user);
         }
         return null;
