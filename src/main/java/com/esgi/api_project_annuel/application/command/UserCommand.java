@@ -1,7 +1,7 @@
 package com.esgi.api_project_annuel.application.command;
-import com.esgi.api_project_annuel.Domain.entities.Follow;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
+import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import com.esgi.api_project_annuel.web.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,9 @@ public class UserCommand {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserQuery userQuery;
     @Autowired
     PostCommand postCommand;
     @Autowired
@@ -78,7 +81,8 @@ public class UserCommand {
             var user = userFromDB.get();
             user.setEmail(userRequest.email);
             if(userValidationService.isUserValid(user))
-                return userRepository.save(user);
+                if(!userQuery.userEmailExist(user.getEmail()))
+                    return userRepository.save(user);
         }
         return null;
     }
