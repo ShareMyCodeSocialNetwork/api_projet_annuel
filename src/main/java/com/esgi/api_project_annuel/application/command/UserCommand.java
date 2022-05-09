@@ -23,6 +23,8 @@ public class UserCommand {
     CommentCommand commentCommand;
     @Autowired
     FollowCommand followCommand;
+    @Autowired
+    UserRoleGroupCommand userRoleGroupCommand;
 
     UserValidationService userValidationService = new UserValidationService();
 
@@ -107,6 +109,7 @@ public class UserCommand {
                     postCommand.deleteAllUserPosts(user);
                     followCommand.deleteAllByFollowed(user);
                     followCommand.deleteAllByFollower(user);
+                    userRoleGroupCommand.deleteAllByUser(user);
                     userRepository.delete(user);
                 }
 

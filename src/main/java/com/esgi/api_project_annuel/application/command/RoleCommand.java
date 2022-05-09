@@ -13,6 +13,8 @@ import java.util.Optional;
 public class RoleCommand {
     @Autowired
     RoleRepository roleRepository;
+    @Autowired
+    UserRoleGroupCommand userRoleGroupCommand;
 
     RoleValidationService roleValidationService = new RoleValidationService();
 
@@ -30,7 +32,9 @@ public class RoleCommand {
 
 
     public void delete(int id){
-        roleRepository.delete(roleRepository.findById(id));
+        var role = roleRepository.findById(id);
+        userRoleGroupCommand.deleteAllByRole(role);
+        roleRepository.delete(role);
     }
 
     public Role changeName(RoleRequest roleRequest, int roleId) {
