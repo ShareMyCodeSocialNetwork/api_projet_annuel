@@ -19,6 +19,8 @@ public class UserRoleGroupCommand {
     RoleQuery roleQuery;
 
     UserRoleGroupValidationService userRoleGroupValidationService = new UserRoleGroupValidationService();
+
+    //todo verifier que lutilisateur n est pas deja dans le group qu il veut rejoindre
     public UserRoleGroup create(UserRoleGroupRequest userRoleGroupRequest, User user, Role role, Group group){
         UserRoleGroup userRoleGroup = new UserRoleGroup();
         userRoleGroup.setUser(user);
@@ -55,16 +57,34 @@ public class UserRoleGroupCommand {
 
     public void deleteAllByUser(User user){
         var userRoleGroups = userRoleGroupRepository.findAllByUser(user);
-        userRoleGroupRepository.deleteAll(userRoleGroups);
+        userRoleGroups.forEach(userRoleGroup -> {
+            userRoleGroup.setGroup(null);
+            userRoleGroup.setRole(null);
+            userRoleGroup.setUser(null);
+            userRoleGroupRepository.save(userRoleGroup);
+            userRoleGroupRepository.delete(userRoleGroup);
+        });
     }
 
     public void deleteAllByGroup(Group group){
         var userRoleGroups = userRoleGroupRepository.findAllByGroup(group);
-        userRoleGroupRepository.deleteAll(userRoleGroups);
+        userRoleGroups.forEach(userRoleGroup -> {
+            userRoleGroup.setGroup(null);
+            userRoleGroup.setRole(null);
+            userRoleGroup.setUser(null);
+            userRoleGroupRepository.save(userRoleGroup);
+            userRoleGroupRepository.delete(userRoleGroup);
+        });
     }
 
     public void deleteAllByRole(Role role){
         var userRoleGroups = userRoleGroupRepository.findAllByRole(role);
-        userRoleGroupRepository.deleteAll(userRoleGroups);
+        userRoleGroups.forEach(userRoleGroup -> {
+            userRoleGroup.setGroup(null);
+            userRoleGroup.setRole(null);
+            userRoleGroup.setUser(null);
+            userRoleGroupRepository.save(userRoleGroup);
+            userRoleGroupRepository.delete(userRoleGroup);
+        });
     }
 }
