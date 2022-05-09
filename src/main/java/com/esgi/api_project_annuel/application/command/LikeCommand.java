@@ -20,6 +20,7 @@ public class LikeCommand {
     LikeValidationService likeValidationService = new LikeValidationService();
 
     //user like a post
+    //todo verifier que lutilisateur n a pas deja liker le post
    public Like create(LikeRequest likeRequest, User user, Post post){
         Like like = new Like();
         like.setUser(user);
