@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface UserRoleGroupRepository extends JpaRepository<UserRoleGroup, Integer> {
-    UserRoleGroup findById(long id);
+    UserRoleGroup findById(int id);
 
     UserRoleGroup findByGroupAndUser(Group group, User user);
 
