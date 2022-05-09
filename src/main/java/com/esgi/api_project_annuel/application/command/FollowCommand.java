@@ -20,6 +20,7 @@ public class FollowCommand {
 
     FollowValidationService followValidationService = new FollowValidationService();
 
+    //todo verifier que lutilisateur ne sui spas deja la personne quil veux suivre
     public Follow create(User followed, User follower){
         Follow follow = new Follow();
         follow.setFollowedUser(followed);
