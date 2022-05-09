@@ -74,7 +74,7 @@ public class RoleController {
         return new ResponseEntity<>(roleToRoleResponse(role), HttpStatus.OK);
     }
 
-    //todo: quand userrolegroup sera fait, a prendre ne compte les liens de ce role dans les autres tables
+
     @DeleteMapping("/{roleId}")
     public ResponseEntity<?> deleteRole(@PathVariable int roleId){
         var role = roleQuery.getById(roleId);

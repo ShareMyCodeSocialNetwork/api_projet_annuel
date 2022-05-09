@@ -63,7 +63,6 @@ public class CommentController {
         );
     }
 
-    //todo to test
     @PatchMapping("/{commentId}")
     public ResponseEntity<CommentResponse> changeContent(@PathVariable int commentId, @RequestBody CommentRequest commentRequest){
         var comment = commentQuery.getById(commentId);

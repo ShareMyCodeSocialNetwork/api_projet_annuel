@@ -93,7 +93,6 @@ public class GroupController {
     }
 
 
-    //todo: quand userrolegroup sera fait, a prendre ne compte les liens de ce group dans les autres tables
     @DeleteMapping("/{groupId}")
     public ResponseEntity<String> deleteGroup(@PathVariable int groupId) {
         var group = groupQuery.getById(groupId);
