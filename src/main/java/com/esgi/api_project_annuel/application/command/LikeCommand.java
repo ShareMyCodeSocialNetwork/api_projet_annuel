@@ -20,14 +20,15 @@ public class LikeCommand {
     LikeValidationService likeValidationService = new LikeValidationService();
 
     //user like a post
-    //todo verifier que lutilisateur n a pas deja liker le post
    public Like create(LikeRequest likeRequest, User user, Post post){
         Like like = new Like();
         like.setUser(user);
         like.setPost(post);
-        if(!likeValidationService.isValid(like))
-            return null;
-        return likeRepository.save(like);
+        var checkLike = likeRepository.getLikeByUserAndPost(user, post);
+        if(checkLike == null)
+            if(likeValidationService.isValid(like))
+                return likeRepository.save(like);
+        return null;
     }
 
     //user unlike post
