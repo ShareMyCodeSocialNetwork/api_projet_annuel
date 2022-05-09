@@ -9,6 +9,8 @@ public class UserRoleGroupValidationService {
     private final RoleValidationService roleValidationService = new RoleValidationService();
 
     public boolean isValid(UserRoleGroup userRoleGroup){
+        if(userRoleGroup.getGroup() == null || userRoleGroup.getRole() == null || userRoleGroup.getUser() == null)
+            return false;
         return userValidationService.isUserValid(userRoleGroup.getUser()) &&
                 groupValidationService.isValid(userRoleGroup.getGroup()) &&
                 roleValidationService.isValid(userRoleGroup.getRole());
