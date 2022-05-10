@@ -1,6 +1,5 @@
 package com.esgi.api_project_annuel.application.query;
 
-import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.PostRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
@@ -30,12 +29,12 @@ public class UserQuery {
         return userRepository.findById(userId);
     }
 
-    public List<Post> getPosts(User user) {
-        return postRepository.findByUser(user);
-    }
-
     public Boolean userEmailExist(String mail){
         return userRepository.findByEmail(mail) != null;
+    }
+
+    public Boolean userPseudoExist(String pseudo){
+        return userRepository.findByPseudo(pseudo) != null;
     }
 
     public User getByEmailAndPassword(String email, String password){

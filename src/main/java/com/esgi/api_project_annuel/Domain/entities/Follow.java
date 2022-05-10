@@ -18,10 +18,10 @@ public class Follow {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "follower_user_id")
-    private User followerUserId;
+    private User followerUser;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "followed_user_id")
-    private User followedUserId;
+    private User followedUser;
 
 }

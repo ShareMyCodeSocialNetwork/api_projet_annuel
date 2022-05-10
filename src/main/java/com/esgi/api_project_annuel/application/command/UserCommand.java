@@ -1,6 +1,7 @@
 package com.esgi.api_project_annuel.application.command;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
+import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import com.esgi.api_project_annuel.web.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,17 @@ public class UserCommand {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    UserQuery userQuery;
+    @Autowired
+    PostCommand postCommand;
+    @Autowired
+    CommentCommand commentCommand;
+    @Autowired
+    FollowCommand followCommand;
+    @Autowired
+    UserRoleGroupCommand userRoleGroupCommand;
+
     UserValidationService userValidationService = new UserValidationService();
 
 
@@ -23,21 +35,21 @@ public class UserCommand {
         user.setFirstname(userRequest.firstname);
         user.setLastname(userRequest.lastname);
         user.setPassword(userRequest.password);
+        user.setPseudo(userRequest.pseudo);
         user.setProfilePicture(
                 Objects.requireNonNullElse(userRequest.profilePicture, "default_profile_picture")
         );
-        if (!userValidationService.isUserValid(user)){
-            throw new RuntimeException("Invalid user properties");
-        }
+        if (!userValidationService.isUserValid(user))
+            return null;
         return userRepository.save(user);
     }
 
 
-    public User changePassword(int userId, String password){
+    public User changePassword(int userId, UserRequest userRequest){
         Optional<User> dbUser = Optional.ofNullable(userRepository.findById(userId));
         if(dbUser.isPresent()){
             var user = dbUser.get();
-            user.setPassword(password);
+            user.setPassword(userRequest.password);
             if(userValidationService.isUserValid(user))
                 return userRepository.save(user);
         }
@@ -72,15 +84,35 @@ public class UserCommand {
             var user = userFromDB.get();
             user.setEmail(userRequest.email);
             if(userValidationService.isUserValid(user))
-                return userRepository.save(user);
+                if(!userQuery.userEmailExist(user.getEmail()))
+                    return userRepository.save(user);
+        }
+        return null;
+    }
+
+    public User changePseudo(int userId, UserRequest userRequest){
+        Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
+        if(userFromDB.isPresent()){
+            var user = userFromDB.get();
+            user.setPseudo(userRequest.pseudo);
+            if(userValidationService.isUserValid(user))
+                if(!userQuery.userPseudoExist(user.getPseudo()))
+                    return userRepository.save(user);
         }
         return null;
     }
 
     public void delete(int userId) {
         Optional<User> userFromDb = Optional.ofNullable(userRepository.findById(userId));
-        userFromDb.ifPresent(user ->
-                userRepository.delete(user)
+        userFromDb.ifPresent(user ->{
+                    commentCommand.deleteAllUserComments(user);
+                    postCommand.deleteAllUserPosts(user);
+                    followCommand.deleteAllByFollowed(user);
+                    followCommand.deleteAllByFollower(user);
+                    userRoleGroupCommand.deleteAllByUser(user);
+                    userRepository.delete(user);
+                }
+
         );
     }
 

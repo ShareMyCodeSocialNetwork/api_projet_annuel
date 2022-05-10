@@ -40,14 +40,14 @@ public class CommentCommand {
         return commentRepository.save(comment);
     }
 
-    public Comment changeContent(int commentId, String content){
+    public Comment changeContent(int commentId, CommentRequest commentRequest){
         Optional<Comment> dbComment = Optional.ofNullable(commentRepository.findById(commentId));
 
         if(dbComment.isEmpty())
             return null;
 
         var comment = new Comment();
-        comment.setContent(content);
+        comment.setContent(commentRequest.content);
         comment.setId(commentId);
 
         return commentRepository.save(comment);
