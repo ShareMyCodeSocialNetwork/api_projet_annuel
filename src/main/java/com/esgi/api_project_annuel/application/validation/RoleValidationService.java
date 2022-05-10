@@ -11,6 +11,8 @@ public class RoleValidationService {
 
     @JsonIgnore
     public boolean isValid(Role role){
+        if(role == null)
+            return false;
         return !Objects.equals(role.getName(), "") && !role.getName().isBlank();
     }
 }

@@ -8,6 +8,8 @@ public class LikeValidationService {
     UserValidationService userValidationService = new UserValidationService();
 
     public boolean isValid(Like like){
+        if(like == null)
+            return false;
         return postValidationService.isValid(like.getPost()) && userValidationService.isUserValid(like.getUser());
     }
 }
