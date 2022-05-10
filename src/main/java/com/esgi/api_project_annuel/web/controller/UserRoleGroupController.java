@@ -90,12 +90,12 @@ public class UserRoleGroupController {
         if(userRoleGroup == null)
             return new ResponseEntity<>(
                     "UserRoleGroup " + userRoleGroupId + " not exist",
-                    HttpStatus.OK
+                    HttpStatus.BAD_REQUEST
             );
         userRoleGroupCommand.delete(userRoleGroupId);
         return new ResponseEntity<>(
                 "UserRoleGroup " + userRoleGroupId + " deleted",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.OK
         );
     }
 
