@@ -5,12 +5,11 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-
 @Getter
 @Setter
 @Entity
-@Table(name = "code_share")
-public class Code {
+@Table(name = "collection_share")
+public class Collection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
@@ -19,19 +18,10 @@ public class Code {
     )
     private int id;
 
-    @Column(name = "content")
-    private String content;
+    @Column(name = "name")
+    private String name;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "language_id")
-    private Language language;
-
-    //todo a ajouter dans le reste de lapi ce lien
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
-    private Project project;
 }
