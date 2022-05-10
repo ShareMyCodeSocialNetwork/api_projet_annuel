@@ -20,15 +20,16 @@ public class UserRoleGroupCommand {
 
     UserRoleGroupValidationService userRoleGroupValidationService = new UserRoleGroupValidationService();
 
-    //todo verifier que lutilisateur n est pas deja dans le group qu il veut rejoindre
     public UserRoleGroup create(UserRoleGroupRequest userRoleGroupRequest, User user, Role role, Group group){
         UserRoleGroup userRoleGroup = new UserRoleGroup();
         userRoleGroup.setUser(user);
         userRoleGroup.setGroup(group);
         userRoleGroup.setRole(role);
-        if(!userRoleGroupValidationService.isValid(userRoleGroup))
-            return null;
-        return userRoleGroupRepository.save(userRoleGroup);
+        var userRoleGroupCheck = userRoleGroupRepository.findByGroupAndUser(group, user);
+        if(userRoleGroupCheck == null)
+            if(userRoleGroupValidationService.isValid(userRoleGroup))
+                return userRoleGroupRepository.save(userRoleGroup);
+        return null;
     }
 
 
