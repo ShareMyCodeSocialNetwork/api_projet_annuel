@@ -21,11 +21,6 @@ public class Project {
     @Column(name = "name")
     private String name;
 
-
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "collection_id")
-    private Collection collection;
-
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

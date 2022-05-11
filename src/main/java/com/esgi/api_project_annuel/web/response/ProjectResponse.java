@@ -1,12 +1,10 @@
 package com.esgi.api_project_annuel.web.response;
 
-import com.esgi.api_project_annuel.Domain.entities.Collection;
 import com.esgi.api_project_annuel.Domain.entities.User;
 
 public class ProjectResponse {
     public int id;
     public String name;
-    public Collection collection;
     public User user;
 
     public ProjectResponse() {
@@ -27,15 +25,6 @@ public class ProjectResponse {
 
     public ProjectResponse setName(String name) {
         this.name = name;
-        return this;
-    }
-
-    public Collection getCollection() {
-        return collection;
-    }
-
-    public ProjectResponse setCollection(Collection collection) {
-        this.collection = collection;
         return this;
     }
 
