@@ -4,4 +4,5 @@ public class ProjectRequest {
     public String name;
     public int user_id;
     public int collection_id;
+    public int group_id;
 }
