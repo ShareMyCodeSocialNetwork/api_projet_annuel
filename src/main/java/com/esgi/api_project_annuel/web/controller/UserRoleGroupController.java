@@ -40,13 +40,7 @@ public class UserRoleGroupController {
         this.groupQuery = groupQuery;
     }
 
-    /*
-     * todo
-     *      get all by group
-     *      get all by user
-     */
-
-
+    
     @RequestMapping("/create")
     public ResponseEntity<UserRoleGroupResponse> addUserRoleGroup(@RequestBody UserRoleGroupRequest userRoleGroupRequest){
         var user = userQuery.getById(userRoleGroupRequest.user_id);
@@ -72,6 +66,30 @@ public class UserRoleGroupController {
         if(userRoleGroup == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userRoleGroupToUserRoleGroupResponse(
+                userRoleGroup),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/group/{groupId}")
+    public ResponseEntity<List<UserRoleGroupResponse>> getUserRoleGroupByGroup(@PathVariable int groupId){
+        var group = groupQuery.getById(groupId);
+        var userRoleGroup = userRoleGroupQuery.getAllByGroup(group);
+        if(userRoleGroup == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(listUserRoleGroupToListUserRoleGroupResponse(
+                userRoleGroup),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<UserRoleGroupResponse>> getUserRoleGroupByUser(@PathVariable int userId){
+        var user = userQuery.getById(userId);
+        var userRoleGroup = userRoleGroupQuery.getAllByUser(user);
+        if(userRoleGroup == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(listUserRoleGroupToListUserRoleGroupResponse(
                 userRoleGroup),
                 HttpStatus.OK
         );
