@@ -40,7 +40,7 @@ public class UserRoleGroupController {
         this.groupQuery = groupQuery;
     }
 
-    
+
     @RequestMapping("/create")
     public ResponseEntity<UserRoleGroupResponse> addUserRoleGroup(@RequestBody UserRoleGroupRequest userRoleGroupRequest){
         var user = userQuery.getById(userRoleGroupRequest.user_id);
