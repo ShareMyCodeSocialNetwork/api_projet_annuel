@@ -17,8 +17,6 @@ import java.util.Optional;
 @Service
 public class ProjectCommand {
     @Autowired
-    ProjectCommand projectCommand;
-    @Autowired
     ProjectRepository projectRepository;
 
     @Autowired
