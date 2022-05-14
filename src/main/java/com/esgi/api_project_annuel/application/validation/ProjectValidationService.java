@@ -10,7 +10,7 @@ public class ProjectValidationService {
         if(project == null)
             return false;
 
-        return !userValidationService.isUserValid(project.getOwner()) &&
+        return userValidationService.isUserValid(project.getOwner()) &&
                 !Objects.equals(project.getName(), "") &&
                 project.getName() != null;
     }
