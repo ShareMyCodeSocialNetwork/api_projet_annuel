@@ -85,9 +85,11 @@ public class ProjectCommand {
     public Project changeOwner(int id, User owner){
         Optional<Project> project = Optional.ofNullable(projectRepository.findById(id));
         if(project.isPresent()){
-            project.get().setOwner(owner);
-            if(projectValidationService.isValid(project.get()))
-                return projectRepository.save(project.get());
+            if(project.get().getOwner().getId() != owner.getId()){
+                project.get().setOwner(owner);
+                if(projectValidationService.isValid(project.get()))
+                    return projectRepository.save(project.get());
+            }
         }
         return null;
     }
