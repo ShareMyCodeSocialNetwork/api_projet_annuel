@@ -20,6 +20,8 @@ public class GroupCommand {
     GroupRepository groupRepository;
     @Autowired
     UserRoleGroupCommand userRoleGroupCommand;
+    @Autowired
+    ProjectCommand projectCommand;
     GroupValidationService groupValidationService = new GroupValidationService();
 
     public Group create(GroupRequest groupRequest) {
@@ -55,6 +57,7 @@ public class GroupCommand {
 
     public void delete(int groupId) {
         var group = groupRepository.findById(groupId);
+        projectCommand.deleteAllProjectsGroup(group);
         userRoleGroupCommand.deleteAllByGroup(group);
         groupRepository.delete(group);
     }
