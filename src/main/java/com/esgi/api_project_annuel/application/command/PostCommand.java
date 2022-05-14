@@ -41,12 +41,10 @@ public class PostCommand {
     public Post update(int postId, PostRequest postRequest){
         Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
         if(dbPost.isPresent()){
-            Post post = new Post();
-            post.setContent(postRequest.content);
-            post.setId(dbPost.get().getId());
-            if(!postValidationService.isValid(post))
+            dbPost.get().setContent(postRequest.content);
+            if(!postValidationService.isValid(dbPost.get()))
                 return null;
-            return postRepository.save(post);
+            return postRepository.save(dbPost.get());
         }
         return null;
 
