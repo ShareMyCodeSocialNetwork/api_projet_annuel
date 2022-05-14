@@ -43,14 +43,12 @@ public class CommentCommand {
     public Comment changeContent(int commentId, CommentRequest commentRequest){
         Optional<Comment> dbComment = Optional.ofNullable(commentRepository.findById(commentId));
 
-        if(dbComment.isEmpty())
-            return null;
+        if(dbComment.isPresent()){
+            dbComment.get().setContent(commentRequest.content);
 
-        var comment = new Comment();
-        comment.setContent(commentRequest.content);
-        comment.setId(commentId);
-
-        return commentRepository.save(comment);
+            return commentRepository.save(dbComment.get());
+        }
+        return null;
     }
 
     public void deleteAllUserComments(User user){
