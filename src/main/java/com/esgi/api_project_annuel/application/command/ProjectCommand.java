@@ -66,7 +66,7 @@ public class ProjectCommand {
     }
 
     public void deleteAllProjectsUser(User user){
-        Optional<List<Project>> projects = Optional.ofNullable(projectRepository.findAllByUser(user));
+        Optional<List<Project>> projects = Optional.ofNullable(projectRepository.findAllByOwner(user));
         projects.ifPresent(projectList ->
                 projectList.forEach(project ->
                         delete(project.getId())
