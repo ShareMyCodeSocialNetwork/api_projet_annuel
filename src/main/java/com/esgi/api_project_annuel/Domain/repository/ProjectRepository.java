@@ -12,7 +12,7 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project, Integer> {
     Project findById(int id);
 
-    List<Project> getProjectByUser(User user);
+    List<Project> findAllByOwner(User user);
 
     List<Project> findAllByName(String name);
 
