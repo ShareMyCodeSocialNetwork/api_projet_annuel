@@ -30,8 +30,8 @@ public class ProjectQuery {
         return projectRepository.findAllByName(name);
     }
 
-    public List<Project> getByUser(User user) {
-        return projectRepository.getProjectByUser(user);
+    public List<Project> getByOwner(User user) {
+        return projectRepository.findAllByOwner(user);
     }
 
     public List<Project> getByGroup(Group group) {
