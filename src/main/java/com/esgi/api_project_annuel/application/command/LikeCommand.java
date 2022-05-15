@@ -40,8 +40,6 @@ public class LikeCommand {
            likeRepository.save(like.get());
            likeRepository.delete(like.get());
        });
-
-
     }
 
     public void deleteAllLikesPost(Post post){
@@ -51,16 +49,12 @@ public class LikeCommand {
                         delete(like.getId())
                 )
         );
-
     }
 
     public void deleteAllLikesUser(User user){
         Optional<List<Like>> likes = Optional.ofNullable(likeRepository.findAllByUser(user));
         likes.ifPresent(likeList ->
-                likeList.forEach(like ->
-                        delete(like.getId())
-                )
+                likeList.forEach(like -> delete(like.getId()))
         );
-
     }
 }

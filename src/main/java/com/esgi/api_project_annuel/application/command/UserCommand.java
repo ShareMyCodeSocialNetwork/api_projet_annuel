@@ -25,6 +25,8 @@ public class UserCommand {
     FollowCommand followCommand;
     @Autowired
     UserRoleGroupCommand userRoleGroupCommand;
+    @Autowired
+    ProjectCommand projectCommand;
 
     UserValidationService userValidationService = new UserValidationService();
 
@@ -106,6 +108,7 @@ public class UserCommand {
         Optional<User> userFromDb = Optional.ofNullable(userRepository.findById(userId));
         userFromDb.ifPresent(user ->{
                     commentCommand.deleteAllUserComments(user);
+                    projectCommand.deleteAllProjectsUser(user);
                     postCommand.deleteAllUserPosts(user);
                     followCommand.deleteAllByFollowed(user);
                     followCommand.deleteAllByFollower(user);

@@ -1,6 +1,5 @@
 package com.esgi.api_project_annuel.Domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -30,4 +29,9 @@ public class Code {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "language_id")
     private Language language;
+
+    //todo a ajouter dans le reste de lapi ce lien
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
 }

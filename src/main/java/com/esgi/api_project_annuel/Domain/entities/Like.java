@@ -1,4 +1,5 @@
 package com.esgi.api_project_annuel.Domain.entities;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "like_share")
 public class Like {
     @Id
+    @Setter(AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
             name = "id",
