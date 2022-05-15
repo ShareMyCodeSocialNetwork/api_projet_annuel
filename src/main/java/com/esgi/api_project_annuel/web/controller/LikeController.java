@@ -85,12 +85,12 @@ public class LikeController {
         if(like == null)
             return new ResponseEntity<>(
                     "Like " + likeId + " not exist",
-                    HttpStatus.OK
+                    HttpStatus.BAD_REQUEST
             );
         likeCommand.delete(likeId);
         return new ResponseEntity<>(
                 "Like " + likeId + " deleted",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.OK
         );
     }
 
