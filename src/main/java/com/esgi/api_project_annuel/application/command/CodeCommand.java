@@ -1,7 +1,11 @@
 package com.esgi.api_project_annuel.application.command;
 
 import com.esgi.api_project_annuel.Domain.entities.Code;
+import com.esgi.api_project_annuel.Domain.entities.Language;
+import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.CodeRepository;
+import com.esgi.api_project_annuel.Domain.repository.LanguageRepository;
+import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.validation.CodeValidationService;
 import com.esgi.api_project_annuel.web.request.CodeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +20,28 @@ public class CodeCommand {
     @Autowired
     CodeRepository codeRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    LanguageRepository languageRepository;
+
     CodeValidationService codeValidationService = new CodeValidationService();
 
     public Code create(CodeRequest codeRequest){
 
         Code code = new Code();
 
+        code.setNameCode(codeRequest.name);
         code.setContent(codeRequest.content);
-        code.setId(codeRequest.programming_langage_id);
+        if(codeRequest.userId !=0 && userRepository.existsById(codeRequest.userId)){
+            User user = userRepository.findById(codeRequest.userId);
+            code.setUser(user);
+        }
+        if(codeRequest.programming_langage_id !=0 && languageRepository.existsById(codeRequest.programming_langage_id)){
+            Language language = languageRepository.findById(codeRequest.programming_langage_id);
+            code.setLanguage(language);
+        }
 
         if(!codeValidationService.codeIsValid(code)) throw new RuntimeException("Invalid code snippet properties");
 

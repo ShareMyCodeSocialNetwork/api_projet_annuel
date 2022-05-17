@@ -51,7 +51,7 @@ public class CodeController {
 
     }
 
-    @GetMapping("code/{codeId}")
+    @GetMapping("/code/{codeId}")
     public ResponseEntity<?> getCodeById(@PathVariable int codeId){
         Code code = codeQuery.getById(codeId);
         if (code != null && codeId > 0) {

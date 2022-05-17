@@ -19,6 +19,9 @@ public class Code {
     )
     private int id;
 
+    @Column(name = "name_code")
+    private String nameCode;
+
     @Column(name = "content")
     private String content;
 
@@ -30,7 +33,7 @@ public class Code {
     @JoinColumn(name = "language_id")
     private Language language;
 
-    //todo a ajouter dans le reste de lapi ce lien
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
