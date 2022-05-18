@@ -68,9 +68,15 @@ public class LanguageController {
 
     @DeleteMapping("/language/delete/{languageId}")
     public ResponseEntity<String> deleteLanguage(@PathVariable int languageId) {
+        var language = languageQuery.getById(languageId);
+        if(language == null)
+            return new ResponseEntity<>(
+                    "Language " + languageId + " not found",
+                    HttpStatus.NOT_FOUND
+            );
         languageCommand.delete(languageId);
         return new ResponseEntity<>(
-                "Programming Language " + languageId + " deleted successfully",
+                "Language " + languageId + " deleted successfully",
                 HttpStatus.NO_CONTENT
         );
     }

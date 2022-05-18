@@ -43,14 +43,11 @@ public class LanguageCommand {
     }
 
     public void delete(int languageId) {
-
-        Optional<Language> languageFromDB = Optional.ofNullable(languageRepository.findById(languageId));
-
-        if (languageFromDB.isEmpty()) {
-            throw new RuntimeException("Programming language not found on id " + languageFromDB);
-        }
-        Language language = languageFromDB.get();
-        languageRepository.delete(language);
+       Optional.ofNullable(
+               languageRepository.findById(languageId)
+       ).ifPresent(language ->
+               languageRepository.delete(language)
+       );
     }
 
 }
