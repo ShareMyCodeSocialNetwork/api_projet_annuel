@@ -15,6 +15,10 @@ public class LanguageCommand {
 
     @Autowired
     LanguageRepository languageRepository;
+     @Autowired
+     CodeCommand codeCommand;
+     @Autowired
+     SnippetCommand snippetCommand;
 
     LanguageValidationService languageValidationService = new LanguageValidationService();
 
@@ -45,9 +49,11 @@ public class LanguageCommand {
     public void delete(int languageId) {
        Optional.ofNullable(
                languageRepository.findById(languageId)
-       ).ifPresent(language ->
-               languageRepository.delete(language)
-       );
+       ).ifPresent(language ->{
+           codeCommand.deleteLanguage(language);
+           snippetCommand.deleteLanguage(language);
+           languageRepository.delete(language);
+       });
     }
 
 }

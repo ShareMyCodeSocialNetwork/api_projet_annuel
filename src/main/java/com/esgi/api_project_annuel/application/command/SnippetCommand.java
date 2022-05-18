@@ -63,5 +63,13 @@ public class SnippetCommand {
         Snippet snippet = snippetFromDB.get();
         snippetRepository.delete(snippet);
     }
+
+    public void deleteLanguage(Language language){
+        var snippets = snippetRepository.getAllByLanguage(language);
+        snippets.forEach(snippet -> {
+            snippet.setLanguage(null);
+            snippetRepository.save(snippet);
+        });
+    }
 }
 

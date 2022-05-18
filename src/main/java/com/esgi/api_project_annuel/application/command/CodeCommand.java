@@ -74,4 +74,11 @@ public class CodeCommand {
         codeRepository.delete(code);
     }
 
+    public void deleteLanguage(Language language){
+        var codes = codeRepository.getAllByLanguage(language);
+        codes.forEach(code -> {
+            code.setLanguage(null);
+            codeRepository.save(code);
+        });
+    }
 }
