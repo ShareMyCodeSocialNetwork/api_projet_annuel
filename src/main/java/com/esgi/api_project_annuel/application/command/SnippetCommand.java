@@ -1,9 +1,7 @@
 package com.esgi.api_project_annuel.application.command;
 
-import com.esgi.api_project_annuel.Domain.entities.Language;
+import com.esgi.api_project_annuel.Domain.entities.*;
 import com.esgi.api_project_annuel.Domain.entities.Snippet;
-import com.esgi.api_project_annuel.Domain.entities.Snippet;
-import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.LanguageRepository;
 import com.esgi.api_project_annuel.Domain.repository.SnippetRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
@@ -13,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InvalidObjectException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -70,6 +69,19 @@ public class SnippetCommand {
             snippet.setLanguage(null);
             snippetRepository.save(snippet);
         });
+    }
+
+
+    public void deleteAllByUser(User user){
+        Optional<List<Snippet>> dbSnippets = Optional.ofNullable(snippetRepository.getAllByUser(user));
+        dbSnippets.ifPresent(snippets ->
+                snippets.forEach(snippet -> {
+                    snippet.setUser(null);
+                    snippet.setLanguage(null);
+                    snippetRepository.save(snippet);
+                    snippetRepository.delete(snippet);
+                })
+        );
     }
 }
 

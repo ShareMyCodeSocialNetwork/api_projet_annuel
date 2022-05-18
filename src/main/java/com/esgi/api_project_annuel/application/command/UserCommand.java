@@ -24,6 +24,8 @@ public class UserCommand {
     @Autowired
     FollowCommand followCommand;
     @Autowired
+    SnippetCommand snippetCommand;
+    @Autowired
     UserRoleGroupCommand userRoleGroupCommand;
     @Autowired
     ProjectCommand projectCommand;
@@ -110,6 +112,7 @@ public class UserCommand {
                     commentCommand.deleteAllUserComments(user);
                     projectCommand.deleteAllProjectsUser(user);
                     postCommand.deleteAllUserPosts(user);
+                    snippetCommand.deleteAllByUser(user);
                     followCommand.deleteAllByFollowed(user);
                     followCommand.deleteAllByFollower(user);
                     userRoleGroupCommand.deleteAllByUser(user);
