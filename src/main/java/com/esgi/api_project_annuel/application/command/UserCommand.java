@@ -29,6 +29,8 @@ public class UserCommand {
     UserRoleGroupCommand userRoleGroupCommand;
     @Autowired
     ProjectCommand projectCommand;
+    @Autowired
+    CodeCommand codeCommand;
 
     UserValidationService userValidationService = new UserValidationService();
 
@@ -111,6 +113,7 @@ public class UserCommand {
         userFromDb.ifPresent(user ->{
                     commentCommand.deleteAllUserComments(user);
                     projectCommand.deleteAllProjectsUser(user);
+                    codeCommand.deleteAllByUser(user);
                     postCommand.deleteAllUserPosts(user);
                     snippetCommand.deleteAllByUser(user);
                     followCommand.deleteAllByFollowed(user);

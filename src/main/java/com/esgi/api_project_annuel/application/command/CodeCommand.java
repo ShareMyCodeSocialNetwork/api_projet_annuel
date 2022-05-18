@@ -2,6 +2,7 @@ package com.esgi.api_project_annuel.application.command;
 
 import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.Domain.entities.Language;
+import com.esgi.api_project_annuel.Domain.entities.Snippet;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.CodeRepository;
 import com.esgi.api_project_annuel.Domain.repository.LanguageRepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.InvalidObjectException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -80,5 +82,18 @@ public class CodeCommand {
             code.setLanguage(null);
             codeRepository.save(code);
         });
+    }
+
+    public void deleteAllByUser(User user){
+        Optional<List<Code>> dbCodes = Optional.ofNullable(codeRepository.getAllByUser(user));
+        dbCodes.ifPresent(codes ->
+                codes.forEach(code -> {
+                    code.setUser(null);
+                    code.setLanguage(null);
+                    code.setProject(null);
+                    codeRepository.save(code);
+                    codeRepository.delete(code);
+                })
+        );
     }
 }
