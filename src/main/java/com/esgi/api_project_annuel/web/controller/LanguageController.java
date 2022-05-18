@@ -61,19 +61,19 @@ public class LanguageController {
     }
 
     @PutMapping("/language/update/{languageId}")
-    public ResponseEntity<?> updateLanguage(@PathVariable int languageId, @RequestBody Language updatedLanguage) throws InvalidObjectException {
+    public ResponseEntity<?> updateLanguage(@PathVariable int languageId, @RequestBody LanguageRequest updatedLanguage) {
         Language language = languageCommand.update(languageId, updatedLanguage);
         if (language != null) {
-            return new ResponseEntity<Language>(language, HttpStatus.OK);
+            return new ResponseEntity<>(language, HttpStatus.OK);
         }
-        return new ResponseEntity<String>("Check again the programming language to update",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/language/delete/{languageId}")
     public ResponseEntity<String> deleteLanguage(@PathVariable int languageId) {
         languageCommand.delete(languageId);
         return new ResponseEntity<>(
-                "Programming Language " + languageId + " deleted succesfully",
+                "Programming Language " + languageId + " deleted successfully",
                 HttpStatus.NO_CONTENT
         );
     }
