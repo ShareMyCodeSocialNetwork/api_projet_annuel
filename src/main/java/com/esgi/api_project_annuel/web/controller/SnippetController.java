@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.InvalidObjectException;
 
+@CrossOrigin(origins = "*")
+@RestController
 public class SnippetController {
 
     @Autowired
@@ -45,7 +47,7 @@ public class SnippetController {
 
     }
 
-    @GetMapping("/snippet/{SnippetId}")
+    @GetMapping("/snippet/{snippetId}")
     public ResponseEntity<?> getSnippetById(@PathVariable int snippetId){
         Snippet snippet = snippetQuery.getById(snippetId);
         if (snippet != null && snippetId > 0) {
