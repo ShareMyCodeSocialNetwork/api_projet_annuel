@@ -67,14 +67,14 @@ public class CodeCommand {
     }
 
     public void delete(int codeId) {
-
-        Optional<Code> codeFromDB = Optional.ofNullable(codeRepository.findById(codeId));
-
-        if (codeFromDB.isEmpty()) {
-            throw new RuntimeException("Code snippet not found with id " + codeFromDB);
-        }
-        Code code = codeFromDB.get();
-        codeRepository.delete(code);
+        Optional.ofNullable(codeRepository.findById(codeId)
+        ).ifPresent(code -> {
+            code.setProject(null);
+            code.setUser(null);
+            code.setLanguage(null);
+            codeRepository.save(code);
+            codeRepository.delete(code);
+        });
     }
 
     public void deleteLanguage(Language language){

@@ -84,10 +84,17 @@ public class CodeController {
 
     @DeleteMapping("/code/delete/{codeId}")
     public ResponseEntity<String> deleteCode(@PathVariable int codeId) {
+        var code = codeQuery.getById(codeId);
+        if(code == null)
+            return new ResponseEntity<>(
+                    "Code snippet " + codeId + " not found",
+                    HttpStatus.NOT_FOUND
+            );
+
         codeCommand.delete(codeId);
         return new ResponseEntity<>(
                 "Code snippet " + codeId + " deleted successfully",
-                HttpStatus.NO_CONTENT
+                HttpStatus.OK
         );
     }
 
