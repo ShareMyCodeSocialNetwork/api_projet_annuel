@@ -37,4 +37,8 @@ public class ProjectQuery {
     public List<Project> getByGroup(Group group) {
         return projectRepository.findAllByGroup(group);
     }
+
+    public boolean existsById(int id){
+        return projectRepository.existsById(id);
+    }
 }

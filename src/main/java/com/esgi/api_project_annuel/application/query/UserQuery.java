@@ -40,4 +40,8 @@ public class UserQuery {
     public User getByEmailAndPassword(String email, String password){
         return userRepository.findUserByEmailAndPassword(email, password);
     }
+
+    public boolean existsById(int id){
+        return userRepository.existsById(id);
+    }
 }

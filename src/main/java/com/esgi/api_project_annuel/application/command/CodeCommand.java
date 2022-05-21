@@ -2,11 +2,14 @@ package com.esgi.api_project_annuel.application.command;
 
 import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.Domain.entities.Language;
-import com.esgi.api_project_annuel.Domain.entities.Snippet;
+import com.esgi.api_project_annuel.Domain.entities.Project;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.CodeRepository;
 import com.esgi.api_project_annuel.Domain.repository.LanguageRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
+import com.esgi.api_project_annuel.application.query.LanguageQuery;
+import com.esgi.api_project_annuel.application.query.ProjectQuery;
+import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.CodeValidationService;
 import com.esgi.api_project_annuel.web.request.CodeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,31 +26,29 @@ public class CodeCommand {
     CodeRepository codeRepository;
 
     @Autowired
-    UserRepository userRepository;
+    UserQuery userQuery;
 
     @Autowired
-    LanguageRepository languageRepository;
+    LanguageQuery languageQuery;
+
+    @Autowired
+    ProjectQuery projectQuery;
 
     CodeValidationService codeValidationService = new CodeValidationService();
 
-    public Code create(CodeRequest codeRequest){
+    public Code create(CodeRequest codeRequest, Language language, User user, Project project){
 
         Code code = new Code();
 
         code.setNameCode(codeRequest.name);
         code.setContent(codeRequest.content);
-        if(codeRequest.userId !=0 && userRepository.existsById(codeRequest.userId)){
-            User user = userRepository.findById(codeRequest.userId);
-            code.setUser(user);
-        }
-        if(codeRequest.programming_langage_id !=0 && languageRepository.existsById(codeRequest.programming_langage_id)){
-            Language language = languageRepository.findById(codeRequest.programming_langage_id);
-            code.setLanguage(language);
-        }
+        code.setUser(user);
+        code.setLanguage(language);
+        code.setProject(project);
 
-        if(!codeValidationService.codeIsValid(code)) throw new RuntimeException("Invalid code snippet properties");
-
-        return codeRepository.save(code);
+        if(codeValidationService.codeIsValid(code))
+            return codeRepository.save(code);
+        return null;
     }
 
     public Code update(int codeId, Code updatedCode) throws InvalidObjectException{
