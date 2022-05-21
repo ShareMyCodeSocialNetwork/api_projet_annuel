@@ -51,19 +51,20 @@ public class CodeCommand {
         return null;
     }
 
-    public Code update(int codeId, Code updatedCode) throws InvalidObjectException{
+    public Code update(int codeId, CodeRequest codeRequest, Language language, Project project) {
 
         Optional<Code> codeFromDB = Optional.ofNullable(codeRepository.findById(codeId));
 
-        if(!codeValidationService.codeIsValid(updatedCode)){
-            throw new InvalidObjectException("Invalid codeId properties");
-        }
-        if (codeFromDB.isEmpty()) {
-            throw new InvalidObjectException("Invalid codeId properties");
-        }
-        updatedCode.setId(codeFromDB.get().getId());
-        return codeRepository.save(updatedCode);
+        if(codeFromDB.isPresent()){
+            codeFromDB.get().setNameCode(codeRequest.name.equals("") ? codeFromDB.get().getNameCode() : codeRequest.name);
+            codeFromDB.get().setContent(codeRequest.content.equals("") ? codeFromDB.get().getContent() : codeRequest.content);
+            codeFromDB.get().setLanguage(language == null ? codeFromDB.get().getLanguage() : language);
+            codeFromDB.get().setProject(project == null ? codeFromDB.get().getProject() : project);
 
+            if(codeValidationService.codeIsValid(codeFromDB.get()))
+                return codeRepository.save(codeFromDB.get());
+        }
+        return null;
     }
 
     public void delete(int codeId) {

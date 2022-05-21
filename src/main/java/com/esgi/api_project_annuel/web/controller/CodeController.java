@@ -74,12 +74,14 @@ public class CodeController {
     }
 
     @PutMapping("/code/update/{codeId}")
-    public ResponseEntity<?> updateCode(@PathVariable int codeId, @RequestBody Code updatedCode) throws InvalidObjectException {
-        Code code = codeCommand.update(codeId, updatedCode);
+    public ResponseEntity<?> updateCode(@PathVariable int codeId, @RequestBody CodeRequest updatedCode) {
+        var language = languageQuery.getById(updatedCode.language_id);
+        var project = projectQuery.getById(updatedCode.project_id);
+        Code code = codeCommand.update(codeId, updatedCode,language,project);
         if (code != null) {
             return new ResponseEntity<>(code, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Check again the code to update",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Check again the code to update",HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/code/delete/{codeId}")
