@@ -7,6 +7,8 @@ public class CodeValidationService {
     private final UserValidationService userValidationService = new UserValidationService();
     private final LanguageValidationService languageValidationService = new LanguageValidationService();
     public boolean codeIsValid(Code code){
+        if(code == null)
+            return false;
         return languageValidationService.languageIsValid(code.getLanguage()) &&
                 userValidationService.isUserValid(code.getUser()) &&
                 !code.getContent().equals("") &&

@@ -8,6 +8,7 @@ public class SnippetValidationService {
     private final UserValidationService userValidationService = new UserValidationService();
 
     public boolean snippetIsValid(Snippet snippet){
+        if(snippet  == null) return false;
         return languageValidationService.languageIsValid(snippet.getLanguage()) &&
                 userValidationService.isUserValid(snippet.getUser()) &&
                 !snippet.getContent().equals("") &&
