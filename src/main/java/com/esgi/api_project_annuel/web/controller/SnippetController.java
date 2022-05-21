@@ -68,12 +68,18 @@ public class SnippetController {
         return new ResponseEntity<>("Check again the Snippet to update",HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/snippet/delete/{SnippetId}")
+    @DeleteMapping("/snippet/delete/{snippetId}")
     public ResponseEntity<String> deleteSnippet(@PathVariable int snippetId) {
+        var snippet = snippetQuery.getById(snippetId);
+        if(snippet == null)
+            return new ResponseEntity<>(
+                    "Snippet " + snippetId + " not exist",
+                    HttpStatus.NOT_FOUND
+            );
         snippetCommand.delete(snippetId);
         return new ResponseEntity<>(
                 "Snippet snippet " + snippetId + " deleted succesfully",
-                HttpStatus.NO_CONTENT
+                HttpStatus.OK
         );
     }
 

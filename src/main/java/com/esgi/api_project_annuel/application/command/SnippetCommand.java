@@ -59,12 +59,14 @@ public class SnippetCommand {
     }
 
     public void delete(int snippetId) {
-        Optional<Snippet> snippetFromDB = Optional.ofNullable(snippetRepository.findById(snippetId));
-        if (snippetFromDB.isEmpty()) {
-            throw new RuntimeException("Snippet snippet not found with id " + snippetId);
-        }
-        Snippet snippet = snippetFromDB.get();
-        snippetRepository.delete(snippet);
+        Optional.ofNullable(
+                snippetRepository.findById(snippetId)
+        ).ifPresent(snippet ->{
+            snippet.setUser(null);
+            snippet.setLanguage(null);
+            snippetRepository.save(snippet);
+            snippetRepository.delete(snippet);
+        });
     }
 
     public void deleteLanguage(Language language){
