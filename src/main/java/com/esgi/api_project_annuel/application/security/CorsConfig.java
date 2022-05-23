@@ -1,4 +1,4 @@
-package com.restapi.exportcontrol.application.security;
+package com.esgi.api_project_annuel.application.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
