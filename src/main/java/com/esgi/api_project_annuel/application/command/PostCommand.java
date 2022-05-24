@@ -17,6 +17,10 @@ public class PostCommand {
 
     @Autowired
     CommentCommand commentCommand;
+
+    @Autowired
+    LikeCommand likeCommand;
+
     PostValidationService postValidationService = new PostValidationService();
     UserValidationService userValidationService = new UserValidationService();
 
@@ -37,27 +41,13 @@ public class PostCommand {
     public Post update(int postId, PostRequest postRequest){
         Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
         if(dbPost.isPresent()){
-            Post post = new Post();
-            post.setContent(postRequest.content);
-            post.setId(dbPost.get().getId());
-            if(!postValidationService.isValid(post))
+            dbPost.get().setContent(postRequest.content);
+            if(!postValidationService.isValid(dbPost.get()))
                 return null;
-            //throw new RuntimeException("invalid post properties");
-            return postRepository.save(post);
+            return postRepository.save(dbPost.get());
         }
         return null;
 
-    }
-
-    public Post like(int postId){
-        Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
-        if(dbPost.isPresent()){
-            Post post = new Post();
-            post.setId(dbPost.get().getId());
-            //throw new RuntimeException("invalid post properties");
-            return postRepository.save(post);
-        }
-        return null;
     }
 
     public void delete(int postId){
@@ -65,6 +55,7 @@ public class PostCommand {
         dbPost.ifPresent(post ->{
             post.setUser(null);
             postRepository.save(post);
+            likeCommand.deleteAllLikesPost(post);
             postRepository.delete(post);
         }
         );
@@ -75,6 +66,7 @@ public class PostCommand {
         dbPosts.ifPresent(posts ->
             posts.forEach(post -> {
                 commentCommand.deleteCommentsInPost(post);
+                likeCommand.deleteAllLikesPost(post);
                 post.setUser(null);
                 postRepository.save(post);
                 postRepository.delete(post);

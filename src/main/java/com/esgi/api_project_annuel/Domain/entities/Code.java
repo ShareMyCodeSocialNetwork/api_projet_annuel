@@ -1,6 +1,5 @@
 package com.esgi.api_project_annuel.Domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,6 +19,9 @@ public class Code {
     )
     private int id;
 
+    @Column(name = "name_code")
+    private String nameCode;
+
     @Column(name = "content")
     private String content;
 
@@ -30,4 +32,9 @@ public class Code {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "language_id")
     private Language language;
+
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
 }

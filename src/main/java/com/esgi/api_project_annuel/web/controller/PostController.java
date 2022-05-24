@@ -51,7 +51,7 @@ public class PostController {
     public ResponseEntity<PostResponse> getPostById(@PathVariable int postId){
         var post = postQuery.getById(postId);
         if(post == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(postToPostResponse(
                 post),
                 HttpStatus.OK
@@ -88,12 +88,12 @@ public class PostController {
         if(post == null)
             return new ResponseEntity<>(
                     "Post " + postId + " not exist",
-                    HttpStatus.BAD_REQUEST
+                    HttpStatus.NOT_FOUND
             );
         postCommand.delete(postId);
         return new ResponseEntity<>(
                 "Post " + postId + " deleted",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.OK
         );
     }
 

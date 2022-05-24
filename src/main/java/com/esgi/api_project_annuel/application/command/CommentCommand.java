@@ -40,17 +40,15 @@ public class CommentCommand {
         return commentRepository.save(comment);
     }
 
-    public Comment changeContent(int commentId, String content){
+    public Comment changeContent(int commentId, CommentRequest commentRequest){
         Optional<Comment> dbComment = Optional.ofNullable(commentRepository.findById(commentId));
 
-        if(dbComment.isEmpty())
-            return null;
+        if(dbComment.isPresent()){
+            dbComment.get().setContent(commentRequest.content);
 
-        var comment = new Comment();
-        comment.setContent(content);
-        comment.setId(commentId);
-
-        return commentRepository.save(comment);
+            return commentRepository.save(dbComment.get());
+        }
+        return null;
     }
 
     public void deleteAllUserComments(User user){

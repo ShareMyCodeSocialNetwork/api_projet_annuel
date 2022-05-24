@@ -24,4 +24,10 @@ public class GroupQuery {
     }
 
     public Group getById(int id) {return this.groupRepository.findById(id);}
+
+    public List<Group> getByName(String name){
+        return groupRepository.findAllByName(name);
+    }
+
+
 }

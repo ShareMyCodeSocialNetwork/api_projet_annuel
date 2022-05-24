@@ -4,7 +4,11 @@ package com.esgi.api_project_annuel.web.controller;
 import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.application.command.CodeCommand;
 import com.esgi.api_project_annuel.application.query.CodeQuery;
+import com.esgi.api_project_annuel.application.query.LanguageQuery;
+import com.esgi.api_project_annuel.application.query.ProjectQuery;
+import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.CodeValidationService;
+import com.esgi.api_project_annuel.application.validation.ProjectValidationService;
 import com.esgi.api_project_annuel.web.request.CodeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,8 +27,13 @@ public class CodeController {
 
     @Autowired
     private final CodeQuery codeQuery;
+    @Autowired
+    LanguageQuery languageQuery;
+    @Autowired
+    UserQuery userQuery;
+    @Autowired
+    ProjectQuery projectQuery;
 
-    private CodeValidationService codeValidationService;
 
     public CodeController(CodeCommand codeCommand, CodeQuery codeQuery) {
         this.codeCommand = codeCommand;
@@ -33,10 +42,14 @@ public class CodeController {
 
     @PostMapping("/code/create")
     public ResponseEntity<?> create(@RequestBody CodeRequest codeRequest){
-        Code code = codeCommand.create(codeRequest);
 
-        if(code != null) return new ResponseEntity<Code>(code, HttpStatus.CREATED);
-        else return new ResponseEntity<String>("Code not created",HttpStatus.NOT_ACCEPTABLE);
+        var language = languageQuery.getById(codeRequest.language_id);
+        var user = userQuery.getById(codeRequest.userId);
+        var project = projectQuery.getById(codeRequest.project_id);
+        Code code = codeCommand.create(codeRequest,language,user,project);
+
+        if(code != null) return new ResponseEntity<>(code, HttpStatus.CREATED);
+        else return new ResponseEntity<>("Code not created",HttpStatus.NOT_ACCEPTABLE);
     }
 
     @GetMapping("/code")
@@ -44,37 +57,46 @@ public class CodeController {
 
         Iterable<Code> allCodes = codeQuery.getAll();
         try {
-            return new ResponseEntity<Iterable<Code>>(allCodes, HttpStatus.OK);
+            return new ResponseEntity<>(allCodes, HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<String>("Error while getting code snippets",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Error while getting code snippets",HttpStatus.BAD_REQUEST);
         }
 
     }
 
-    @GetMapping("code/{codeId}")
+    @GetMapping("/code/{codeId}")
     public ResponseEntity<?> getCodeById(@PathVariable int codeId){
         Code code = codeQuery.getById(codeId);
         if (code != null && codeId > 0) {
-            return new ResponseEntity<Code>(code, HttpStatus.OK);
+            return new ResponseEntity<>(code, HttpStatus.OK);
         }
-        return new ResponseEntity<String>("Id for this code snippet not existing",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Id for this code snippet not existing",HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/code/update/{codeId}")
-    public ResponseEntity<?> updateCode(@PathVariable int codeId, @RequestBody Code updatedCode) throws InvalidObjectException {
-        Code code = codeCommand.update(codeId, updatedCode);
+    public ResponseEntity<?> updateCode(@PathVariable int codeId, @RequestBody CodeRequest updatedCode) {
+        var language = languageQuery.getById(updatedCode.language_id);
+        var project = projectQuery.getById(updatedCode.project_id);
+        Code code = codeCommand.update(codeId, updatedCode,language,project);
         if (code != null) {
-            return new ResponseEntity<Code>(code, HttpStatus.OK);
+            return new ResponseEntity<>(code, HttpStatus.OK);
         }
-        return new ResponseEntity<String>("Check again the code to update",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Check again the code to update",HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/code/delete/{codeId}")
     public ResponseEntity<String> deleteCode(@PathVariable int codeId) {
+        var code = codeQuery.getById(codeId);
+        if(code == null)
+            return new ResponseEntity<>(
+                    "Code snippet " + codeId + " not found",
+                    HttpStatus.NOT_FOUND
+            );
+
         codeCommand.delete(codeId);
         return new ResponseEntity<>(
-                "Code snippet " + codeId + " deleted succesfully",
-                HttpStatus.NO_CONTENT
+                "Code snippet " + codeId + " deleted successfully",
+                HttpStatus.OK
         );
     }
 

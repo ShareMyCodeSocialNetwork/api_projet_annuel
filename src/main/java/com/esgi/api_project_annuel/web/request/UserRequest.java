@@ -8,5 +8,6 @@ public class UserRequest {
     public String lastname;
     public String email;
     public String password;
+    public String pseudo;
     public String profilePicture;
 }

@@ -8,6 +8,7 @@ import javax.persistence.*;
 @Table(name = "group_share")
 public class Group {
     @Id
+    @Setter(AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
             name = "id",
@@ -16,7 +17,7 @@ public class Group {
     private int id;
 
     @Column(name = "name")
-    private String GroupName;
+    private String name;
 }
 
 

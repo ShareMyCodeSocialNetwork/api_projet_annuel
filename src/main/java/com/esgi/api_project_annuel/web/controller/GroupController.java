@@ -5,20 +5,20 @@ package com.esgi.api_project_annuel.web.controller;
 import com.esgi.api_project_annuel.Domain.entities.Group;
 import com.esgi.api_project_annuel.application.command.GroupCommand;
 import com.esgi.api_project_annuel.application.query.GroupQuery;
-import com.esgi.api_project_annuel.application.validation.GroupValidationService;
 import com.esgi.api_project_annuel.web.request.GroupRequest;
+import com.esgi.api_project_annuel.web.response.GroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.InvalidObjectException;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 @RestController
-@RequestMapping
+@RequestMapping("/group")
 public class GroupController {
 
     @Autowired
@@ -27,64 +27,99 @@ public class GroupController {
     @Autowired
     private final GroupQuery groupQuery;
 
-    private GroupValidationService groupValidationService;
-
-
     public GroupController(GroupCommand groupCommand, GroupQuery demandQuery){
         this.groupCommand = groupCommand;
         this.groupQuery = demandQuery;
     }
 
-    @PostMapping("/group/create")
-    public ResponseEntity<?> addGroup(@RequestBody GroupRequest groupRequest) throws InvalidObjectException {
-        Group group = groupCommand.create(groupRequest);
+    @PostMapping("/create")
+    public ResponseEntity<GroupResponse> addGroup(@RequestBody GroupRequest groupRequest) {
+        var group = groupCommand.create(groupRequest);
         if(group != null)
-        {
-            return new ResponseEntity<Group>(group, HttpStatus.CREATED);
+            return new ResponseEntity<>(groupToGroupResponse(group), HttpStatus.CREATED);
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
 
-        }else{
-
-            return new ResponseEntity<String>("group not created",HttpStatus.NOT_ACCEPTABLE);
-        }
     }
 
-    @GetMapping(value = "/group", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
-    public ResponseEntity<?> getGroupAll(){
-        Iterable<Group> groupAll = groupQuery.getAll();
-        try {
-            return new ResponseEntity<Iterable<Group>>(groupAll, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<String>("Error de recuperation des utilisateurs",HttpStatus.BAD_REQUEST);
-        }
+    @GetMapping(value = "/", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
+    public ResponseEntity<List<GroupResponse>> getGroupAll(){
+        return new ResponseEntity<>(
+                listGroupToListGroupResponse(groupQuery.getAll()),
+                HttpStatus.OK);
     }
 
-    @GetMapping("/group/{groupId}")
-    public ResponseEntity<?> getGroupById(@PathVariable int groupId) {
-        Group group = groupQuery.getById(groupId);
-        if (group != null && groupId > 0) {
-            return new ResponseEntity<Group>(group, HttpStatus.OK);
-        }
-        return new ResponseEntity<String>("L'id de cette utilisateur n'existe pas",HttpStatus.NOT_FOUND);
+    @GetMapping("/name/{groupName}")
+    public ResponseEntity<List<GroupResponse>> getRoleByName(@PathVariable String groupName){
+        var groups = groupQuery.getByName(groupName);
+        if(groups == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(listGroupToListGroupResponse(
+                groups),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/{groupId}")
+    public ResponseEntity<GroupResponse> getGroupById(@PathVariable int groupId) {
+        var group = groupQuery.getById(groupId);
+        if(group == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(groupToGroupResponse(
+                group),
+                HttpStatus.OK
+        );
+    }
+
+    @PatchMapping("/{groupId}")
+    public ResponseEntity<GroupResponse> changeName(@PathVariable int groupId, @RequestBody GroupRequest groupRequest) {
+        var group = groupQuery.getById(groupId);
+        if(group == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(
+                groupToGroupResponse(
+                        groupCommand.changeName(groupId, groupRequest)
+                ),
+                HttpStatus.OK
+        );
     }
 
 
-
-    @PutMapping("/group/update/{groupId}")
-    public ResponseEntity<?> updateGroup(@PathVariable int groupId, @RequestBody Group updatedgroup) throws InvalidObjectException {
-        Group group = groupCommand.update(groupId, updatedgroup);
-        if (group != null) {
-            return new ResponseEntity<Group>(group, HttpStatus.OK);
-        }
-        return new ResponseEntity<String>("Verifier le body ou l'entete envoyer",HttpStatus.NOT_FOUND);
+    @PutMapping("/{groupId}")
+    public ResponseEntity<GroupResponse> updateGroup(@PathVariable int groupId, @RequestBody GroupRequest groupRequest) {
+        var group = groupCommand.update(groupId, groupRequest);
+        if (group != null)
+            return new ResponseEntity<>(groupToGroupResponse(group), HttpStatus.OK);
+        return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("/group/delete/{groupId}")
+
+    @DeleteMapping("/{groupId}")
     public ResponseEntity<String> deleteGroup(@PathVariable int groupId) {
+        var group = groupQuery.getById(groupId);
+        if(group == null)
+            return new ResponseEntity<>(
+                    "Role " + groupId + " not exist",
+                    HttpStatus.BAD_REQUEST
+            );
         groupCommand.delete(groupId);
         return new ResponseEntity<>(
                 "group " + groupId + " deleted",
                 HttpStatus.NO_CONTENT
         );
+    }
+
+
+
+    private GroupResponse groupToGroupResponse(Group group){
+        return new GroupResponse()
+                .setId(group.getId())
+                .setName(group.getName());
+    }
+
+    private List<GroupResponse> listGroupToListGroupResponse(List<Group> groups){
+        List<GroupResponse> groupResponses = new ArrayList<>();
+        groups.forEach(group -> groupResponses.add(groupToGroupResponse(group)));
+        return groupResponses;
     }
 
 }

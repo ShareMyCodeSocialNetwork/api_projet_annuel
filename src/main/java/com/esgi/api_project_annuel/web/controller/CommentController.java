@@ -37,10 +37,6 @@ public class CommentController {
         this.commentQuery = commentQuery;
     }
 
-    /**
-     * todo :
-     *      - changeContent
-     */
 
 
     @GetMapping("/user/{userId}")
@@ -67,6 +63,18 @@ public class CommentController {
         );
     }
 
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<CommentResponse> changeContent(@PathVariable int commentId, @RequestBody CommentRequest commentRequest){
+        var comment = commentQuery.getById(commentId);
+        if(comment == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        var updatedComment = commentCommand.changeContent(commentId, commentRequest);
+        if(updatedComment == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(commentToCommentResponse(updatedComment),HttpStatus.OK);
+    }
+
+
     @GetMapping(value = "/", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
     public ResponseEntity<List<CommentResponse>> getAll(){
         return new ResponseEntity<>(
@@ -80,7 +88,7 @@ public class CommentController {
     public ResponseEntity<CommentResponse> getById(@PathVariable int commentId) {
         var comment = commentQuery.getById(commentId);
         if (comment == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(commentToCommentResponse(
                 comment),
                 HttpStatus.OK
@@ -109,7 +117,7 @@ public class CommentController {
     public ResponseEntity<?> deleteComment(@PathVariable int commentId){
         try{
             if(null == commentQuery.getById(commentId))
-                return new ResponseEntity<>("Comment does not exist", HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Comment does not exist", HttpStatus.NOT_FOUND);
             commentCommand.delete(commentId);
             return new ResponseEntity<>("Comment deleted",HttpStatus.OK);
         }catch (Exception e){

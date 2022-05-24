@@ -1,4 +1,5 @@
 package com.esgi.api_project_annuel.Domain.entities;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "follow_share")
 public class Follow {
     @Id
+    @Setter(AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
             name = "id",
@@ -18,10 +20,10 @@ public class Follow {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "follower_user_id")
-    private User followerUserId;
+    private User followerUser;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "followed_user_id")
-    private User followedUserId;
+    private User followedUser;
 
 }

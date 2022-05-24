@@ -15,6 +15,10 @@ public class LanguageCommand {
 
     @Autowired
     LanguageRepository languageRepository;
+     @Autowired
+     CodeCommand codeCommand;
+     @Autowired
+     SnippetCommand snippetCommand;
 
     LanguageValidationService languageValidationService = new LanguageValidationService();
 
@@ -29,30 +33,27 @@ public class LanguageCommand {
         return languageRepository.save(language);
     }
 
-    public Language update(int languageId, Language updatedLanguage) throws InvalidObjectException {
+    public Language update(int languageId, LanguageRequest updatedLanguage) {
 
         Optional<Language> languageFromDB = Optional.ofNullable(languageRepository.findById(languageId));
 
-        if(!languageValidationService.languageIsValid(updatedLanguage)){
-            throw new InvalidObjectException("Invalid user properties");
+        if(languageFromDB.isPresent()){
+            languageFromDB.get().setName(updatedLanguage.name);
+            if(languageValidationService.languageIsValid(languageFromDB.get()))
+                return languageRepository.save(languageFromDB.get());
         }
-        if (languageFromDB.isEmpty()) {
-            throw new InvalidObjectException("Invalid userId properties");
-        }
-        languageFromDB.get().setId(languageFromDB.get().getId());
-        return languageRepository.save(updatedLanguage);
+        return null;
 
     }
 
     public void delete(int languageId) {
-
-        Optional<Language> languageFromDB = Optional.ofNullable(languageRepository.findById(languageId));
-
-        if (languageFromDB.isEmpty()) {
-            throw new RuntimeException("Programming language not found on id " + languageFromDB);
-        }
-        Language language = languageFromDB.get();
-        languageRepository.delete(language);
+       Optional.ofNullable(
+               languageRepository.findById(languageId)
+       ).ifPresent(language ->{
+           codeCommand.deleteLanguage(language);
+           snippetCommand.deleteLanguage(language);
+           languageRepository.delete(language);
+       });
     }
 
 }
