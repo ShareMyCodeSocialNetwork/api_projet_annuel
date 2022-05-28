@@ -60,7 +60,7 @@ public class UserController {
         );
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody UserRequest userRequest){
         var user = userQuery.getByEmailAndPassword(userRequest.email, userRequest.password);
         if(user == null)
