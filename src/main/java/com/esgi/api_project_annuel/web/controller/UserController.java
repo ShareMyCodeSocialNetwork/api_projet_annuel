@@ -41,6 +41,15 @@ public class UserController {
     }
 
 
+    @GetMapping("/pseudo/{pseudo}")
+    public ResponseEntity<UserResponse> getByPseudo(@PathVariable String pseudo){
+        var user = userQuery.getByPseudo(pseudo);
+        if(user == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userToUserResponse(user),
+                HttpStatus.OK
+        );
+    }
 
     @GetMapping(value = "/", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
     public ResponseEntity<List<UserResponse>> getUserAll(){

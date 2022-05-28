@@ -37,6 +37,10 @@ public class UserQuery {
         return userRepository.findByPseudo(pseudo) != null;
     }
 
+    public User getByPseudo(String pseudo){
+        return userRepository.findByPseudo(pseudo);
+    }
+
     public User getByEmailAndPassword(String email, String password){
         return userRepository.findUserByEmailAndPassword(email, password);
     }
