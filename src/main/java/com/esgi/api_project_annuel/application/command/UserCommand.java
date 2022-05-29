@@ -51,7 +51,7 @@ public class UserCommand implements UserDetailsService {
 
         User user = userRepository.findByEmail(email);
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRoles().getTitle_Permission()));
+        authorities.add(new SimpleGrantedAuthority(user.getRoles().getTitlePermission()));
         return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(),authorities);
     }
 

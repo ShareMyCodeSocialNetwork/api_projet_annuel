@@ -21,5 +21,5 @@ public class Role {
     @Column(
             name = "title_permission"
     )
-    private String Title_Permission;
+    private String titlePermission;
 }

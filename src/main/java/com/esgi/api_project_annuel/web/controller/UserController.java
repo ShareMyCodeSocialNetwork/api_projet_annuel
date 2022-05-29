@@ -166,7 +166,7 @@ public class UserController {
                         .withSubject(user.getFirstname())
                         .withExpiresAt(new java.sql.Date(System.currentTimeMillis() + 10 * 60 * 1000))
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", user.getRoles().getTitle_Permission())
+                        .withClaim("roles", user.getRoles().getTitlePermission())
                         .sign(algorithm);
 
                 Map<String, String> tokens = new HashMap<>();

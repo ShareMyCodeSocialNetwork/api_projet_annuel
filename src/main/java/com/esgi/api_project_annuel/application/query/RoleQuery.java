@@ -25,6 +25,6 @@ public class RoleQuery {
     }
 
     public List<Role> getByName(String roleName) {
-        return roleRepository.findRoleByName(roleName);
+        return roleRepository.findRoleByTitlePermission(roleName);
     }
 }
