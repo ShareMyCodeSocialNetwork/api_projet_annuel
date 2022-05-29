@@ -56,10 +56,6 @@ public class UserCommand implements UserDetailsService {
     }
 
     public User create(UserRequest userRequest){
-
-
-
-
         var user = new User();
         user.setEmail(userRequest.email);
         user.setFirstname(userRequest.firstname);
@@ -72,6 +68,7 @@ public class UserCommand implements UserDetailsService {
         if (!userValidationService.isUserValid(user))
             return null;
         String encodedPassword = passwordEncoder.encode(userRequest.password);
+        System.out.println("ENCODED PASSWORD : " + encodedPassword);
         user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
@@ -82,8 +79,10 @@ public class UserCommand implements UserDetailsService {
         if(dbUser.isPresent()){
             var user = dbUser.get();
             user.setPassword(userRequest.password);
-            if(userValidationService.isUserValid(user))
+            if(userValidationService.isUserValid(user)){
+                user.setPassword(passwordEncoder.encode(userRequest.password));
                 return userRepository.save(user);
+            }
         }
         return null;
     }
