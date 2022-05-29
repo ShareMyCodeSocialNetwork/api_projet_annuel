@@ -69,6 +69,17 @@ public class UserController {
         );
     }
 
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserResponse> getByEmail(@PathVariable String email){
+        var user = userQuery.getByEmail(email);
+        if(user == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userToUserResponse(user),
+                HttpStatus.OK
+        );
+    }
+
+
     @GetMapping(value = "/", produces = { MimeTypeUtils.APPLICATION_JSON_VALUE }, headers = "Accept=application/json")
     public ResponseEntity<List<UserResponse>> getUserAll(){
         return new ResponseEntity<>(
