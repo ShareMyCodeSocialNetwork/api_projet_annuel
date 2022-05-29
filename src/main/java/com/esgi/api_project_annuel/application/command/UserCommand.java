@@ -43,7 +43,7 @@ public class UserCommand implements UserDetailsService {
     UserValidationService userValidationService = new UserValidationService();
 
 
-    private  BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 
     @Override
@@ -57,21 +57,22 @@ public class UserCommand implements UserDetailsService {
 
     public User create(UserRequest userRequest){
 
-        String encodedPassword = passwordEncoder.encode(userRequest.password);
 
-        boolean isPasswordMatch = passwordEncoder.matches(userRequest.password, encodedPassword);
+
 
         var user = new User();
         user.setEmail(userRequest.email);
         user.setFirstname(userRequest.firstname);
         user.setLastname(userRequest.lastname);
-        user.setPassword(encodedPassword);
+        user.setPassword(userRequest.password);
         user.setPseudo(userRequest.pseudo);
         user.setProfilePicture(
                 Objects.requireNonNullElse(userRequest.profilePicture, "default_profile_picture")
         );
         if (!userValidationService.isUserValid(user))
             return null;
+        String encodedPassword = passwordEncoder.encode(userRequest.password);
+        user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
 
