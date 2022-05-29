@@ -18,7 +18,7 @@ public class User {
     )
     private int id;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "firstname")
@@ -35,5 +35,9 @@ public class User {
 
     @Column(name = "profile_picture")
     private String profilePicture;
+
+    @OneToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+    @JoinColumn(name="user_roles")
+    private Role roles;
 
 }

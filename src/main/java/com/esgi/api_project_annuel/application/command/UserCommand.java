@@ -5,12 +5,20 @@ import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import com.esgi.api_project_annuel.web.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class UserCommand {
+public class UserCommand implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
@@ -35,12 +43,29 @@ public class UserCommand {
     UserValidationService userValidationService = new UserValidationService();
 
 
+    private  BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        User user = userRepository.findByEmail(email);
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(user.getRoles().getTitlePermission()));
+        return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(),authorities);
+    }
+
     public User create(UserRequest userRequest){
+
+        String encodedPassword = passwordEncoder.encode(userRequest.password);
+
+        boolean isPasswordMatch = passwordEncoder.matches(userRequest.password, encodedPassword);
+
         var user = new User();
         user.setEmail(userRequest.email);
         user.setFirstname(userRequest.firstname);
         user.setLastname(userRequest.lastname);
-        user.setPassword(userRequest.password);
+        user.setPassword(encodedPassword);
         user.setPseudo(userRequest.pseudo);
         user.setProfilePicture(
                 Objects.requireNonNullElse(userRequest.profilePicture, "default_profile_picture")

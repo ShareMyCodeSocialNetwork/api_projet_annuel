@@ -98,7 +98,7 @@ public class RoleController {
     private RoleResponse roleToRoleResponse(Role role){
         return new RoleResponse()
                 .setId(role.getId())
-                .setName(role.getName());
+                .setName(role.getTitlePermission());
     }
 
     private List<RoleResponse> listRoleToListRoleResponse(List<Role> roles){
