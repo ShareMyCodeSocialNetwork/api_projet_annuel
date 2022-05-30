@@ -40,7 +40,7 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    public void should_find_no_user_if_repository_is_empty() {
+    public void should_find_nothing_if_repository_is_empty() {
         var result = repository.findAll();
         assertThat(result).size().isEqualTo(0);
     }
