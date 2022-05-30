@@ -1,6 +1,8 @@
 package com.esgi.api_project_annuel.Domain.repository;
 
+import com.esgi.api_project_annuel.Domain.entities.Language;
 import com.esgi.api_project_annuel.Domain.entities.Snippet;
+import com.esgi.api_project_annuel.Domain.entities.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +27,9 @@ class SnippetRepositoryTest {
     @BeforeEach
     void setUp() {
         object1.setName("name");
-        object2.setName("name2");
+        object1 .setLanguage(new Language());
+        object1.setUser(new User());
+        object1.setContent("content");
     }
 
     @Test
@@ -59,5 +63,8 @@ class SnippetRepositoryTest {
         var dbContent = repository.findById(createdObject2.getId());
         assertThat(dbContent.getId()).isEqualTo(createdObject2.getId());
         assertThat(dbContent.getName()).isEqualTo(createdObject2.getName());
+        assertThat(dbContent.getContent()).isEqualTo(createdObject2.getContent());
+        assertThat(dbContent.getLanguage()).isEqualTo(createdObject2.getLanguage());
+        assertThat(dbContent.getUser()).isEqualTo(createdObject2.getUser());
     }
 }
