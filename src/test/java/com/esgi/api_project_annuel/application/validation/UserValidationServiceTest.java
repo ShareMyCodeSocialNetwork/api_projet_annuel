@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class UserValidationServiceTest {
-    //TESTS FAIT PAR DAVID HENRI,
+    //TESTS FAIT PAR DAVID HENRI, fichier recreer car un rename ne comptabilisait pas dans le code coverage
     private User validUser;
     private User invalidUser;
     private User invalidUserWithShortPassword;
