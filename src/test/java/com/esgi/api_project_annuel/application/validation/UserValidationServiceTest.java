@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 
 class UserValidationServiceTest {
     //TESTS FAIT PAR DAVID HENRI, fichier recreer car un rename ne comptabilisait pas dans le code coverage
-    private User validUser;
     private User invalidUser;
     private User invalidUserWithShortPassword;
     private User invalidUserWithLongPassword;
@@ -15,6 +14,8 @@ class UserValidationServiceTest {
     private User invalidUserWithBadFirstname;
     private User invalidUserWithBadLastname;
     private final UserValidationService userValidationService = new UserValidationService();
+
+    GlobalObject globalObject = new GlobalObject();
 
     public User UserObject(String lastName, String firstName,String password,String email,String pseudo){
         User userObject = new User();
@@ -40,7 +41,6 @@ class UserValidationServiceTest {
         String invalidPseudo = "pseudo";
 
 
-        validUser =  UserObject(validFirstname, validLastname, validPassword,validMail,validPseudo);
         invalidUser = UserObject(invalidFirstname, invalidLastname, invalidTooSmallPassword,invalidMail,invalidPseudo);
         invalidUserWithLongPassword = UserObject( validFirstname, validLastname, invalidTooLongPassword,validMail,validPseudo);
         invalidUserWithShortPassword = UserObject( validFirstname, validLastname, invalidTooSmallPassword,validMail,validPseudo);
@@ -52,7 +52,7 @@ class UserValidationServiceTest {
     @Test
     void isUserValid() {
         Assertions.assertFalse(userValidationService.isUserValid(invalidUserWithBadFirstname));
-        Assertions.assertTrue(userValidationService.isUserValid(validUser));
+        Assertions.assertTrue(userValidationService.isUserValid(globalObject.validUser));
         Assertions.assertFalse(userValidationService.isUserValid(invalidUserWithLongPassword));
         Assertions.assertFalse(userValidationService.isUserValid(invalidUserWithBadLastname));
         Assertions.assertFalse(userValidationService.isUserValid(invalidUser));
