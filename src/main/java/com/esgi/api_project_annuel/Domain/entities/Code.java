@@ -1,5 +1,6 @@
 package com.esgi.api_project_annuel.Domain.entities;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Table(name = "code_share")
 public class Code {
     @Id
+    @Setter(AccessLevel.NONE)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(
             name = "id",
