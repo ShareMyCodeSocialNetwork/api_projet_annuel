@@ -17,12 +17,13 @@ public class UserTest {
     private User invalidUserWithBadLastname;
     private final UserValidationService userValidationService = new UserValidationService();
 
-    public User UserObject(String lastName, String firstName,String password,String email){
+    public User UserObject(String lastName, String firstName,String password,String email,String pseudo){
         User userObject = new User();
         userObject.setEmail(email);
         userObject.setFirstname(firstName);
         userObject.setLastname(lastName);
         userObject.setPassword(password);
+        userObject.setPseudo(pseudo);
         return userObject;
     }
 
@@ -38,15 +39,17 @@ public class UserTest {
         String invalidFirstname = "";
         String validLastname = "Lastname";
         String invalidLastname = "";
+        String validPseudo = "pseudo";
+        String invalidPseudo = "pseudo";
 
 
-        validUser =  UserObject(validFirstname, validLastname, validPassword,validMail);
-        invalidUser = UserObject(invalidFirstname, invalidLastname, invalidTooSmallPassword,invalidMail);
-        invalidUserWithLongPassword = UserObject( validFirstname, validLastname, invalidTooLongPassword,validMail);
-        invalidUserWithShortPassword = UserObject( validFirstname, validLastname, invalidTooSmallPassword,validMail);
-        invalidUserWithBadMail = UserObject(validFirstname, validLastname, validPassword,invalidMail);
-        invalidUserWithBadFirstname = UserObject( invalidFirstname, validLastname, validPassword,validMail);
-        invalidUserWithBadLastname = UserObject( validFirstname, invalidLastname, validPassword,validMail);
+        validUser =  UserObject(validFirstname, validLastname, validPassword,validMail,validPseudo);
+        invalidUser = UserObject(invalidFirstname, invalidLastname, invalidTooSmallPassword,invalidMail,invalidPseudo);
+        invalidUserWithLongPassword = UserObject( validFirstname, validLastname, invalidTooLongPassword,validMail,validPseudo);
+        invalidUserWithShortPassword = UserObject( validFirstname, validLastname, invalidTooSmallPassword,validMail,validPseudo);
+        invalidUserWithBadMail = UserObject(validFirstname, validLastname, validPassword,invalidMail,validPseudo);
+        invalidUserWithBadFirstname = UserObject( invalidFirstname, validLastname, validPassword,validMail,validPseudo);
+        invalidUserWithBadLastname = UserObject( validFirstname, invalidLastname, validPassword,validMail,validPseudo);
     }
 
     @Test
