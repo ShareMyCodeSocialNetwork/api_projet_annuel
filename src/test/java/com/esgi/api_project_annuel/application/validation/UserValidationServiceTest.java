@@ -1,13 +1,12 @@
-package com.esgi.api_project_annuel.junit;
+package com.esgi.api_project_annuel.application.validation;
+
 import com.esgi.api_project_annuel.Domain.entities.User;
-import com.esgi.api_project_annuel.application.validation.UserValidationService;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-public class UserTest {
+class UserValidationServiceTest {
+    //TESTS FAIT PAR DAVID HENRI,
     private User validUser;
     private User invalidUser;
     private User invalidUserWithShortPassword;
@@ -26,10 +25,8 @@ public class UserTest {
         userObject.setPseudo(pseudo);
         return userObject;
     }
-
-
-    @Before
-    public void init() {
+    @BeforeEach
+    void setUp() {
         String validMail = "validMail@gmail.com";
         String invalidMail = "invalidMail@.com";
         String validPassword = "PasswordValid";
@@ -53,38 +50,14 @@ public class UserTest {
     }
 
     @Test
-    public void isValidUser() {
-        assertTrue(userValidationService.isUserValid(validUser));
+    void isUserValid() {
+        Assertions.assertFalse(userValidationService.isUserValid(invalidUserWithBadFirstname));
+        Assertions.assertTrue(userValidationService.isUserValid(validUser));
+        Assertions.assertFalse(userValidationService.isUserValid(invalidUserWithLongPassword));
+        Assertions.assertFalse(userValidationService.isUserValid(invalidUserWithBadLastname));
+        Assertions.assertFalse(userValidationService.isUserValid(invalidUser));
+        Assertions.assertFalse(userValidationService.isUserValid(invalidUserWithShortPassword));
+        Assertions.assertFalse(userValidationService.isUserValid(invalidUserWithBadMail));
+        Assertions.assertFalse(userValidationService.isUserValid(null));
     }
-
-    @Test
-    public void isInvalidUser() {
-        assertFalse(userValidationService.isUserValid(invalidUser));
-    }
-
-    @Test
-    public void isInvalidMail() {
-        assertFalse(userValidationService.isUserValid(invalidUserWithBadMail));
-    }
-
-    @Test
-    public void isTooShortPassword() {
-        assertFalse(userValidationService.isUserValid(invalidUserWithShortPassword));
-    }
-
-    @Test
-    public void isTooLongPassword() {
-        assertFalse(userValidationService.isUserValid(invalidUserWithLongPassword));
-    }
-
-    @Test
-    public void isInvalidFirstname() {
-        assertFalse(userValidationService.isUserValid(invalidUserWithBadFirstname));
-    }
-
-    @Test
-    public void isInvalidLastname() {
-        assertFalse(userValidationService.isUserValid(invalidUserWithBadLastname));
-    }
-
 }
