@@ -21,9 +21,7 @@ class CodeRepositoryTest {
     @Autowired
     private TestEntityManager entityManager;
     @Autowired
-    CodeRepository codeRepository;
-    @Autowired
-    LanguageRepository languageRepository;
+    CodeRepository repository;
     private final Code object1 = new Code();
     private final Code object2 = new Code();
     private final Language js = new Language();
@@ -49,13 +47,13 @@ class CodeRepositoryTest {
 
     @Test
     public void should_find_empty() {
-        var result = codeRepository.findAll();
+        var result = repository.findAll();
         assertThat(result).isEmpty();
     }
 
     @Test
     public void should_find_no_user_if_repository_is_empty() {
-        var result = codeRepository.findAll();
+        var result = repository.findAll();
         assertThat(result).size().isEqualTo(0);
     }
 
@@ -66,7 +64,7 @@ class CodeRepositoryTest {
 
         entityManager.persist(object2);
 
-        var results = codeRepository.findAll();
+        var results = repository.findAll();
         assertThat(results).hasSize(2).contains(object1, object2);
     }
 
@@ -75,7 +73,7 @@ class CodeRepositoryTest {
         entityManager.persist(object1);
         var createdObject2 = entityManager.persist(object2);
 
-        var dbContent = codeRepository.findById(createdObject2.getId());
+        var dbContent = repository.findById(createdObject2.getId());
         assertThat(dbContent.getContent()).isEqualTo(createdObject2.getContent());
         assertThat(dbContent.getId()).isEqualTo(createdObject2.getId());
         assertThat(dbContent.getNameCode()).isEqualTo(createdObject2.getNameCode());
