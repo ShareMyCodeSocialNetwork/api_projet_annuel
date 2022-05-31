@@ -11,24 +11,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CodeValidationServiceTest {
 
-    Code valid = new Code();
-    Code invalid = new Code();
-    Project project = new Project();
+    GlobalObject globalObject = new GlobalObject();
     CodeValidationService validationService = new CodeValidationService();
     @BeforeEach
     void setUp() {
-        Project project = new Project();
-        User user = new User();
 
-
-        project.setOwner(user);
-        valid.setNameCode("code");
-        valid.setProject(project);
     }
 
     @Test
     void codeIsValid() {
-       // assertThat(validationService.codeIsValid(valid)).isEqualTo(true);
-        assertThat(validationService.codeIsValid(invalid)).isEqualTo(false);
+        assertThat(validationService.codeIsValid(globalObject.validCode)).isEqualTo(true);
+        assertThat(validationService.codeIsValid(new Code())).isEqualTo(false);
+        assertThat(validationService.codeIsValid(null)).isEqualTo(false);
     }
 }
