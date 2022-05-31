@@ -1,4 +1,4 @@
-package com.esgi.api_project_annuel.web.controller;
+package com.esgi.api_project_annuel.web.controller.fixture;
 
 import com.esgi.api_project_annuel.Domain.entities.Role;
 import com.esgi.api_project_annuel.web.request.RoleRequest;
@@ -60,7 +60,7 @@ public class RoleFixture {
 
 
 
-    static RoleRequest roleToRoleRequest(Role role){
+    public static RoleRequest roleToRoleRequest(Role role){
         var request = new RoleRequest();
         request.name = role.getTitlePermission();
         return request;
