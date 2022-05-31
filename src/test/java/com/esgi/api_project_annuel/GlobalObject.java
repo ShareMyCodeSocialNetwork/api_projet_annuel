@@ -13,6 +13,7 @@ public class GlobalObject {
     public Post validPost;
     public Role validRole;
     public Follow validFollow;
+    public Like validLike;
 
     public GlobalObject() {
         validUser = buildValidUser();
@@ -24,6 +25,14 @@ public class GlobalObject {
         validPost = buildValidPost();
         validRole = buildValidRole();
         validFollow = buildValidFollow();
+        validLike = buildValidLike();
+    }
+
+    private Like buildValidLike() {
+        var like = new Like();
+        like.setPost(validPost);
+        like.setUser(validUser);
+        return like;
     }
 
     private Follow buildValidFollow() {
