@@ -72,7 +72,6 @@ class RoleControllerTest {
                 .statusCode(200);
         RoleFixture.getByName(request.name).then()
                 .statusCode(200);
-        //RoleFixture.getByName("bad request").then().statusCode(400);//400 pas possible, ca renvoie un liste vide
     }
 
     @Test
