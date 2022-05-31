@@ -12,6 +12,9 @@ class ProjectValidationServiceTest {
     @Test
     void isValid() {
         assertThat(validationService.isValid(globalObject.validProject)).isEqualTo(true);
+        var invalid = globalObject.validProject;
+        invalid.setName("");
+        assertThat(validationService.isValid(invalid)).isEqualTo(false);
         assertThat(validationService.isValid(null)).isEqualTo(false);
     }
 }
