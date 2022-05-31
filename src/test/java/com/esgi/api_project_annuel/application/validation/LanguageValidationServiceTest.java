@@ -14,6 +14,9 @@ class LanguageValidationServiceTest {
     @Test
     void languageIsValid() {
         assertThat(validationService.languageIsValid(globalObject.validLanguage)).isEqualTo(true);
+        var invalid = globalObject.validLanguage;
+        invalid.setName("");
+        assertThat(validationService.languageIsValid(invalid)).isEqualTo(false);
         assertThat(validationService.languageIsValid(null)).isEqualTo(false);
     }
 }
