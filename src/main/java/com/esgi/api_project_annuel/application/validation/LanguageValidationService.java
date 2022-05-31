@@ -7,7 +7,7 @@ public class LanguageValidationService {
     public boolean languageIsValid(Language language){
         if(language == null)
             return false;
-        return !language.getName().isBlank();
+        return !language.getName().isBlank() && !language.getName().equals("");
     }
 
 }
