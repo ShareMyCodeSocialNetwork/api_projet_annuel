@@ -1,11 +1,9 @@
 package com.esgi.api_project_annuel.application.validation;
 
-import com.esgi.api_project_annuel.Domain.entities.Code;
-import com.esgi.api_project_annuel.Domain.entities.Language;
+import com.esgi.api_project_annuel.GlobalObject;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class LanguageValidationServiceTest {
 
