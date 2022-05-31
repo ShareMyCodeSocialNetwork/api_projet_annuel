@@ -50,7 +50,8 @@ public class GroupCommand {
         Optional<Group> dbGroup = Optional.ofNullable(groupRepository.findById(groupId));
         if(dbGroup.isPresent()){
             dbGroup.get().setName(groupRequest.name);
-            return groupRepository.save(dbGroup.get());
+            if(groupValidationService.isValid(dbGroup.get()))
+                return groupRepository.save(dbGroup.get());
         }
         return null;
     }
