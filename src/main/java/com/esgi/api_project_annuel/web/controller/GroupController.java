@@ -87,11 +87,8 @@ public class GroupController {
     @PutMapping("/update/{groupId}")
     public ResponseEntity<GroupResponse> updateGroup(@PathVariable int groupId, @RequestBody GroupRequest groupRequest) {
         var group = groupCommand.update(groupId, groupRequest);
-        if (group != null){
-            System.out.println(group);
+        if (group != null)
             return new ResponseEntity<>(groupToGroupResponse(group), HttpStatus.OK);
-        }
-
         return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
     }
 
