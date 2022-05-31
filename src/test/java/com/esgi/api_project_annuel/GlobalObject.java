@@ -11,6 +11,7 @@ public class GlobalObject {
     public Group validGroup;
     public Comment validComment;
     public Post validPost;
+    public Role validRole;
 
     public GlobalObject() {
         validUser = buildValidUser();
@@ -20,6 +21,13 @@ public class GlobalObject {
         validCode = buildValidCode();
         validComment = buildValidComment();
         validPost = buildValidPost();
+        validRole = buildValidRole();
+    }
+
+    private Role buildValidRole() {
+        var role = new Role();
+        role.setTitlePermission("valid title");
+        return role;
     }
 
     private Post buildValidPost() {
