@@ -1,6 +1,7 @@
 package com.esgi.api_project_annuel.application.validation;
 
 import com.esgi.api_project_annuel.Domain.entities.User;
+import com.esgi.api_project_annuel.GlobalObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
