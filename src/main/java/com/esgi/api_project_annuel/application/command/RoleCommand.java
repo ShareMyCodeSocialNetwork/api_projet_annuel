@@ -41,7 +41,8 @@ public class RoleCommand {
         Optional<Role> dbRole = Optional.ofNullable(roleRepository.findById(roleId));
         if(dbRole.isPresent()){
             dbRole.get().setTitlePermission(roleRequest.name);
-            return roleRepository.save(dbRole.get());
+            if(roleValidationService.isValid(dbRole.get()))
+                return roleRepository.save(dbRole.get());
         }
         return null;
     }
