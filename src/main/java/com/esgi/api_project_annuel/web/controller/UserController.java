@@ -98,13 +98,13 @@ public class UserController {
         );
     }
 
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public ResponseEntity<UserResponse> login(@RequestBody UserRequest userRequest){
         var user = userQuery.getByEmailAndPassword(userRequest.email, userRequest.password);
         if(user == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userToUserResponse(user), HttpStatus.OK);
-    }
+    }*/
 
     @PatchMapping("/password/{userId}")
     public ResponseEntity<UserResponse> changePassword(@PathVariable int userId, @RequestBody UserRequest userRequest){
