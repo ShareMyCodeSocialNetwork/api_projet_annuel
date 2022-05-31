@@ -1,4 +1,4 @@
-package com.esgi.api_project_annuel.web.controller;
+package com.esgi.api_project_annuel.web.controller.fixture;
 
 import com.esgi.api_project_annuel.Domain.entities.Group;
 import com.esgi.api_project_annuel.web.request.GroupRequest;
@@ -55,7 +55,7 @@ public class GroupFixture {
 
 
 
-    static GroupRequest groupToGroupRequest(Group group){
+    public static GroupRequest groupToGroupRequest(Group group){
         var request = new GroupRequest();
         request.name = group.getName();
         return request;
