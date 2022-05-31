@@ -142,7 +142,7 @@ class UserControllerTest {
         UserFixture.changeEmail(response.getId(),request).then()
                 .statusCode(400); //email exist
 
-        request.email = "ljehanno@myges.fr";
+        request.email = "autre@autre.test";
         response = UserFixture.changeEmail(response.getId(),request).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
@@ -151,7 +151,8 @@ class UserControllerTest {
         request.email = "";
         UserFixture.changeEmail(response.getId(),request).then()
                 .statusCode(400);
-                UserFixture.deleteById(response.getId()).then()
+
+        UserFixture.deleteById(response.getId()).then()
                 .statusCode(202);
     }
 
@@ -162,18 +163,18 @@ class UserControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
         request.pseudo = "NewPseudo";
-        response = UserFixture.changePseudo(response.getId(),request).then()
+        var response2 = UserFixture.changePseudo(response.getId(),request).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
-        assertThat(response.getPseudo()).isEqualTo(request.pseudo);
+        assertThat(response2.getPseudo()).isEqualTo(request.pseudo);
 
-        UserFixture.changePseudo(response.getId(),request).then()
+        UserFixture.changePseudo(response2.getId(),request).then()
                 .statusCode(400); // pseudo exist
 
         request.pseudo = "";
-        UserFixture.changePseudo(response.getId(),request).then()
+        UserFixture.changePseudo(response2.getId(),request).then()
                 .statusCode(400);
-                UserFixture.deleteById(response.getId()).then()
+                UserFixture.deleteById(response2.getId()).then()
                 .statusCode(202);
     }
 

@@ -111,11 +111,10 @@ public class UserCommand implements UserDetailsService {
     public User changeEmail(int userId, UserRequest userRequest){
         Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
         if(userFromDB.isPresent()){
-            var user = userFromDB.get();
-            user.setEmail(userRequest.email);
-            if(userValidationService.isUserValid(user))
-                if(!userQuery.userEmailExist(user.getEmail()))
-                    return userRepository.save(user);
+            userFromDB.get().setEmail(userRequest.email);
+            if(userValidationService.isUserValid(userFromDB.get()))
+                if(!userQuery.userEmailExist(userFromDB.get().getEmail()))
+                    return userRepository.save(userFromDB.get());
         }
         return null;
     }
@@ -124,9 +123,10 @@ public class UserCommand implements UserDetailsService {
         Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
         if(userFromDB.isPresent()){
             var user = userFromDB.get();
+            if(userRepository.findByPseudo(userRequest.pseudo) != null)
+                return null;
             user.setPseudo(userRequest.pseudo);
             if(userValidationService.isUserValid(user))
-                if(!userQuery.userPseudoExist(user.getPseudo()))
                     return userRepository.save(user);
         }
         return null;
