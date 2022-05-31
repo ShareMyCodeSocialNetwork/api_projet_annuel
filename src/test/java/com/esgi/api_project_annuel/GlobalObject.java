@@ -14,6 +14,8 @@ public class GlobalObject {
     public Role validRole;
     public Follow validFollow;
     public Like validLike;
+    public Snippet validSnippet;
+    public UserRoleGroup validUserRoleGroup;
 
     public GlobalObject() {
         validUser = buildValidUser();
@@ -26,6 +28,25 @@ public class GlobalObject {
         validRole = buildValidRole();
         validFollow = buildValidFollow();
         validLike = buildValidLike();
+        validSnippet = buildValidSnippet();
+        validUserRoleGroup = buildValidUserRoleGroup();
+    }
+
+    private UserRoleGroup buildValidUserRoleGroup() {
+        var userRoleGroup = new UserRoleGroup();
+        userRoleGroup.setUser(validUser);
+        userRoleGroup.setGroup(validGroup);
+        userRoleGroup.setRole(validRole);
+        return userRoleGroup;
+    }
+
+    private Snippet buildValidSnippet() {
+        var snippet = new Snippet();
+        snippet.setContent("valid content");
+        snippet.setLanguage(validLanguage);
+        snippet.setName("valid name");
+        snippet.setUser(validUser);
+        return snippet;
     }
 
     private Like buildValidLike() {
