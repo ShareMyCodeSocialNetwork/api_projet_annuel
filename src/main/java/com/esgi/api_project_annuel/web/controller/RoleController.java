@@ -86,7 +86,7 @@ public class RoleController {
         roleCommand.delete(roleId);
         return new ResponseEntity<>(
                 "Role " + roleId + " deleted",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.OK
         );
     }
 
