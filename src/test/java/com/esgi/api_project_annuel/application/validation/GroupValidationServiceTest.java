@@ -12,6 +12,9 @@ class GroupValidationServiceTest {
     @Test
     void isValid() {
         assertThat(validationService.isValid(globalObject.validGroup)).isEqualTo(true);
+        var invalidGroup = globalObject.validGroup;
+        invalidGroup.setName("");
+        assertThat(validationService.isValid(invalidGroup)).isEqualTo(false);
         assertThat(validationService.isValid(null)).isEqualTo(false);
     }
 }
