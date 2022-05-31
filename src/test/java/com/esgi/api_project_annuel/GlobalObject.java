@@ -1,4 +1,4 @@
-package com.esgi.api_project_annuel.application.validation;
+package com.esgi.api_project_annuel;
 
 import com.esgi.api_project_annuel.Domain.entities.*;
 import org.checkerframework.checker.units.qual.C;
@@ -10,6 +10,7 @@ public class GlobalObject {
     public Project validProject;
     public Group validGroup;
     public Comment validComment;
+    public Post validPost;
 
     public GlobalObject() {
         validUser = buildValidUser();
@@ -17,8 +18,17 @@ public class GlobalObject {
         validProject = buildValidProject();
         validGroup = buildValidGroup();
         validCode = buildValidCode();
-        validComment = new Comment();
+        validComment = buildValidComment();
+        validPost = buildValidPost();
     }
+
+    private Post buildValidPost() {
+        var post = new Post();
+        post.setContent("validContent");
+        post.setUser(validUser);
+        return post;
+    }
+
 
     private User buildValidUser(){
         var  user = new User();
@@ -29,6 +39,14 @@ public class GlobalObject {
         user.setPseudo("pseudo");
         user.setProfilePicture("profilePicture");
         return user;
+    }
+
+    private Comment buildValidComment(){
+        var comment = new Comment();
+        comment.setContent("valid content");
+        comment.setUser(validUser);
+        comment.setPost(validPost);
+        return comment;
     }
     private Code buildValidCode(){
         var code = new Code();
