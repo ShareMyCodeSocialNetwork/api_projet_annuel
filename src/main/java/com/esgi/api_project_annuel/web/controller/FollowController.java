@@ -85,7 +85,7 @@ public class FollowController {
         );
     }
 
-    @DeleteMapping("/{followId}")
+    @DeleteMapping("/delete/{followId}")
     public ResponseEntity<String> deleteFollow(@PathVariable int followId) {
         var follow = followQuery.getById(followId);
         if(follow == null)

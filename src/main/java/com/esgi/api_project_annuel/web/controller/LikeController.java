@@ -79,7 +79,7 @@ public class LikeController {
     }
 
 
-    @DeleteMapping("/{likeId}")
+    @DeleteMapping("/delete/{likeId}")
     public ResponseEntity<?> deleteLike(@PathVariable int likeId){
         var like = likeQuery.getById(likeId);
         if(like == null)

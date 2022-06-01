@@ -73,7 +73,7 @@ public class PostController {
         );
     }
 
-    @PatchMapping("/{postId}")
+    @PatchMapping("/update/{postId}")
     public ResponseEntity<?> changeContent(@PathVariable int postId,@RequestBody PostRequest postRequest){
         var post = postCommand.changeContent(postRequest,postId);
         if(post == null)

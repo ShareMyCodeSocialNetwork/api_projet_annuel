@@ -1,5 +1,7 @@
 package com.esgi.api_project_annuel.application.command;
+import com.esgi.api_project_annuel.Domain.entities.Role;
 import com.esgi.api_project_annuel.Domain.entities.User;
+import com.esgi.api_project_annuel.Domain.repository.RoleRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
@@ -22,6 +24,9 @@ public class UserCommand implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Autowired
     UserQuery userQuery;
@@ -147,6 +152,14 @@ public class UserCommand implements UserDetailsService {
                 }
 
         );
+    }
+
+    public void assignUserWithRole(int role_id,int user_id){
+        User user = userRepository.findById(user_id);
+        Role role = roleRepository.findById(role_id);
+
+        user.setRoles(role);
+        userRepository.save(user);
     }
 
 }

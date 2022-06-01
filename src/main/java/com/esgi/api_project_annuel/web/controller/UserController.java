@@ -98,15 +98,8 @@ public class UserController {
         );
     }
 
-    /*@PostMapping("/login")
-    public ResponseEntity<UserResponse> login(@RequestBody UserRequest userRequest){
-        var user = userQuery.getByEmailAndPassword(userRequest.email, userRequest.password);
-        if(user == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(userToUserResponse(user), HttpStatus.OK);
-    }*/
 
-    @PatchMapping("/password/{userId}")
+    @PatchMapping("/update/password/{userId}")
     public ResponseEntity<UserResponse> changePassword(@PathVariable int userId, @RequestBody UserRequest userRequest){
         var userNewPassword = userCommand.changePassword(userId, userRequest);
         if(userNewPassword == null)
@@ -114,7 +107,7 @@ public class UserController {
         return new ResponseEntity<>(userToUserResponse(userNewPassword), HttpStatus.OK);
     }
 
-    @PatchMapping("/email/{userId}")
+    @PatchMapping("/update/email/{userId}")
     public ResponseEntity<UserResponse> changeEmail(@PathVariable int userId, @RequestBody UserRequest userRequest){
         var user = userCommand.changeEmail(userId, userRequest);
         if(user == null)
@@ -123,7 +116,7 @@ public class UserController {
 
     }
 
-    @PatchMapping("/pseudo/{userId}")
+    @PatchMapping("/update/pseudo/{userId}")
     public ResponseEntity<UserResponse> changePseudo(@PathVariable int userId, @RequestBody UserRequest userRequest){
         var user = userCommand.changePseudo(userId, userRequest);
         if(user == null)
@@ -135,7 +128,7 @@ public class UserController {
 
 
 
-    @PatchMapping("/lastname/{userId}")
+    @PatchMapping("/update/lastname/{userId}")
     public ResponseEntity<UserResponse> changeLastname(@PathVariable int userId, @RequestBody UserRequest userRequest){
         var user = userCommand.changeLastname(userId, userRequest);
         if(user == null)
@@ -146,7 +139,7 @@ public class UserController {
 
 
 
-    @PatchMapping("/firstname/{userId}")
+    @PatchMapping("/update/firstname/{userId}")
     public ResponseEntity<UserResponse> changeFirstname(@PathVariable int userId, @RequestBody UserRequest userRequest){
         var user = userCommand.changeFirstname(userId, userRequest);
         if(user == null)
@@ -155,7 +148,7 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/delete/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable int userId) {
         var user = userQuery.getById(userId);
         if(user == null)

@@ -63,7 +63,7 @@ public class CommentController {
         );
     }
 
-    @PatchMapping("/{commentId}")
+    @PatchMapping("/update/{commentId}")
     public ResponseEntity<CommentResponse> changeContent(@PathVariable int commentId, @RequestBody CommentRequest commentRequest){
         var comment = commentQuery.getById(commentId);
         if(comment == null)
@@ -113,7 +113,7 @@ public class CommentController {
     }
 
 
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/delete/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable int commentId){
         try{
             if(null == commentQuery.getById(commentId))

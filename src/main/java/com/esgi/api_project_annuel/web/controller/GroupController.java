@@ -67,7 +67,7 @@ public class GroupController {
         );
     }
 
-    @PatchMapping("/change_name/{groupId}")
+    @PatchMapping("/update/name/{groupId}")
     public ResponseEntity<GroupResponse> changeName(@PathVariable int groupId, @RequestBody GroupRequest groupRequest) {
         var group = groupQuery.getById(groupId);
         if(group == null)
@@ -93,7 +93,7 @@ public class GroupController {
     }
 
 
-    @DeleteMapping("/{groupId}")
+    @DeleteMapping("/delete/{groupId}")
     public ResponseEntity<String> deleteGroup(@PathVariable int groupId) {
         var group = groupQuery.getById(groupId);
         if(group == null)

@@ -118,7 +118,7 @@ public class ProjectController {
     }
 
 
-    @DeleteMapping("/{projectId}")
+    @DeleteMapping("/delete/{projectId}")
     public ResponseEntity<String> deleteProject(@PathVariable int projectId){
         var project = projectQuery.getById(projectId);
         if(project == null)
