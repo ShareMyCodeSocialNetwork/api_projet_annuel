@@ -24,17 +24,34 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 
 
 	@Bean
-	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, UserCommand userCommand){
+	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository){
 		return args -> {
-			roleRepository.save(createRole("USER"));
-			roleRepository.save(createRole("ADMIN"));
+			var role_USER = roleRepository.save(createRole("USER"));
+			var role_ADMIN = roleRepository.save(createRole("ADMIN"));
 
-			userRepository.save(createUser("David","Arnaud","david@hotmail.fr","coucou"));
-			userRepository.save(createUser("Lucas","Jehanno","lucas@hotmail.fr","coucou"));
+			System.out.println("----------------------------");
+			System.out.println(role_USER.getId());
+			System.out.println(role_USER.getTitlePermission());
+			System.out.println(role_ADMIN.getId());
+			System.out.println(role_ADMIN.getTitlePermission());
+			System.out.println("----------------------------");
 
-			userCommand.assignUserWithRole(2,1);
-			userCommand.assignUserWithRole(2,2);
+			var saved_user1 = userRepository.save(createUser("David","Arnaud","david@hotmail.fr","coucou"));
+			var saved_user2 = userRepository.save(createUser("Lucas","Jehanno","lucas@hotmail.fr","azerty"));
 
+			saved_user1.setRoles(role_USER);
+			saved_user2.setRoles(role_ADMIN);
+			userRepository.save(saved_user1);
+			userRepository.save(saved_user2);
+
+			System.out.println("----------------------------");
+			System.out.println(saved_user1.getId());
+			System.out.println(saved_user1.getPseudo());
+			System.out.println(saved_user1.getRoles().getTitlePermission());
+			System.out.println(saved_user2.getId());
+			System.out.println(saved_user2.getPseudo());
+			System.out.println(saved_user2.getRoles().getTitlePermission());
+			System.out.println("----------------------------");
 		};
 	}
 
