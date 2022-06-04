@@ -53,6 +53,7 @@ public class UserCommand implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
         User user = userRepository.findByEmail(email);
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRoles().getTitlePermission()));
@@ -69,6 +70,7 @@ public class UserCommand implements UserDetailsService {
         user.setProfilePicture(
                 Objects.requireNonNullElse(userRequest.profilePicture, "default_profile_picture")
         );
+        user.setRoles(roleRepository.findById(1));
         if (!userValidationService.isUserValid(user))
             return null;
         String encodedPassword = passwordEncoder.encode(userRequest.password);
@@ -128,10 +130,9 @@ public class UserCommand implements UserDetailsService {
         Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
         if(userFromDB.isPresent()){
             var user = userFromDB.get();
-            if(userRepository.findByPseudo(userRequest.pseudo) != null)
-                return null;
             user.setPseudo(userRequest.pseudo);
             if(userValidationService.isUserValid(user))
+                if(!userQuery.userPseudoExist(user.getPseudo()))
                     return userRepository.save(user);
         }
         return null;
@@ -148,6 +149,8 @@ public class UserCommand implements UserDetailsService {
                     followCommand.deleteAllByFollowed(user);
                     followCommand.deleteAllByFollower(user);
                     userRoleGroupCommand.deleteAllByUser(user);
+                    user.setRoles(null);
+                    userRepository.save(user);
                     userRepository.delete(user);
                 }
 
