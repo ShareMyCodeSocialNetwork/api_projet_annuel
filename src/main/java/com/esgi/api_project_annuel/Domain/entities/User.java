@@ -36,7 +36,7 @@ public class User {
     @Column(name = "profile_picture")
     private String profilePicture;
 
-    @OneToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+    @ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
     @JoinColumn(name="user_roles")
     private Role roles;
 
