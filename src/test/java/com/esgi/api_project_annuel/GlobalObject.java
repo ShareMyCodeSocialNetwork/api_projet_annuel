@@ -3,6 +3,8 @@ package com.esgi.api_project_annuel;
 import com.esgi.api_project_annuel.Domain.entities.*;
 import org.checkerframework.checker.units.qual.C;
 
+import java.util.UUID;
+
 public class GlobalObject {
     public User validUser;
     public Code validCode;
@@ -16,6 +18,8 @@ public class GlobalObject {
     public Like validLike;
     public Snippet validSnippet;
     public UserRoleGroup validUserRoleGroup;
+    public User adminUser;
+    public User lambdaUser;
 
     public GlobalObject() {
         validUser = buildValidUser();
@@ -32,7 +36,7 @@ public class GlobalObject {
         validUserRoleGroup = buildValidUserRoleGroup();
     }
 
-    private UserRoleGroup buildValidUserRoleGroup() {
+    public UserRoleGroup buildValidUserRoleGroup() {
         var userRoleGroup = new UserRoleGroup();
         userRoleGroup.setUser(validUser);
         userRoleGroup.setGroup(validGroup);
@@ -40,7 +44,7 @@ public class GlobalObject {
         return userRoleGroup;
     }
 
-    private Snippet buildValidSnippet() {
+    public Snippet buildValidSnippet() {
         var snippet = new Snippet();
         snippet.setContent("valid content");
         snippet.setLanguage(validLanguage);
@@ -49,27 +53,27 @@ public class GlobalObject {
         return snippet;
     }
 
-    private Like buildValidLike() {
+    public Like buildValidLike() {
         var like = new Like();
         like.setPost(validPost);
         like.setUser(validUser);
         return like;
     }
 
-    private Follow buildValidFollow() {
+    public Follow buildValidFollow() {
         var follow = new Follow();
         follow.setFollowerUser(validUser);
         follow.setFollowedUser(validUser);
         return follow;
     }
 
-    private Role buildValidRole() {
+    public Role buildValidRole() {
         var role = new Role();
         role.setTitlePermission("valid title");
         return role;
     }
 
-    private Post buildValidPost() {
+    public Post buildValidPost() {
         var post = new Post();
         post.setContent("validContent");
         post.setUser(validUser);
@@ -77,25 +81,25 @@ public class GlobalObject {
     }
 
 
-    private User buildValidUser(){
+    public User buildValidUser(){
         var  user = new User();
-        user.setEmail("validMail@gmail.com");
+        user.setEmail(randomEmail());
         user.setFirstname("Lastname");
         user.setLastname("Firstname");
         user.setPassword("PasswordValid");
-        user.setPseudo("pseudo");
+        user.setPseudo(randomPseudo());
         user.setProfilePicture("profilePicture");
         return user;
     }
 
-    private Comment buildValidComment(){
+    public Comment buildValidComment(){
         var comment = new Comment();
         comment.setContent("valid content");
         comment.setUser(validUser);
         comment.setPost(validPost);
         return comment;
     }
-    private Code buildValidCode(){
+    public Code buildValidCode(){
         var code = new Code();
         code.setNameCode("validName");
         code.setUser(validUser);
@@ -105,7 +109,7 @@ public class GlobalObject {
         return code;
     }
 
-    private Project buildValidProject() {
+    public Project buildValidProject() {
         var project = new Project();
         project.setOwner(validUser);
         project.setGroup(validGroup);
@@ -113,14 +117,21 @@ public class GlobalObject {
         return project;
     }
 
-    private Language buildValidLanguage() {
+    public Language buildValidLanguage() {
         var language = new Language();
         language.setName("valid name");
         return language;
     }
-    private Group buildValidGroup() {
+    public Group buildValidGroup() {
         var group = new Group();
         group.setName("valid name");
         return group;
+    }
+
+    public static String randomEmail() {
+        return "random-" + UUID.randomUUID() + "@example.com";
+    }
+    public static String randomPseudo(){
+        return "random-pseudo" + UUID.randomUUID();
     }
 }
