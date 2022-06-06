@@ -33,22 +33,18 @@ class FollowControllerTest {
     @Test
     void addFollow() {
         var token = TokenFixture.userToken();
-        var user1 = UserFixture.getById(1,token).then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject(".", UserResponse.class);
-        var user2 = UserFixture.getById(3,token).then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject(".", UserResponse.class);
 
         var request = new FollowRequest();
-        request.followerUserId = user1.getId();
-        request.followedUserId = user2.getId();
+        request.followerUserId = 3;
+        request.followedUserId = 1;
         var response = FollowFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", FollowResponse.class);
 
         assertThat(response.followed.getId()).isEqualTo(request.followedUserId);
         assertThat(response.follower.getId()).isEqualTo(request.followerUserId );
+
+        FollowFixture.deleteById(response.getId(),token);
     }
 
     @Test
@@ -90,7 +86,7 @@ class FollowControllerTest {
     @Test
     void deleteFollow() {
         var token = TokenFixture.userToken();
-        var user1 = UserFixture.getById(1,token).then()
+        var user1 = UserFixture.getById(2,token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
         var user2 = UserFixture.getById(3,token).then()
@@ -106,7 +102,7 @@ class FollowControllerTest {
                 .extract().body().jsonPath().getObject(".", FollowResponse.class);
 
         FollowFixture.deleteById(response.getId(),token).then()
-                .statusCode(202);
+                .statusCode(204);
 
         FollowFixture.deleteById(0,token).then()
             .statusCode(400);

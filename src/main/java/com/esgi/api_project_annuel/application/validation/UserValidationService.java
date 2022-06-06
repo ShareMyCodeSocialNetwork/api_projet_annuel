@@ -11,7 +11,7 @@ public class UserValidationService {
     public boolean isUserValid(User user) {
         if(user == null)
             return false;
-        return  !user.getFirstname().isBlank() && !user.getLastname().isBlank() && new EmailValidation().isValid(user.getEmail()) && user.getPassword().length() >= 8 && user.getPassword().length() <= 30 && !user.getPseudo().isBlank();
+        return  !user.getFirstname().isBlank() && !user.getLastname().isBlank() && new EmailValidation().isValid(user.getEmail()) && user.getPassword().length() >= 8 /*&& user.getPassword().length() <= 30*/ && !user.getPseudo().isBlank();
 
     }
 

@@ -43,7 +43,7 @@ public class FollowFixture {
                 .contentType(ContentType.JSON)
                 .when()
                 .header("Authorization","Bearer "+token.access_token)
-                .delete("/follow/" + id);
+                .delete("/follow/delete/" + id);
     }
 
     public static Response getAll(Token token){
