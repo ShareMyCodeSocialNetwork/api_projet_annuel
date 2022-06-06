@@ -45,11 +45,77 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers(HttpMethod.POST,"/login/**","/token/refresh/**","/user/create").permitAll();
-        http.authorizeRequests().antMatchers(HttpMethod.GET,"/**").hasAnyAuthority("ADMIN");
-        http.authorizeRequests().antMatchers(HttpMethod.PUT,"/**").hasAnyAuthority("ADMIN");
-        http.authorizeRequests().antMatchers(HttpMethod.POST,"/**").hasAnyAuthority("ADMIN");
-        http.authorizeRequests().antMatchers(HttpMethod.DELETE,"/**").hasAnyAuthority("ADMIN");
+        http.authorizeRequests()
+                .antMatchers(
+                        HttpMethod.POST,
+                        "/login",
+                        "/token/refresh",
+                        "/user/create"
+                ).permitAll()
+                .antMatchers(
+                        HttpMethod.POST,
+                        "/code/create",
+                        "/comment/create",
+                        "/follow/create",
+                        "/group/create",
+                        "/like/create",
+                        "/post/create",
+                        "/project/create",
+                        "/snippet/create",
+                        "/user_role_group/create"
+                ).hasAnyAuthority("USER","ADMIN")
+                .antMatchers(
+                        HttpMethod.POST,
+                        "/role/create",
+                        "/language/create"
+                ).hasAnyAuthority("ADMIN")
+                .antMatchers(
+                        HttpMethod.GET,
+                        "/**",
+                        "/group/name/**"
+                ).hasAnyAuthority("USER","ADMIN")
+        //todo, pour update un user peut etre verifier dans la route que lemail du token = email user modifer
+        //todo idem pour projet verifier l owner, pareil group
+        //todo idem pour delete
+                .antMatchers(
+                        HttpMethod.PUT,
+                        "/code/**",
+                        "/comment/**",
+                        "/follow/**",
+                        "/group/**",
+                        "/like/**",
+                        "/post/**",
+                        "/project/**",
+                        "/snippet/**",
+                        "/user/email/**",
+                        "/user/password/**"
+                ).hasAnyAuthority("USER","ADMIN")
+                .antMatchers(
+                        HttpMethod.PATCH,
+                        "/code/**",
+                        "/comment/**",
+                        "/follow/**",
+                        "/group/**",
+                        "/like/**",
+                        "/post/**",
+                        "/project/**",
+                        "/snippet/**",
+                        "/user/email/**",
+                        "/user/password/**"
+                ).hasAnyAuthority("USER","ADMIN")
+                .antMatchers(
+                        HttpMethod.DELETE,
+                        "/code/delete/**",
+                        "/comment/delete/**",
+                        "/follow/delete/**",
+                        "/group/delete/**",
+                        "/like/delete/**",
+                        "/post/delete/**",
+                        "/project/delete/**",
+                        "/snippet/delete/**",
+                        "/user/delete/**"
+                ).hasAnyAuthority("USER","ADMIN");
+
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
