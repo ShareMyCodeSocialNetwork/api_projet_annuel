@@ -46,7 +46,7 @@ public class UserFixture {
                 .when()
                 .body(userRequest)
                 .header("Authorization","Bearer "+token.access_token)
-                .patch("/user/lastname/" + userId);
+                .patch("/user/update/lastname/" + userId);
     }
 
     public static Response changeFirstname(int userId, UserRequest userRequest, Token token){
@@ -55,7 +55,7 @@ public class UserFixture {
                 .when()
                 .body(userRequest)
                 .header("Authorization","Bearer "+token.access_token)
-                .patch("/user/firstname/" + userId);
+                .patch("/user/update/firstname/" + userId);
     }
     public static Response changePassword(int userId, UserRequest userRequest, Token token){
         return given()
@@ -63,7 +63,7 @@ public class UserFixture {
                 .when()
                 .body(userRequest)
                 .header("Authorization","Bearer "+token.access_token)
-                .patch("/user/password/" + userId);
+                .patch("/user/update/password/" + userId);
     }
 
     public static Response changeEmail(int userId, UserRequest userRequest, Token token){
@@ -72,7 +72,7 @@ public class UserFixture {
                 .when()
                 .body(userRequest)
                 .header("Authorization","Bearer "+token.access_token)
-                .patch("/user/email/" + userId);
+                .patch("/user/update/email/" + userId);
 
     }
 
@@ -109,7 +109,7 @@ public class UserFixture {
                 .when()
                 .header("Authorization","Bearer "+token.access_token)
                 .body(request)
-                .patch("/user/pseudo/" + id);
+                .patch("/user/update/pseudo/" + id);
     }
     public static UserRequest userToUserRequest(User user){
         var request = new UserRequest();
