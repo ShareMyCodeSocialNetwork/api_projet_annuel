@@ -26,7 +26,7 @@ public class TokenFixture {
     public static Token adminToken(){
         var request = new UserRequest();
         request.email = "lucas@hotmail.fr";
-        request.password = "azerty";
+        request.password = "azerty1234";
         return TokenFixture.login(request).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".",Token.class);
@@ -35,7 +35,7 @@ public class TokenFixture {
     public static Token userToken(){
         var request = new UserRequest();
         request.email = "test@test.fr";
-        request.password = "test";
+        request.password = "test1234test";
         return TokenFixture.login(request).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".",Token.class);
