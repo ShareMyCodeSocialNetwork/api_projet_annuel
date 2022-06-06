@@ -56,13 +56,13 @@ class UserRepositoryTest {
     @Test
     public void should_find_2() {
         var users = userRepository.findAll();
-        assertThat(users).hasSize(2);
+        assertThat(users).hasSize(3);
     }
 
     @Test
     public void should_find_2_ROLE() {
         var users = userRepository.findAll();
-        assertThat(users).size().isEqualTo(2);
+        assertThat(users).size().isEqualTo(3);
     }
 
     @Test
@@ -75,7 +75,7 @@ class UserRepositoryTest {
         entityManager.persist(user3);
 
         var users = userRepository.findAll();
-        assertThat(users).hasSize(5).contains(user1, user2, user3);
+        assertThat(users).hasSize(6).contains(user1, user2, user3);
     }
 
     @Test
@@ -102,7 +102,7 @@ class UserRepositoryTest {
         entityManager.persist(user3);
         userRepository.deleteById(user2.getId());
         var users = userRepository.findAll();
-        assertThat(users).hasSize(4).contains(user1, user3);
+        assertThat(users).hasSize(5).contains(user1, user3);
     }
 
 
