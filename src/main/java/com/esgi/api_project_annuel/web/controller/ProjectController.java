@@ -41,7 +41,7 @@ public class ProjectController {
         var project = projectCommand.create(projectRequest, user, group);
         if(project == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(projectToProjectResponse(project), HttpStatus.OK);
+        return new ResponseEntity<>(projectToProjectResponse(project), HttpStatus.CREATED);
     }
 
     @GetMapping("/")
