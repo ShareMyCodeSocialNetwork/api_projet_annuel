@@ -1,9 +1,9 @@
 package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.GlobalObject;
-import com.esgi.api_project_annuel.web.controller.fixture.GroupFixture;
+import com.esgi.api_project_annuel.web.controller.fixture.*;
 import com.esgi.api_project_annuel.web.controller.fixture.UserFixture;
-import com.esgi.api_project_annuel.web.controller.fixture.UserFixture;
+import com.esgi.api_project_annuel.web.request.UserRequest;
 import com.esgi.api_project_annuel.web.response.GroupResponse;
 import com.esgi.api_project_annuel.web.response.UserResponse;
 import com.esgi.api_project_annuel.web.response.UserResponse;
@@ -47,7 +47,8 @@ class UserControllerTest {
         UserFixture.create(request).then()
                 .statusCode(400);
 
-        UserFixture.deleteById(response.getId()).then()
+
+        UserFixture.deleteById(response.getId(),TokenFixture.adminToken()).then()
                 .statusCode(202);
     }
 
@@ -57,28 +58,35 @@ class UserControllerTest {
         var response = UserFixture.create(request).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
-        UserFixture.getByPseudo(request.pseudo).then()
+
+        var token = TokenFixture.getToken(request);
+
+        UserFixture.getByPseudo(request.pseudo,token).then()
                 .statusCode(200);
         request.pseudo = "not found";
-        UserFixture.getByPseudo(request.pseudo).then()
+        UserFixture.getByPseudo(request.pseudo,token).then()
                 .statusCode(400);
-        UserFixture.deleteById(response.getId()).then()
+
+
+        UserFixture.deleteById(response.getId(),TokenFixture.adminToken()).then()
                 .statusCode(202);
     }
 
     @Test
     void getByEmail() {
-        var request = UserFixture.userToUserRequest(globalObject.validUser);
+        var request = UserFixture.userToUserRequest(globalObject.buildValidUser());
+
         var response = UserFixture.create(request).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
-        UserFixture.getByEmail(request.email).then()
+
+        var token = TokenFixture.getToken(request);
+
+        UserFixture.getByEmail(request.email,token).then()
                 .statusCode(200);
         request.email = "not found";
-        UserFixture.getByEmail(request.email).then()
+        UserFixture.getByEmail(request.email,token).then()
                 .statusCode(400);
-        UserFixture.deleteById(response.getId()).then()
-                .statusCode(202);
     }
 
     @Test
@@ -87,11 +95,15 @@ class UserControllerTest {
         var response = UserFixture.create(request).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
-        var responseALL  = UserFixture.getAll().then()
+
+        var token = TokenFixture.getToken(request);
+
+        var responseALL  = UserFixture.getAll(token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", UserResponse.class);
         assertThat(responseALL).isNotEmpty();
-        UserFixture.deleteById(response.getId()).then()
+
+        UserFixture.deleteById(response.getId(),TokenFixture.adminToken()).then()
                 .statusCode(202);
     }
 
@@ -102,13 +114,17 @@ class UserControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
 
-        UserFixture.getById(response.getId()).then()
+        var token = TokenFixture.getToken(request);
+
+        UserFixture.getById(response.getId(),token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
 
-        UserFixture.getById(0).then()
+        UserFixture.getById(0,token).then()
                 .statusCode(400);
-        UserFixture.deleteById(response.getId()).then()
+
+
+        UserFixture.deleteById(response.getId(),TokenFixture.adminToken()).then()
                 .statusCode(202);
     }
 
@@ -120,18 +136,20 @@ class UserControllerTest {
         var response = UserFixture.create(request).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var token = TokenFixture.getToken(request);
+
         request.password = "NewPassword";
-        response = UserFixture.changePassword(response.getId(),request).then()
+        response = UserFixture.changePassword(response.getId(),request,token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
 
+
         request.password = "";
-        UserFixture.changePassword(response.getId(),request).then()
+        UserFixture.changePassword(response.getId(),request,token).then()
                 .statusCode(400);
-        UserFixture.deleteById(response.getId()).then()
-                .statusCode(202);
     }
-/*
+
     @Test
     void changeEmail() {
         var request = UserFixture.userToUserRequest(globalObject.validUser);
@@ -139,63 +157,70 @@ class UserControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
 
-        UserFixture.changeEmail(response.getId(),request).then()
-                .statusCode(400); //email exist
+        var token = TokenFixture.getToken(request);
 
-        request.email = "autre@autre.test";
-        response = UserFixture.changeEmail(response.getId(),request).then()
+        UserFixture.changeEmail(response.getId(),request, token).then()
+        .statusCode(400); //email exist
+
+        request.email = GlobalObject.randomEmail();
+        response = UserFixture.changeEmail(response.getId(),request, token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
         assertThat(response.getEmail()).isEqualTo(request.email);
 
+        //todo a voir si faut pas refaire un get token
         request.email = "";
-        UserFixture.changeEmail(response.getId(),request).then()
+        UserFixture.changeEmail(response.getId(),request, token).then()
                 .statusCode(400);
 
-        UserFixture.deleteById(response.getId()).then()
+        UserFixture.deleteById(response.getId(),TokenFixture.adminToken()).then()
                 .statusCode(202);
     }
 
     @Test
     void changePseudo() {
-        var request = UserFixture.userToUserRequest(globalObject.validUser);
+        var request = UserFixture.userToUserRequest(globalObject.buildValidUser());
         var response = UserFixture.create(request).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var token = TokenFixture.getToken(request);
+
         request.pseudo = "NewPseudo";
-        var response2 = UserFixture.changePseudo(response.getId(),request).then()
+        var response2 = UserFixture.changePseudo(response.getId(),request,token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
         assertThat(response2.getPseudo()).isEqualTo(request.pseudo);
 
-        UserFixture.changePseudo(response2.getId(),request).then()
+        UserFixture.changePseudo(response2.getId(),request,token).then()
                 .statusCode(400); // pseudo exist
 
         request.pseudo = "";
-        UserFixture.changePseudo(response2.getId(),request).then()
+        UserFixture.changePseudo(response2.getId(),request,token).then()
                 .statusCode(400);
-                UserFixture.deleteById(response2.getId()).then()
+
+        UserFixture.deleteById(response2.getId(),TokenFixture.adminToken()).then()
                 .statusCode(202);
     }
 
     @Test
     void changeLastname() {
-        var request = UserFixture.userToUserRequest(globalObject.validUser);
+        var request = UserFixture.userToUserRequest(globalObject.buildValidUser());
         var response = UserFixture.create(request).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
 
+        var token = TokenFixture.getToken(request);
+
         request.lastname = "NewName";
-        response = UserFixture.changeLastname(response.getId(),request).then()
+        response = UserFixture.changeLastname(response.getId(),request,token ).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
         assertThat(response.getLastname()).isEqualTo(request.lastname);
 
         request.lastname = "";
-        UserFixture.changeLastname(response.getId(),request).then()
+        UserFixture.changeLastname(response.getId(),request,token).then()
                 .statusCode(400);
-                UserFixture.deleteById(response.getId()).then()
-                .statusCode(202);
     }
 
     @Test
@@ -204,19 +229,23 @@ class UserControllerTest {
         var response = UserFixture.create(request).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var token = TokenFixture.getToken(request);
+
         request.firstname = "NewName";
-        response = UserFixture.changeFirstname(response.getId(),request).then()
+        response = UserFixture.changeFirstname(response.getId(),request,token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
         assertThat(response.getFirstname()).isEqualTo(request.firstname);
 
         request.firstname = "";
-        UserFixture.changeFirstname(response.getId(),request).then()
+        UserFixture.changeFirstname(response.getId(),request,token).then()
                 .statusCode(400);
-                UserFixture.deleteById(response.getId()).then()
+
+        UserFixture.deleteById(response.getId(),TokenFixture.adminToken()).then()
                 .statusCode(202);
     }
-*/
+
     @Test
     void deleteUser() {
         var request = UserFixture.userToUserRequest(globalObject.validUser);
@@ -224,14 +253,69 @@ class UserControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
 
-        UserFixture.deleteById(response.getId()).then()
+        var token = TokenFixture.login(request).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".",Token.class);
+
+        UserFixture.deleteById(response.getId(),token).then()
                 .statusCode(202);
 
-        UserFixture.deleteById(response.getId()).then()
+        UserFixture.deleteById(response.getId(),token).then()
                 .statusCode(400);
     }
 
     @Test
     void refreshToken() {
+        /*var request = UserFixture.userToUserRequest(globalObject.validUser);
+        UserFixture.create(request).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        //user lambda
+        var response_user = TokenFixture.login(request).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", Token.class);
+
+        TokenFixture.refresh(response_user.refresh_token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", Token.class);
+        //admin
+        request.email = "lucas@hotmail.fr";
+        request.password = "azerty";
+
+        TokenFixture.login(request).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", Token.class);
+        TokenFixture.refresh(response_user.refresh_token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", Token.class);*/
     }
+
+    @Test
+    void loginToken(){
+        var request = UserFixture.userToUserRequest(globalObject.validUser);
+        UserFixture.create(request).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        //user lambda
+        TokenFixture.login(request).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getJsonObject(".");
+
+        request.password = "mauvais mdp";
+        TokenFixture.login(request).then()
+                .statusCode(401);
+
+        //admin
+        request.email = "lucas@hotmail.fr";
+        request.password = "azerty1234";
+
+        var token = TokenFixture.login(request).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".",Token.class);
+        System.out.println(token);
+
+    }
+
 }
