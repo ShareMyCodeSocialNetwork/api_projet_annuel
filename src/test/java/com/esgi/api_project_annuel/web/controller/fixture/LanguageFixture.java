@@ -8,44 +8,49 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
 public class LanguageFixture {
-    public static Response create(LanguageRequest languageRequest){
+    public static Response create(LanguageRequest languageRequest, Token token){
         return given()
                 .contentType(ContentType.JSON)
                 .when()
                 .body(languageRequest)
+                .header("Authorization","Bearer "+token.access_token)
                 .post("/language/create");
     }
 
-    public static Response getById(int id){
+    public static Response getById(int id, Token token){
         return given()
                 .contentType(ContentType.JSON)
                 .when()
+                .header("Authorization","Bearer "+token.access_token)
                 .get("/language/" + id);
     }
 
 
-    public static Response changeName(int id, LanguageRequest languageRequest){
+    public static Response changeName(int id, LanguageRequest languageRequest, Token token){
 
         return given()
                 .contentType(ContentType.JSON)
                 .when()
                 .body(languageRequest)
+                .header("Authorization","Bearer "+token.access_token)
                 .put("/language/update/" + id);
     }
 
 
 
-    public static Response deleteById(int id){
+    public static Response deleteById(int id, Token token){
         return given()
                 .contentType(ContentType.JSON)
                 .when()
+                .header("Authorization","Bearer "+token.access_token)
                 .delete("/language/delete/" + id);
     }
 
-    public static Response getAll(){
+    public static Response getAll(Token token){
         return given()
                 .contentType(ContentType.JSON)
                 .when()
+                .header("Authorization","Bearer "+token.access_token)
                 .get("/language/");
     }
 

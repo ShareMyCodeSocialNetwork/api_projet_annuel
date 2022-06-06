@@ -3,6 +3,7 @@ package com.esgi.api_project_annuel.web.controller;
 import com.esgi.api_project_annuel.Domain.entities.Language;
 import com.esgi.api_project_annuel.GlobalObject;
 import com.esgi.api_project_annuel.web.controller.fixture.LanguageFixture;
+import com.esgi.api_project_annuel.web.controller.fixture.TokenFixture;
 import com.esgi.api_project_annuel.web.response.RoleResponse;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -29,20 +30,22 @@ class LanguageControllerTest {
     @Test
     void create() {
         var request = LanguageFixture.languageToLanguageRequest(globalObject.validLanguage);
-        LanguageFixture.create(request).then()
+        var token = TokenFixture.adminToken();
+        LanguageFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", Language.class);
         request.name = "";
-        LanguageFixture.create(request).then()
+        LanguageFixture.create(request, token).then()
                 .statusCode(400);
     }
 
     @Test
     void getAllProgrammingLanguages() {
         var request = LanguageFixture.languageToLanguageRequest(globalObject.validLanguage);
-        LanguageFixture.create(request).then()
+        var token = TokenFixture.adminToken();
+        LanguageFixture.create(request, token).then()
                 .statusCode(201);
-        var response  = LanguageFixture.getAll().then()
+        var response  = LanguageFixture.getAll(token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", Language.class);
         assertThat(response).isNotEmpty();
@@ -51,32 +54,34 @@ class LanguageControllerTest {
     @Test
     void getLanguageById() {
         var request = LanguageFixture.languageToLanguageRequest(globalObject.validLanguage);
-        var response = LanguageFixture.create(request).then()
+        var token = TokenFixture.adminToken();
+        var response = LanguageFixture.create(request, token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", Language.class);
 
-        LanguageFixture.getById(response.getId()).then()
+        LanguageFixture.getById(response.getId(), token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", Language.class);
 
-        LanguageFixture.getById(0).then()
+        LanguageFixture.getById(0, token).then()
                 .statusCode(404);
     }
 
     @Test
     void updateLanguage() {
         var request = LanguageFixture.languageToLanguageRequest(globalObject.validLanguage);
-        var response = LanguageFixture.create(request).then()
+        var token = TokenFixture.adminToken();
+        var response = LanguageFixture.create(request, token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", RoleResponse.class);
         request.name = "NewName";
-        response = LanguageFixture.changeName(response.id,request).then()
+        response = LanguageFixture.changeName(response.id,request, token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", RoleResponse.class);
         assertThat(response.name).isEqualTo(request.name);
 
         request.name = "";
-        LanguageFixture.changeName(response.id,request).then()
+        LanguageFixture.changeName(response.id,request, token).then()
                 .statusCode(400);
 
     }
@@ -84,14 +89,15 @@ class LanguageControllerTest {
     @Test
     void deleteLanguage() {
         var request = LanguageFixture.languageToLanguageRequest(globalObject.validLanguage);
-        var response = LanguageFixture.create(request).then()
+        var token = TokenFixture.adminToken();
+        var response = LanguageFixture.create(request, token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", Language.class);
 
-        LanguageFixture.deleteById(response.getId()).then()
+        LanguageFixture.deleteById(response.getId(), token).then()
                 .statusCode(204);
 
-        LanguageFixture.deleteById(response.getId()).then()
+        LanguageFixture.deleteById(response.getId(), token).then()
                 .statusCode(404);
     }
 }
