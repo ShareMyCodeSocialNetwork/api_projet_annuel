@@ -129,7 +129,7 @@ public class ProjectController {
         projectCommand.delete(projectId);
         return new ResponseEntity<>(
                 "Project " + projectId + " deleted",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.NO_CONTENT
         );
     }
 
