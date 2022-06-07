@@ -44,6 +44,9 @@ class FollowControllerTest {
         assertThat(response.followed.getId()).isEqualTo(request.followedUserId);
         assertThat(response.follower.getId()).isEqualTo(request.followerUserId );
 
+       FollowFixture.create(request,token).then()
+                .statusCode(400); //exist dejq
+
         FollowFixture.deleteById(response.getId(),token);
     }
 
@@ -59,10 +62,16 @@ class FollowControllerTest {
     @Test
     void getFollowers() {
         var token = TokenFixture.userToken();
-        var responseALL  = FollowFixture.getFollower(0,token).then()
+        var request = new FollowRequest();
+        request.followerUserId = 2;
+        request.followedUserId = 3;
+        FollowFixture.create(request,token).then()
+                .statusCode(201);
+
+        var responseALL  = FollowFixture.getFollower(3,token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", FollowResponse.class);
-        assertThat(responseALL).isEmpty();
+        assertThat(responseALL).isNotEmpty();
     }
 
     @Test
@@ -80,6 +89,16 @@ class FollowControllerTest {
         var token = TokenFixture.userToken();
          FollowFixture.getById(0,token).then()
                 .statusCode(404);
+
+        var request = new FollowRequest();
+        request.followerUserId = 3;
+        request.followedUserId = 1;
+        var response = FollowFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", FollowResponse.class);
+
+        FollowFixture.getById(response.getId(), token).then()
+                .statusCode(200);
     }
 
 
