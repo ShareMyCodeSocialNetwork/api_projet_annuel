@@ -78,7 +78,8 @@ public class PostCommand {
         Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
         if(dbPost.isPresent()){
             dbPost.get().setContent(postRequest.content);
-            return postRepository.save(dbPost.get());
+            if (postValidationService.isValid(dbPost.get()))
+                return postRepository.save(dbPost.get());
         }
         return null;
     }
