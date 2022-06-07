@@ -124,7 +124,7 @@ public class ProjectController {
         if(project == null)
             return new ResponseEntity<>(
                     "Project " + projectId + " not exist",
-                    HttpStatus.BAD_REQUEST
+                    HttpStatus.NOT_FOUND
             );
         projectCommand.delete(projectId);
         return new ResponseEntity<>(
