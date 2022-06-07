@@ -30,15 +30,15 @@ class LanguageRepositoryTest {
     }
 
     @Test
-    public void should_find_empty() {
+    public void should_be_NotEmpty() {
         var result = repository.findAll();
-        assertThat(result).isEmpty();
+        assertThat(result).isNotEmpty();
     }
 
     @Test
-    public void should_find_nothing_if_repository_is_empty() {
+    public void should_find_3() {
         var result = repository.findAll();
-        assertThat(result).size().isEqualTo(0);
+        assertThat(result).size().isEqualTo(3);
     }
 
     @Test
@@ -49,7 +49,7 @@ class LanguageRepositoryTest {
         entityManager.persist(object2);
 
         var results = repository.findAll();
-        assertThat(results).hasSize(2).contains(object1, object2);
+        assertThat(results).hasSize(5).contains(object1, object2);
     }
 
     @Test
