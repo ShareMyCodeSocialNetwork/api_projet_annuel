@@ -56,7 +56,7 @@ public class ProjectController {
     public ResponseEntity<ProjectResponse> getProjectById(@PathVariable int projectId){
         var project = projectQuery.getById(projectId);
         if(project == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(projectToProjectResponse(
                 project),
                 HttpStatus.OK
