@@ -32,6 +32,8 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 			languageRepository.save(createLanguage("JavaScript"));
 			languageRepository.save(createLanguage("Python"));
 			languageRepository.save(createLanguage("Java"));
+			languageRepository.save(createLanguage("Ruby"));
+
 
 			System.out.println("----------------------------");
 			System.out.println(role_USER.getId());
