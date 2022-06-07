@@ -48,7 +48,7 @@ public class LanguageController {
     @GetMapping("/language/{languageId}")
     public ResponseEntity<?> getLanguageById(@PathVariable int languageId){
         Language language = languageQuery.getById(languageId);
-        if (language != null && languageId > 0) {
+        if (language != null) {
             return new ResponseEntity<>(language, HttpStatus.OK);
         }
         return new ResponseEntity<>("Id for this programming language not existing",HttpStatus.NOT_FOUND);

@@ -60,7 +60,7 @@ public class CodeController {
     @GetMapping("/code/{codeId}")
     public ResponseEntity<?> getCodeById(@PathVariable int codeId){
         Code code = codeQuery.getById(codeId);
-        if (code != null && codeId > 0) {
+        if (code != null) {
             return new ResponseEntity<>(code, HttpStatus.OK);
         }
         return new ResponseEntity<>("Id for this code snippet not existing",HttpStatus.NOT_FOUND);
