@@ -81,7 +81,6 @@ class FollowControllerTest {
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", FollowResponse.class);
         assertThat(responseALL).isEmpty();
-        //todo voir avec un create une fois que ca fonctionneras
     }
 
     @Test
