@@ -93,7 +93,7 @@ public class PostController {
         postCommand.delete(postId);
         return new ResponseEntity<>(
                 "Post " + postId + " deleted",
-                HttpStatus.OK
+                HttpStatus.NO_CONTENT
         );
     }
 
