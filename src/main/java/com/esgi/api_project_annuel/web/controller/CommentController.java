@@ -115,14 +115,10 @@ public class CommentController {
 
     @DeleteMapping("/delete/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable int commentId){
-        try{
-            if(null == commentQuery.getById(commentId))
-                return new ResponseEntity<>("Comment does not exist", HttpStatus.NOT_FOUND);
-            commentCommand.delete(commentId);
-            return new ResponseEntity<>("Comment deleted",HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
-        }
+        if(null == commentQuery.getById(commentId))
+            return new ResponseEntity<>("Comment does not exist", HttpStatus.NOT_FOUND);
+        commentCommand.delete(commentId);
+        return new ResponseEntity<>("Comment deleted",HttpStatus.NO_CONTENT);
     }
 
 

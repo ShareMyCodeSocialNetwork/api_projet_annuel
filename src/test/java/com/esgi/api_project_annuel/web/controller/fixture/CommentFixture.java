@@ -25,10 +25,27 @@ public class CommentFixture {
                 .get("/comment/" + id);
     }
 
-    public static Response update(int id,Token token){
+    public static Response getByUser(int userId,Token token){
         return given()
                 .contentType(ContentType.JSON)
                 .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/comment/user/" + userId);
+    }
+
+    public static Response getByPost(int postId,Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/comment/post/" + postId);
+    }
+
+    public static Response update(int id, CommentRequest request, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(request)
                 .header("Authorization","Bearer "+token.access_token)
                 .patch("/comment/update/" + id);
     }
@@ -48,16 +65,6 @@ public class CommentFixture {
                 .when()
                 .header("Authorization","Bearer "+token.access_token)
                 .get("/comment/");
-    }
-
-
-    public static Response getByPost(int postId, Token token) {
-        return given()
-                .contentType(ContentType.JSON)
-                .when()
-                .header("Authorization","Bearer "+token.access_token)
-                .get("/comment/post/" + postId);
-
     }
 
     public static CommentRequest commentToCommentRequest(Comment comment){

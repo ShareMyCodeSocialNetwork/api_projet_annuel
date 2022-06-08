@@ -45,8 +45,8 @@ public class CommentCommand {
 
         if(dbComment.isPresent()){
             dbComment.get().setContent(commentRequest.content);
-
-            return commentRepository.save(dbComment.get());
+            if(commentValidationService.isValid(dbComment.get()))
+                return commentRepository.save(dbComment.get());
         }
         return null;
     }
