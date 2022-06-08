@@ -36,9 +36,9 @@ class LanguageRepositoryTest {
     }
 
     @Test
-    public void should_find_3() {
+    public void should_find_4() {
         var result = repository.findAll();
-        assertThat(result).size().isEqualTo(3);
+        assertThat(result).size().isEqualTo(4);
     }
 
     @Test
@@ -49,7 +49,7 @@ class LanguageRepositoryTest {
         entityManager.persist(object2);
 
         var results = repository.findAll();
-        assertThat(results).hasSize(5).contains(object1, object2);
+        assertThat(results).hasSize(6).contains(object1, object2);
     }
 
     @Test

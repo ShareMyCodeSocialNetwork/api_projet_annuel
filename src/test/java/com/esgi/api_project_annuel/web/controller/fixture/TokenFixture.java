@@ -16,11 +16,11 @@ public class TokenFixture {
                 .post("/login");
     }
 
-    public static Response refresh(String token){
+    public static Response refresh(Token token){
         return given()
                 .when()
-                .formParam("Authorization", "Bearer "+token)
-                .post("/token/refresh/");
+                .formParam("Authorization", "Bearer "+token.refresh_token)
+                .post("/token/refresh");
     }
 
     public static Token adminToken(){

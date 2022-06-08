@@ -168,7 +168,6 @@ class UserControllerTest {
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
         assertThat(response.getEmail()).isEqualTo(request.email);
 
-        //todo a voir si faut pas refaire un get token
         request.email = "";
         UserFixture.changeEmail(response.getId(),request, token).then()
                 .statusCode(400);
@@ -266,29 +265,21 @@ class UserControllerTest {
 
     @Test
     void refreshToken() {
-        /*var request = UserFixture.userToUserRequest(globalObject.validUser);
-        UserFixture.create(request).then()
-                .statusCode(201)
-                .extract().body().jsonPath().getObject(".", UserResponse.class);
+        //todo les param ?
+        /*
+        // user
+        var token  = TokenFixture.userToken();
 
-        //user lambda
-        var response_user = TokenFixture.login(request).then()
+        TokenFixture.refresh(token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", Token.class);
 
-        TokenFixture.refresh(response_user.refresh_token).then()
+        // admin
+        token = TokenFixture.adminToken();
+        TokenFixture.refresh(token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", Token.class);
-        //admin
-        request.email = "lucas@hotmail.fr";
-        request.password = "azerty";
-
-        TokenFixture.login(request).then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject(".", Token.class);
-        TokenFixture.refresh(response_user.refresh_token).then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject(".", Token.class);*/
+         */
     }
 
     @Test
