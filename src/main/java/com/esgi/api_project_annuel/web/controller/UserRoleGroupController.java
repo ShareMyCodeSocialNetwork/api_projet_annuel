@@ -96,7 +96,7 @@ public class UserRoleGroupController {
     }
 
     @GetMapping("/group/{groupId}/user/{userId}")
-    public ResponseEntity<UserRoleGroupResponse> getUserRoleGroupByPost(@PathVariable int groupId, @PathVariable int userId){
+    public ResponseEntity<UserRoleGroupResponse> getUserRoleGroupByGroupAndUser(@PathVariable int groupId, @PathVariable int userId){
         var user = userQuery.getById(userId);
         var group = groupQuery.getById(groupId);
         var userRoleGroup = userRoleGroupQuery.getByGroupAndUser(group,user);
