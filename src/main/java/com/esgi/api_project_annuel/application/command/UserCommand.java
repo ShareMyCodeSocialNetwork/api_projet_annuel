@@ -157,12 +157,12 @@ public class UserCommand implements UserDetailsService {
         );
     }
 
-    public void assignUserWithRole(int role_id,int user_id){
+    /*public void assignUserWithRole(int role_id,int user_id){
         User user = userRepository.findById(user_id);
         Role role = roleRepository.findById(role_id);
 
         user.setRoles(role);
         userRepository.save(user);
-    }
+    }*/
 
 }
