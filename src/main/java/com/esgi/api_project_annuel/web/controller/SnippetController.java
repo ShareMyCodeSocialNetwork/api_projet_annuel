@@ -39,14 +39,7 @@ public class SnippetController {
 
     @GetMapping("/snippet")
     public ResponseEntity<?> getAllSnippets(){
-
-        Iterable<Snippet> allSnippets = snippetQuery.getAll();
-        try {
-            return new ResponseEntity<>(allSnippets, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error while getting Snippet snippets",HttpStatus.BAD_REQUEST);
-        }
-
+        return new ResponseEntity<>(snippetQuery.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/snippet/{snippetId}")
@@ -65,7 +58,7 @@ public class SnippetController {
         if (snippet != null) {
             return new ResponseEntity<>(snippet, HttpStatus.OK);
         }
-        return new ResponseEntity<>("Check again the Snippet to update",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Check again the Snippet to update",HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping("/snippet/delete/{snippetId}")
@@ -79,7 +72,7 @@ public class SnippetController {
         snippetCommand.delete(snippetId);
         return new ResponseEntity<>(
                 "Snippet snippet " + snippetId + " deleted succesfully",
-                HttpStatus.OK
+                HttpStatus.NO_CONTENT
         );
     }
 

@@ -40,7 +40,7 @@ public class SnippetCommand {
             Language language = languageRepository.findById(snippetRequest.language_id);
             snippet.setLanguage(language);
         }
-        if(!snippetValidationService.snippetIsValid(snippet)) throw new RuntimeException("Invalid Snippet snippet properties");
+        if(!snippetValidationService.snippetIsValid(snippet)) return null;
         return snippetRepository.save(snippet);
     }
 
