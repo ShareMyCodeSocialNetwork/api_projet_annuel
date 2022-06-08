@@ -45,7 +45,7 @@ public class LikeController {
         var like = likeCommand.create(likeRequest, user, post);
         if(like == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(likeToLikeResponse(like), HttpStatus.OK);
+        return new ResponseEntity<>(likeToLikeResponse(like), HttpStatus.CREATED);
     }
 
 
@@ -60,7 +60,7 @@ public class LikeController {
     public ResponseEntity<LikeResponse> getLikeById(@PathVariable int likeId){
         var like = likeQuery.getById(likeId);
         if(like == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(likeToLikeResponse(
                 like),
                 HttpStatus.OK
@@ -69,11 +69,8 @@ public class LikeController {
 
     @GetMapping("/post/{postId}")
     public ResponseEntity<List<LikeResponse>> getLikeByPost(@PathVariable int postId){
-        var like = likeQuery.getByPost(postQuery.getById(postId));
-        if(like == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(listLikeToListLikeResponse(
-                like),
+                likeQuery.getByPost(postQuery.getById(postId))),
                 HttpStatus.OK
         );
     }
@@ -85,12 +82,12 @@ public class LikeController {
         if(like == null)
             return new ResponseEntity<>(
                     "Like " + likeId + " not exist",
-                    HttpStatus.BAD_REQUEST
+                    HttpStatus.NOT_FOUND
             );
         likeCommand.delete(likeId);
         return new ResponseEntity<>(
                 "Like " + likeId + " deleted",
-                HttpStatus.OK
+                HttpStatus.NO_CONTENT
         );
     }
 
