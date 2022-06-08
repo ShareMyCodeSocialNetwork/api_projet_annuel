@@ -49,7 +49,7 @@ public class UserRoleGroupController {
         var userRoleGroup = userRoleGroupCommand.create(userRoleGroupRequest, user, role, group);
         if(userRoleGroup == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(userRoleGroupToUserRoleGroupResponse(userRoleGroup), HttpStatus.OK);
+        return new ResponseEntity<>(userRoleGroupToUserRoleGroupResponse(userRoleGroup), HttpStatus.CREATED);
     }
 
 
@@ -64,7 +64,7 @@ public class UserRoleGroupController {
     public ResponseEntity<UserRoleGroupResponse> getUserRoleGroupById(@PathVariable int userRoleGroupId){
         var userRoleGroup = userRoleGroupQuery.getById(userRoleGroupId);
         if(userRoleGroup == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(userRoleGroupToUserRoleGroupResponse(
                 userRoleGroup),
                 HttpStatus.OK
@@ -75,8 +75,6 @@ public class UserRoleGroupController {
     public ResponseEntity<List<UserRoleGroupResponse>> getUserRoleGroupByGroup(@PathVariable int groupId){
         var group = groupQuery.getById(groupId);
         var userRoleGroup = userRoleGroupQuery.getAllByGroup(group);
-        if(userRoleGroup == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(listUserRoleGroupToListUserRoleGroupResponse(
                 userRoleGroup),
                 HttpStatus.OK
@@ -87,8 +85,6 @@ public class UserRoleGroupController {
     public ResponseEntity<List<UserRoleGroupResponse>> getUserRoleGroupByUser(@PathVariable int userId){
         var user = userQuery.getById(userId);
         var userRoleGroup = userRoleGroupQuery.getAllByUser(user);
-        if(userRoleGroup == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(listUserRoleGroupToListUserRoleGroupResponse(
                 userRoleGroup),
                 HttpStatus.OK
@@ -101,7 +97,7 @@ public class UserRoleGroupController {
         var group = groupQuery.getById(groupId);
         var userRoleGroup = userRoleGroupQuery.getByGroupAndUser(group,user);
         if(userRoleGroup == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(userRoleGroupToUserRoleGroupResponse(
                 userRoleGroup),
                 HttpStatus.OK
@@ -109,18 +105,18 @@ public class UserRoleGroupController {
     }
 
 
-    @DeleteMapping("/{userRoleGroupId}")
+    @DeleteMapping("/delete/{userRoleGroupId}")
     public ResponseEntity<?> deleteUserRoleGroup(@PathVariable int userRoleGroupId){
         var userRoleGroup = userRoleGroupQuery.getById(userRoleGroupId);
         if(userRoleGroup == null)
             return new ResponseEntity<>(
                     "UserRoleGroup " + userRoleGroupId + " not exist",
-                    HttpStatus.BAD_REQUEST
+                    HttpStatus.NOT_FOUND
             );
         userRoleGroupCommand.delete(userRoleGroupId);
         return new ResponseEntity<>(
                 "UserRoleGroup " + userRoleGroupId + " deleted",
-                HttpStatus.OK
+                HttpStatus.NO_CONTENT
         );
     }
 
