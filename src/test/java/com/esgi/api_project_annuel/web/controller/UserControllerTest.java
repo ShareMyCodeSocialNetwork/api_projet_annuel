@@ -3,7 +3,9 @@ package com.esgi.api_project_annuel.web.controller;
 import com.esgi.api_project_annuel.GlobalObject;
 import com.esgi.api_project_annuel.web.controller.fixture.*;
 import com.esgi.api_project_annuel.web.controller.fixture.UserFixture;
+import com.esgi.api_project_annuel.web.request.FollowRequest;
 import com.esgi.api_project_annuel.web.request.UserRequest;
+import com.esgi.api_project_annuel.web.response.FollowResponse;
 import com.esgi.api_project_annuel.web.response.GroupResponse;
 import com.esgi.api_project_annuel.web.response.UserResponse;
 import com.esgi.api_project_annuel.web.response.UserResponse;
@@ -307,6 +309,40 @@ class UserControllerTest {
                 .extract().body().jsonPath().getObject(".",Token.class);
         System.out.println(token);
 
+    }
+
+    @Test
+    void should_delete_all_link_of_user(){
+        var token = TokenFixture.userToken();
+
+        var userRequest = UserFixture.userToUserRequest(globalObject.validUser);
+        var dbUser = UserFixture.create(userRequest).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var followRequest = new FollowRequest();
+        followRequest.followerUserId = dbUser.getId();
+        followRequest.followedUserId = 1;
+        var follow1 = FollowFixture.create(followRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", FollowResponse.class);
+        followRequest.followedUserId = dbUser.getId();
+        followRequest.followerUserId = 1;
+        var follow2 = FollowFixture.create(followRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", FollowResponse.class);
+
+        /*
+        creer projet avec user
+        créer un code avec le user
+        créer un post avec le user
+        créer un like avec le user
+        créer un commentaire sur le post
+        creer snippet avec le user
+        creer un groupe
+        ajouter un userrolegroup avec ce user et ce groupe
+        Supprimer le user
+         */
     }
 
 }
