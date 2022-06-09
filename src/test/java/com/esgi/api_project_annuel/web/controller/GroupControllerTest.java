@@ -117,7 +117,7 @@ class GroupControllerTest {
         assertThat(response.name).isEqualTo(request.name);
 
         request.name = "";
-        GroupFixture.changeName(response.id,request,token).then()
+        GroupFixture.update(response.id,request,token).then()
                 .statusCode(400);
     }
 
