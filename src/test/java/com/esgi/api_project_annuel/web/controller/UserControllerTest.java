@@ -1,13 +1,12 @@
 package com.esgi.api_project_annuel.web.controller;
 
+import com.esgi.api_project_annuel.Domain.entities.Code;
+import com.esgi.api_project_annuel.Domain.entities.Snippet;
 import com.esgi.api_project_annuel.GlobalObject;
 import com.esgi.api_project_annuel.web.controller.fixture.*;
 import com.esgi.api_project_annuel.web.controller.fixture.UserFixture;
-import com.esgi.api_project_annuel.web.request.FollowRequest;
-import com.esgi.api_project_annuel.web.request.UserRequest;
-import com.esgi.api_project_annuel.web.response.FollowResponse;
-import com.esgi.api_project_annuel.web.response.GroupResponse;
-import com.esgi.api_project_annuel.web.response.UserResponse;
+import com.esgi.api_project_annuel.web.request.*;
+import com.esgi.api_project_annuel.web.response.*;
 import com.esgi.api_project_annuel.web.response.UserResponse;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -315,34 +314,152 @@ class UserControllerTest {
     void should_delete_all_link_of_user(){
         var token = TokenFixture.userToken();
 
+        /**
+         * CREATE USER
+         **/
         var userRequest = UserFixture.userToUserRequest(globalObject.validUser);
-        var dbUser = UserFixture.create(userRequest).then()
+        var user = UserFixture.create(userRequest).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
 
+        /**
+         * CREATE FOLLOW
+         **/
         var followRequest = new FollowRequest();
-        followRequest.followerUserId = dbUser.getId();
+        followRequest.followerUserId = user.getId();
         followRequest.followedUserId = 1;
         var follow1 = FollowFixture.create(followRequest,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", FollowResponse.class);
-        followRequest.followedUserId = dbUser.getId();
+        followRequest.followedUserId = user.getId();
         followRequest.followerUserId = 1;
         var follow2 = FollowFixture.create(followRequest,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", FollowResponse.class);
 
-        /*
-        creer projet avec user
-        créer un code avec le user
-        créer un post avec le user
-        créer un like avec le user
-        créer un commentaire sur le post
-        creer snippet avec le user
-        creer un groupe
-        ajouter un userrolegroup avec ce user et ce groupe
-        Supprimer le user
+
+        /**
+         * CREATE GROUP
+         **/
+        var groupRequest = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        var group = GroupFixture.create(groupRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", GroupResponse.class);
+
+        /**
+         * CREATE PROJECT
+         **/
+        var projectRequest = ProjectFixture.projectToProjectRequest(globalObject.validProject);
+        projectRequest.group_id = group.id;
+        projectRequest.user_id = user.getId();
+        var project = ProjectFixture.create(projectRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", ProjectResponse.class);
+
+        /**
+         * CREATE CODE
+         **/
+        var codeRequest = CodeFixture.codeToCodeRequest(globalObject.validCode);
+        codeRequest.userId = user.getId();
+        codeRequest.language_id = 1;
+        codeRequest.project_id = project.getId();
+        var code = CodeFixture.create(codeRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+
+        /**
+         * CREATE POST
+         **/
+        var request = PostFixture.postToPostRequest(globalObject.validPost);
+        request.user_id = user.getId();
+        var post = PostFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
+
+        /**
+         * CREATE LIKE
+         **/
+        var likeRequest = new LikeRequest();
+        likeRequest.post_id = post.getId();
+        likeRequest.user_id = user.getId();
+        var like = LikeFixture.create(likeRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", LikeResponse.class);
+
+
+        /**
+         * CREATE COMMENT
+         **/
+        var commentRequest = CommentFixture.commentToCommentRequest(globalObject.validComment);
+        commentRequest.post_id = post.getId();
+        commentRequest.user_id = user.getId();
+        var comment = CommentFixture.create(commentRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", CommentResponse.class);
+
+        /**
+         * CREATE SNIPPET
+         **/
+        var snippetRequest = SnippetFixture.snippetToSnippetRequest(globalObject.validSnippet);
+        snippetRequest.language_id = 1;
+        snippetRequest.user_id = user.getId();
+
+        var snippet = SnippetFixture.create(snippetRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Snippet.class);
+
+        /**
+         * CREATE USER_ROLE_GROUP
+         **/
+        var userRoleGroupRequest = new UserRoleGroupRequest();
+        userRoleGroupRequest.role_id = 1;
+        userRoleGroupRequest.user_id = user.getId();
+        userRoleGroupRequest.group_id = group.getId();
+        var userRoleGroup = UserRoleGroupFixture.create(userRoleGroupRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserRoleGroupResponse.class);
+
+
+
+        UserFixture.deleteById(user.getId(), token).then()
+                .statusCode(202);
+
+
+        /**
+         * check if correctly work
          */
+        UserFixture
+                .getById(user.getId(), token)
+                .then()
+                .statusCode(404);
+        ProjectFixture
+                .getById(project.getId(), token)
+                .then()
+                .statusCode(404);
+        CodeFixture
+                .getById(code.getId(), token)
+                .then()
+                .statusCode(404);
+        PostFixture
+                .getById(post.getId(), token)
+                .then()
+                .statusCode(404);
+        LikeFixture
+                .getById(like.getId(), token)
+                .then()
+                .statusCode(404);
+        CommentFixture
+                .getById(comment.getId(), token)
+                .then()
+                .statusCode(404);
+        SnippetFixture
+                .getById(snippet.getId(), token)
+                .then()
+                .statusCode(404);
+        UserRoleGroupFixture
+                .getById(userRoleGroup.getId(), token)
+                .then()
+                .statusCode(404);
     }
 
 }
