@@ -142,8 +142,8 @@ public class UserCommand implements UserDetailsService {
         Optional<User> userFromDb = Optional.ofNullable(userRepository.findById(userId));
         userFromDb.ifPresent(user ->{
                     commentCommand.deleteAllUserComments(user);
-                    projectCommand.deleteAllProjectsUser(user);
                     codeCommand.deleteAllByUser(user);
+                    projectCommand.deleteAllProjectsUser(user);
                     postCommand.deleteAllUserPosts(user);
                     snippetCommand.deleteAllByUser(user);
                     followCommand.deleteAllByFollowed(user);

@@ -314,17 +314,17 @@ class UserControllerTest {
     void should_delete_all_link_of_user(){
         var token = TokenFixture.userToken();
 
-        /**
-         * CREATE USER
-         **/
+        /*
+          CREATE USER
+         */
         var userRequest = UserFixture.userToUserRequest(globalObject.validUser);
         var user = UserFixture.create(userRequest).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
 
-        /**
-         * CREATE FOLLOW
-         **/
+        /*
+          CREATE FOLLOW
+         */
         var followRequest = new FollowRequest();
         followRequest.followerUserId = user.getId();
         followRequest.followedUserId = 1;
@@ -338,17 +338,17 @@ class UserControllerTest {
                 .extract().body().jsonPath().getObject(".", FollowResponse.class);
 
 
-        /**
-         * CREATE GROUP
-         **/
+        /*
+          CREATE GROUP
+         */
         var groupRequest = GroupFixture.groupToGroupRequest(globalObject.validGroup);
         var group = GroupFixture.create(groupRequest,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);
 
-        /**
-         * CREATE PROJECT
-         **/
+        /*
+          CREATE PROJECT
+         */
         var projectRequest = ProjectFixture.projectToProjectRequest(globalObject.validProject);
         projectRequest.group_id = group.id;
         projectRequest.user_id = user.getId();
@@ -356,9 +356,9 @@ class UserControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", ProjectResponse.class);
 
-        /**
-         * CREATE CODE
-         **/
+        /*
+          CREATE CODE
+         */
         var codeRequest = CodeFixture.codeToCodeRequest(globalObject.validCode);
         codeRequest.userId = user.getId();
         codeRequest.language_id = 1;
@@ -367,18 +367,18 @@ class UserControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", Code.class);
 
-        /**
-         * CREATE POST
-         **/
+        /*
+          CREATE POST
+         */
         var request = PostFixture.postToPostRequest(globalObject.validPost);
         request.user_id = user.getId();
         var post = PostFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", PostResponse.class);
 
-        /**
-         * CREATE LIKE
-         **/
+        /*
+          CREATE LIKE
+         */
         var likeRequest = new LikeRequest();
         likeRequest.post_id = post.getId();
         likeRequest.user_id = user.getId();
@@ -387,9 +387,9 @@ class UserControllerTest {
                 .extract().body().jsonPath().getObject(".", LikeResponse.class);
 
 
-        /**
-         * CREATE COMMENT
-         **/
+        /*
+          CREATE COMMENT
+         */
         var commentRequest = CommentFixture.commentToCommentRequest(globalObject.validComment);
         commentRequest.post_id = post.getId();
         commentRequest.user_id = user.getId();
@@ -397,9 +397,9 @@ class UserControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", CommentResponse.class);
 
-        /**
-         * CREATE SNIPPET
-         **/
+        /*
+          CREATE SNIPPET
+         */
         var snippetRequest = SnippetFixture.snippetToSnippetRequest(globalObject.validSnippet);
         snippetRequest.language_id = 1;
         snippetRequest.user_id = user.getId();
@@ -408,9 +408,9 @@ class UserControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", Snippet.class);
 
-        /**
-         * CREATE USER_ROLE_GROUP
-         **/
+        /*
+          CREATE USER_ROLE_GROUP
+         */
         var userRoleGroupRequest = new UserRoleGroupRequest();
         userRoleGroupRequest.role_id = 1;
         userRoleGroupRequest.user_id = user.getId();
@@ -425,13 +425,13 @@ class UserControllerTest {
                 .statusCode(202);
 
 
-        /**
-         * check if correctly work
+        /*
+          check if correctly work
          */
         UserFixture
                 .getById(user.getId(), token)
                 .then()
-                .statusCode(404);
+                .statusCode(400);
         ProjectFixture
                 .getById(project.getId(), token)
                 .then()

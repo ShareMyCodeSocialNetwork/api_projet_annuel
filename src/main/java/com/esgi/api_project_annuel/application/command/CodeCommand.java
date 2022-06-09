@@ -89,13 +89,9 @@ public class CodeCommand {
     public void deleteAllByUser(User user){
         Optional<List<Code>> dbCodes = Optional.ofNullable(codeRepository.getAllByUser(user));
         dbCodes.ifPresent(codes ->
-                codes.forEach(code -> {
-                    code.setUser(null);
-                    code.setLanguage(null);
-                    code.setProject(null);
-                    codeRepository.save(code);
-                    codeRepository.delete(code);
-                })
+                codes.forEach(code ->
+                        delete(code.getId())
+                )
         );
     }
 }

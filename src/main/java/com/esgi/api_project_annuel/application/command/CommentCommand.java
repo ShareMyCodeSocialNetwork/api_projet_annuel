@@ -65,7 +65,11 @@ public class CommentCommand {
 
     public void deleteCommentsInPost(Post post){
         Optional<List<Comment>> comments = Optional.ofNullable(commentRepository.findCommentsByPost(post));
-        comments.ifPresent(comment -> commentRepository.deleteAll(comment));
+        comments.ifPresent(comment ->
+                comment.forEach(comment1 ->
+                        delete(comment1.getId())
+                )
+        );
     }
 
     public void delete(int commentId){
