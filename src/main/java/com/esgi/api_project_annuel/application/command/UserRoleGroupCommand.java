@@ -34,7 +34,7 @@ public class UserRoleGroupCommand {
     }
 
 
-    public UserRoleGroup changeUserRole(int userRoleGroupId,UserRoleGroupRequest userRoleGroupRequest){
+    /*public UserRoleGroup changeUserRole(int userRoleGroupId,UserRoleGroupRequest userRoleGroupRequest){
         Optional<UserRoleGroup> userRoleGroupFromDB = Optional.ofNullable(userRoleGroupRepository.findById(userRoleGroupId));
         if(userRoleGroupFromDB.isPresent()){
             var userRoleGroup = userRoleGroupFromDB.get();
@@ -43,7 +43,7 @@ public class UserRoleGroupCommand {
                 return userRoleGroupRepository.save(userRoleGroup);
         }
         return null;
-    }
+    }*/
 
     public void delete(int userRoleGroupId){
         Optional<UserRoleGroup> userRoleGroup = Optional.ofNullable(userRoleGroupRepository.findById(userRoleGroupId));

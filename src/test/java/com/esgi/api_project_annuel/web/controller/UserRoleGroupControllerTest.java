@@ -3,10 +3,13 @@ package com.esgi.api_project_annuel.web.controller;
 import com.esgi.api_project_annuel.Domain.entities.UserRoleGroup;
 import com.esgi.api_project_annuel.GlobalObject;
 import com.esgi.api_project_annuel.web.controller.fixture.GroupFixture;
+import com.esgi.api_project_annuel.web.controller.fixture.RoleFixture;
 import com.esgi.api_project_annuel.web.controller.fixture.TokenFixture;
 import com.esgi.api_project_annuel.web.controller.fixture.UserRoleGroupFixture;
+import com.esgi.api_project_annuel.web.request.RoleRequest;
 import com.esgi.api_project_annuel.web.request.UserRoleGroupRequest;
 import com.esgi.api_project_annuel.web.response.GroupResponse;
+import com.esgi.api_project_annuel.web.response.RoleResponse;
 import com.esgi.api_project_annuel.web.response.UserRoleGroupResponse;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -198,6 +201,62 @@ class UserRoleGroupControllerTest {
         UserRoleGroupFixture.deleteById(created.getId(), token).then()
                 .statusCode(204);
         UserRoleGroupFixture.deleteById(created.getId(), token).then()
+                .statusCode(404);
+    }
+
+    @Test
+    void should_delete_link(){
+        var token = TokenFixture.userToken();
+        var request = new UserRoleGroupRequest();
+        request.user_id = 3;
+        request.role_id = 1;
+        var groupRequest = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        var group = GroupFixture.create(groupRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", GroupResponse.class);
+        request.group_id = group.getId();
+
+        var created = UserRoleGroupFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserRoleGroupResponse.class);
+
+        GroupFixture.deleteById(group.getId(), token).then().statusCode(204);
+
+        UserRoleGroupFixture.getById(created.getId(), token).then()
+                .statusCode(404);
+
+        GroupFixture.getById(group.getId(), token).then().statusCode(404);
+    }
+
+    @Test
+    void should_delete_link2(){
+        var token = TokenFixture.userToken();
+        var adminToken = TokenFixture.adminToken();
+        var roleRequest = new RoleRequest();
+        roleRequest.name = "test";
+        var role = RoleFixture.create(roleRequest, adminToken).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", RoleResponse.class);
+
+        var request = new UserRoleGroupRequest();
+        request.user_id = 3;
+        request.role_id = role.getId();
+        var groupRequest = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        var group = GroupFixture.create(groupRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", GroupResponse.class);
+        request.group_id = group.getId();
+
+        var created = UserRoleGroupFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserRoleGroupResponse.class);
+
+        RoleFixture.deleteById(role.getId(), adminToken).then()
+                .statusCode(200);
+
+        RoleFixture.getById(role.getId(), adminToken).then()
+                .statusCode(400);
+        UserRoleGroupFixture.getById(created.getId(), token).then()
                 .statusCode(404);
     }
 }
