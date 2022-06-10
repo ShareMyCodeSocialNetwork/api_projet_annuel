@@ -111,6 +111,10 @@ class SnippetControllerTest {
         assertThat(snippet.getUser().getId()).isEqualTo(request.user_id);
         assertThat(snippet.getLanguage().getId()).isEqualTo(request.language_id);
 
+        request.name = "";
+        request.content = "";
+        request.language_id = 0;
+        request.user_id = 0;
         SnippetFixture.update(0,request,token).then()
                 .statusCode(400);
     }
