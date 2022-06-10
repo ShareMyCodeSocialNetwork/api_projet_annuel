@@ -46,15 +46,22 @@ class CommentControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", CommentResponse.class);
 
+        request.content = "";
+        CommentFixture.create(request,token).then()
+                .statusCode(406);
+
+        request.content = "valid";
         request.user_id = 42000;
         CommentFixture.create(request,token).then()
                 .statusCode(406);
 
         request.content = "";
+        CommentFixture.create(request,token).then()
+                .statusCode(406);
         request.user_id = 0;
         request.post_id = 0;
         CommentFixture.create(request,token).then()
-                .statusCode(400);
+                .statusCode(406);
 
     }
 

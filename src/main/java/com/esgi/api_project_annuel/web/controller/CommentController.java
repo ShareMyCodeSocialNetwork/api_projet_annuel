@@ -99,8 +99,6 @@ public class CommentController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createCommentOnPost(@RequestBody CommentRequest commentRequest){
-        if(!isValidCommentRequest(commentRequest))
-            return new ResponseEntity<>("Missing Properties", HttpStatus.BAD_REQUEST);
 
         var user = userQuery.getById(commentRequest.user_id);
         var post = postQuery.getById(commentRequest.post_id);
@@ -123,12 +121,6 @@ public class CommentController {
 
 
 
-
-
-    private boolean isValidCommentRequest(CommentRequest commentRequest){
-        return !( null == commentRequest.content || commentRequest.content.equals("") ||
-                commentRequest.user_id <= 0 || commentRequest.post_id <= 0 );
-    }
 
     private CommentResponse commentToCommentResponse(Comment comment){
         return new CommentResponse()
