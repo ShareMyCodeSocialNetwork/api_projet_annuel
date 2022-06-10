@@ -3,6 +3,7 @@ package com.esgi.api_project_annuel.web.controller;
 import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.GlobalObject;
 import com.esgi.api_project_annuel.web.controller.fixture.*;
+import com.esgi.api_project_annuel.web.request.CodeRequest;
 import com.esgi.api_project_annuel.web.response.ProjectResponse;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -136,6 +137,12 @@ class CodeControllerTest {
 
         CodeFixture.update(0,request,token).then()
                 .statusCode(400);
+
+        var r  = new CodeRequest(); // requête ok, mais rien n est modifié
+        r.name = "";
+        r.content = "";
+        CodeFixture.update(updated.getId(), r,token).then()
+                .statusCode(200);
     }
 
     @Test

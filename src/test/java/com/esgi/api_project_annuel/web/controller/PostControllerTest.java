@@ -1,10 +1,11 @@
 package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.GlobalObject;
-import com.esgi.api_project_annuel.web.controller.fixture.GroupFixture;
-import com.esgi.api_project_annuel.web.controller.fixture.PostFixture;
-import com.esgi.api_project_annuel.web.controller.fixture.TokenFixture;
+import com.esgi.api_project_annuel.web.controller.fixture.*;
+import com.esgi.api_project_annuel.web.request.LikeRequest;
+import com.esgi.api_project_annuel.web.response.CommentResponse;
 import com.esgi.api_project_annuel.web.response.GroupResponse;
+import com.esgi.api_project_annuel.web.response.LikeResponse;
 import com.esgi.api_project_annuel.web.response.PostResponse;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -136,6 +137,35 @@ class PostControllerTest {
                 .statusCode(204);
         PostFixture.deleteById(post.id, token).then()
                 .statusCode(404);
+
+    }
+
+    @Test
+    void should_delete_link(){
+        var token = TokenFixture.userToken();
+        var request = PostFixture.postToPostRequest(globalObject.validPost);
+        request.user_id = 3;
+        var post = PostFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
+
+        var commentRequest = CommentFixture.commentToCommentRequest(globalObject.validComment);
+        commentRequest.post_id = post.getId();
+        commentRequest.user_id = 3;
+        var comment  = CommentFixture.create(commentRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", CommentResponse.class);
+        var likeRequest = new LikeRequest();
+        likeRequest.post_id = post.getId();
+        likeRequest.user_id = 3;
+
+        var like = LikeFixture.create(likeRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", LikeResponse.class);
+
+        PostFixture.deleteById(post.getId(), token).then()
+                .statusCode(204);
+        //todo faire des assert avec get by id pour etre sur que ca suppr bien
 
     }
 }
