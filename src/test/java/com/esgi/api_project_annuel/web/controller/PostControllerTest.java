@@ -46,7 +46,7 @@ class PostControllerTest {
         request.content = "";
         request.user_id = 3;
         PostFixture.create(request,token).then()
-                .statusCode(400);
+                .statusCode(406);
 
     }
 

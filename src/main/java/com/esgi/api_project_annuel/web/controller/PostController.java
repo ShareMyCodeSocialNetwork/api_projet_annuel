@@ -35,8 +35,6 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity<?> addPost(@RequestBody PostRequest postRequest){
-        if(!isValidPostRequest(postRequest))
-            return new ResponseEntity<>("missing properties", HttpStatus.BAD_REQUEST);
 
         var user = userQuery.getById(postRequest.user_id);
         var post = postCommand.create(postRequest, user);
@@ -99,13 +97,6 @@ public class PostController {
 
 
 
-
-
-
-
-    private boolean isValidPostRequest(PostRequest postRequest){
-        return !( null == postRequest.content || postRequest.content.equals("") || postRequest.user_id <= 0 );
-    }
 
     private PostResponse postToPostResponse(Post post){
         return new PostResponse()
