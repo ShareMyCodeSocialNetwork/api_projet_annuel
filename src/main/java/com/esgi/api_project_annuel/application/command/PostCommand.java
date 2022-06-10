@@ -54,6 +54,7 @@ public class PostCommand {
         dbPost.ifPresent(post ->{
             post.setUser(null);
             postRepository.save(post);
+            commentCommand.deleteCommentsInPost(post);
             likeCommand.deleteAllLikesPost(post);
             postRepository.delete(post);
         }

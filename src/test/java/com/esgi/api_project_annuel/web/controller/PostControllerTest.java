@@ -167,5 +167,9 @@ class PostControllerTest {
                 .statusCode(204);
         //todo faire des assert avec get by id pour etre sur que ca suppr bien
 
+        PostFixture.getById(post.getId(), token).then().statusCode(404);
+        CommentFixture.getById(comment.getId(), token).then().statusCode(404);
+        LikeFixture.getById(like.getId(), token).then().statusCode(404);
+
     }
 }
