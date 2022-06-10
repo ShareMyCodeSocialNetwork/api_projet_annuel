@@ -2,8 +2,10 @@ package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.GlobalObject;
 import com.esgi.api_project_annuel.web.controller.fixture.GroupFixture;
+import com.esgi.api_project_annuel.web.controller.fixture.ProjectFixture;
 import com.esgi.api_project_annuel.web.controller.fixture.TokenFixture;
 import com.esgi.api_project_annuel.web.response.GroupResponse;
+import com.esgi.api_project_annuel.web.response.ProjectResponse;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -134,5 +136,30 @@ class GroupControllerTest {
 
         GroupFixture.deleteById(response.getId(),token).then()
                 .statusCode(400);
+    }
+
+    @Test
+    void should_delete_link(){
+        var token = TokenFixture.userToken();
+        var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        var group = GroupFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", GroupResponse.class);
+
+
+        var projectRequest = ProjectFixture.projectToProjectRequest(globalObject.validProject);
+
+
+        projectRequest.group_id = group.id;
+        projectRequest.user_id = 3;
+
+        var project = ProjectFixture.create(projectRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", ProjectResponse.class);
+
+        GroupFixture.deleteById(group.getId(), token).then().statusCode(204);
+        GroupFixture.getById(group.getId(), token).then().statusCode(404);
+        ProjectFixture.getById(project.getId(), token).then().statusCode(404);
+
     }
 }
