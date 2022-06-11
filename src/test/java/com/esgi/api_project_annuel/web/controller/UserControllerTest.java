@@ -375,6 +375,10 @@ class UserControllerTest {
         var post = PostFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", PostResponse.class);
+        request.user_id = 3;
+        var post2 = PostFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
 
         /*
           CREATE LIKE
@@ -383,6 +387,12 @@ class UserControllerTest {
         likeRequest.post_id = post.getId();
         likeRequest.user_id = user.getId();
         var like = LikeFixture.create(likeRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", LikeResponse.class);
+        likeRequest = new LikeRequest();
+        likeRequest.post_id = post2.getId();
+        likeRequest.user_id = user.getId();
+        var like2 = LikeFixture.create(likeRequest,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", LikeResponse.class);
 
@@ -446,6 +456,10 @@ class UserControllerTest {
                 .statusCode(404);
         LikeFixture
                 .getById(like.getId(), token)
+                .then()
+                .statusCode(404);
+        LikeFixture
+                .getById(like2.getId(), token)
                 .then()
                 .statusCode(404);
         CommentFixture

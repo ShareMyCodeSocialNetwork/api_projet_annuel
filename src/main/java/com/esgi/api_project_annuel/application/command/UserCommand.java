@@ -35,6 +35,8 @@ public class UserCommand implements UserDetailsService {
     @Autowired
     CommentCommand commentCommand;
     @Autowired
+    LikeCommand likeCommand;
+    @Autowired
     FollowCommand followCommand;
     @Autowired
     SnippetCommand snippetCommand;
@@ -145,6 +147,7 @@ public class UserCommand implements UserDetailsService {
                     codeCommand.deleteAllByUser(user);
                     projectCommand.deleteAllProjectsUser(user);
                     postCommand.deleteAllUserPosts(user);
+                    likeCommand.deleteAllLikesUser(user);
                     snippetCommand.deleteAllByUser(user);
                     followCommand.deleteAllByFollowed(user);
                     followCommand.deleteAllByFollower(user);

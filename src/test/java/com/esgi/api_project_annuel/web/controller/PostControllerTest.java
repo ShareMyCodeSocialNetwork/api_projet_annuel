@@ -157,7 +157,7 @@ class PostControllerTest {
                 .extract().body().jsonPath().getObject(".", CommentResponse.class);
         var likeRequest = new LikeRequest();
         likeRequest.post_id = post.getId();
-        likeRequest.user_id = 3;
+        likeRequest.user_id = 2;
 
         var like = LikeFixture.create(likeRequest,token).then()
                 .statusCode(201)
@@ -165,7 +165,6 @@ class PostControllerTest {
 
         PostFixture.deleteById(post.getId(), token).then()
                 .statusCode(204);
-        //todo faire des assert avec get by id pour etre sur que ca suppr bien
 
         PostFixture.getById(post.getId(), token).then().statusCode(404);
         CommentFixture.getById(comment.getId(), token).then().statusCode(404);
