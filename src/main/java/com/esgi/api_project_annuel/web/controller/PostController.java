@@ -35,8 +35,6 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity<?> addPost(@RequestBody PostRequest postRequest){
-        if(!isValidPostRequest(postRequest))
-            return new ResponseEntity<>("missing properties", HttpStatus.BAD_REQUEST);
 
         var user = userQuery.getById(postRequest.user_id);
         var post = postCommand.create(postRequest, user);
@@ -73,7 +71,7 @@ public class PostController {
         );
     }
 
-    @PatchMapping("/{postId}")
+    @PatchMapping("/update/{postId}")
     public ResponseEntity<?> changeContent(@PathVariable int postId,@RequestBody PostRequest postRequest){
         var post = postCommand.changeContent(postRequest,postId);
         if(post == null)
@@ -93,19 +91,12 @@ public class PostController {
         postCommand.delete(postId);
         return new ResponseEntity<>(
                 "Post " + postId + " deleted",
-                HttpStatus.OK
+                HttpStatus.NO_CONTENT
         );
     }
 
 
 
-
-
-
-
-    private boolean isValidPostRequest(PostRequest postRequest){
-        return !( null == postRequest.content || postRequest.content.equals("") || postRequest.user_id <= 0 );
-    }
 
     private PostResponse postToPostResponse(Post post){
         return new PostResponse()

@@ -28,7 +28,7 @@ public class LanguageCommand {
 
         language.setName(languageRequest.name);
 
-        if(!languageValidationService.languageIsValid(language)) throw new RuntimeException("Invalid user properties");
+        if(!languageValidationService.languageIsValid(language)) return null;
 
         return languageRepository.save(language);
     }

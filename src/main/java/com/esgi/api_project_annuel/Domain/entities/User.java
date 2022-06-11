@@ -1,12 +1,14 @@
 package com.esgi.api_project_annuel.Domain.entities;
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "user_share")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 
     @Id
@@ -18,7 +20,7 @@ public class User {
     )
     private int id;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "firstname")
@@ -35,5 +37,9 @@ public class User {
 
     @Column(name = "profile_picture")
     private String profilePicture;
+
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name="user_roles")
+    private Role roles;
 
 }

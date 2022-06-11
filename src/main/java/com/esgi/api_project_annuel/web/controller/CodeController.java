@@ -54,20 +54,13 @@ public class CodeController {
 
     @GetMapping("/code")
     public ResponseEntity<?> getAllCodes(){
-
-        Iterable<Code> allCodes = codeQuery.getAll();
-        try {
-            return new ResponseEntity<>(allCodes, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error while getting code snippets",HttpStatus.BAD_REQUEST);
-        }
-
+        return new ResponseEntity<>(codeQuery.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/code/{codeId}")
     public ResponseEntity<?> getCodeById(@PathVariable int codeId){
         Code code = codeQuery.getById(codeId);
-        if (code != null && codeId > 0) {
+        if (code != null) {
             return new ResponseEntity<>(code, HttpStatus.OK);
         }
         return new ResponseEntity<>("Id for this code snippet not existing",HttpStatus.NOT_FOUND);
@@ -96,7 +89,7 @@ public class CodeController {
         codeCommand.delete(codeId);
         return new ResponseEntity<>(
                 "Code snippet " + codeId + " deleted successfully",
-                HttpStatus.OK
+                HttpStatus.NO_CONTENT
         );
     }
 

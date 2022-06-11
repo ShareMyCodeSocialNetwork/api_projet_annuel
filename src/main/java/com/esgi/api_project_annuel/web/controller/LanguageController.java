@@ -33,25 +33,22 @@ public class LanguageController {
         Language language = languageCommand.create(languageRequest);
 
         if(language != null) return new ResponseEntity<>(language, HttpStatus.CREATED);
-        else return new ResponseEntity<>("Programming Language not created",HttpStatus.NOT_ACCEPTABLE);
+        else return new ResponseEntity<>("Programming Language not created",HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/language")
     public ResponseEntity<?> getAllProgrammingLanguages(){
 
         Iterable<Language> allLanguages = languageQuery.getAll();
-        try {
+
             return new ResponseEntity<>(allLanguages, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error while getting programming languages",HttpStatus.BAD_REQUEST);
-        }
 
     }
 
     @GetMapping("/language/{languageId}")
     public ResponseEntity<?> getLanguageById(@PathVariable int languageId){
         Language language = languageQuery.getById(languageId);
-        if (language != null && languageId > 0) {
+        if (language != null) {
             return new ResponseEntity<>(language, HttpStatus.OK);
         }
         return new ResponseEntity<>("Id for this programming language not existing",HttpStatus.NOT_FOUND);

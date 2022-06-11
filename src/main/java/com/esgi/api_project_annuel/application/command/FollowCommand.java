@@ -12,13 +12,17 @@ import java.util.Optional;
 
 @Service
 public class FollowCommand {
-    @Autowired
-    FollowRepository followRepository;
+    private final FollowRepository followRepository;
 
-    @Autowired
-    FollowQuery followQuery;
+    private final FollowQuery followQuery;
 
     FollowValidationService followValidationService = new FollowValidationService();
+
+    @Autowired
+    public FollowCommand(FollowRepository followRepository, FollowQuery followQuery) {
+        this.followRepository = followRepository;
+        this.followQuery = followQuery;
+    }
 
 
     public Follow create(User followed, User follower){

@@ -41,7 +41,7 @@ public class ProjectController {
         var project = projectCommand.create(projectRequest, user, group);
         if(project == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(projectToProjectResponse(project), HttpStatus.OK);
+        return new ResponseEntity<>(projectToProjectResponse(project), HttpStatus.CREATED);
     }
 
     @GetMapping("/")
@@ -56,7 +56,7 @@ public class ProjectController {
     public ResponseEntity<ProjectResponse> getProjectById(@PathVariable int projectId){
         var project = projectQuery.getById(projectId);
         if(project == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(projectToProjectResponse(
                 project),
                 HttpStatus.OK
@@ -118,18 +118,18 @@ public class ProjectController {
     }
 
 
-    @DeleteMapping("/{projectId}")
+    @DeleteMapping("/delete/{projectId}")
     public ResponseEntity<String> deleteProject(@PathVariable int projectId){
         var project = projectQuery.getById(projectId);
         if(project == null)
             return new ResponseEntity<>(
                     "Project " + projectId + " not exist",
-                    HttpStatus.BAD_REQUEST
+                    HttpStatus.NOT_FOUND
             );
         projectCommand.delete(projectId);
         return new ResponseEntity<>(
                 "Project " + projectId + " deleted",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.NO_CONTENT
         );
     }
 

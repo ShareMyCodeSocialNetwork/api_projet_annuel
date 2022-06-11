@@ -57,11 +57,8 @@ public class RoleController {
 
     @GetMapping("/name/{roleName}")
     public ResponseEntity<List<RoleResponse>> getRoleByName(@PathVariable String roleName){
-        var role = roleQuery.getByName(roleName);
-        if(role == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(listRoleToListRoleResponse(
-                role),
+                roleQuery.getByName(roleName)),
                 HttpStatus.OK
         );
     }
@@ -86,7 +83,7 @@ public class RoleController {
         roleCommand.delete(roleId);
         return new ResponseEntity<>(
                 "Role " + roleId + " deleted",
-                HttpStatus.BAD_REQUEST
+                HttpStatus.OK
         );
     }
 
@@ -98,7 +95,7 @@ public class RoleController {
     private RoleResponse roleToRoleResponse(Role role){
         return new RoleResponse()
                 .setId(role.getId())
-                .setName(role.getName());
+                .setName(role.getTitlePermission());
     }
 
     private List<RoleResponse> listRoleToListRoleResponse(List<Role> roles){

@@ -24,7 +24,7 @@ public class RoleCommand {
 
     public Role create(RoleRequest roleRequest){
         var role = new Role();
-        role.setName(roleRequest.name);
+        role.setTitlePermission(roleRequest.name);
         if (!roleValidationService.isValid(role))
             return null;
         return roleRepository.save(role);
@@ -40,8 +40,9 @@ public class RoleCommand {
     public Role changeName(RoleRequest roleRequest, int roleId) {
         Optional<Role> dbRole = Optional.ofNullable(roleRepository.findById(roleId));
         if(dbRole.isPresent()){
-            dbRole.get().setName(roleRequest.name);
-            return roleRepository.save(dbRole.get());
+            dbRole.get().setTitlePermission(roleRequest.name);
+            if(roleValidationService.isValid(dbRole.get()))
+                return roleRepository.save(dbRole.get());
         }
         return null;
     }

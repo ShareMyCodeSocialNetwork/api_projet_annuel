@@ -21,8 +21,8 @@ public class LanguageQuery {
         return languageRepository.findById(languageId);
     }
 
-    public boolean existsById(int id){
+    /*public boolean existsById(int id){
         return languageRepository.existsById(id);
-    }
+    }*/
 
 }

@@ -1,6 +1,7 @@
 package com.esgi.api_project_annuel.application.command;
 
 import com.esgi.api_project_annuel.Domain.entities.*;
+import com.esgi.api_project_annuel.Domain.repository.RoleRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRoleGroupRepository;
 import com.esgi.api_project_annuel.application.query.RoleQuery;
 import com.esgi.api_project_annuel.application.validation.UserRoleGroupValidationService;
@@ -16,7 +17,7 @@ public class UserRoleGroupCommand {
     UserRoleGroupRepository userRoleGroupRepository;
 
     @Autowired
-    RoleQuery roleQuery;
+    RoleRepository roleRepository;
 
     UserRoleGroupValidationService userRoleGroupValidationService = new UserRoleGroupValidationService();
 
@@ -33,16 +34,16 @@ public class UserRoleGroupCommand {
     }
 
 
-    public UserRoleGroup changeUserRole(int userRoleGroupId,UserRoleGroupRequest userRoleGroupRequest){
+    /*public UserRoleGroup changeUserRole(int userRoleGroupId,UserRoleGroupRequest userRoleGroupRequest){
         Optional<UserRoleGroup> userRoleGroupFromDB = Optional.ofNullable(userRoleGroupRepository.findById(userRoleGroupId));
         if(userRoleGroupFromDB.isPresent()){
             var userRoleGroup = userRoleGroupFromDB.get();
-            userRoleGroup.setRole(roleQuery.getById(userRoleGroupRequest.role_id));
+            userRoleGroup.setRole(roleRepository.getById(userRoleGroupRequest.role_id));
             if(userRoleGroupValidationService.isValid(userRoleGroup))
                 return userRoleGroupRepository.save(userRoleGroup);
         }
         return null;
-    }
+    }*/
 
     public void delete(int userRoleGroupId){
         Optional<UserRoleGroup> userRoleGroup = Optional.ofNullable(userRoleGroupRepository.findById(userRoleGroupId));

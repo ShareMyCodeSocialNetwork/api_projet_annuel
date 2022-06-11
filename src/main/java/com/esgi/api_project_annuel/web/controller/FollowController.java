@@ -55,8 +55,6 @@ public class FollowController {
     @GetMapping("/followed/{followedId}")
     public ResponseEntity<List<FollowResponse>> getFollowers(@PathVariable int followedId){
         var followers = followQuery.getAllByFollowedUser(userQuery.getById(followedId));
-        if(followers == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(listFollowToListFollowResponse(
                 followers),
                 HttpStatus.OK
@@ -66,8 +64,6 @@ public class FollowController {
     @GetMapping("/follower/{followerId}")
     public ResponseEntity<List<FollowResponse>> getFollowed(@PathVariable int followerId){
         var followed = followQuery.getAllByFollowerUser(userQuery.getById(followerId));
-        if(followed == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(listFollowToListFollowResponse(
                 followed),
                 HttpStatus.OK
@@ -85,7 +81,7 @@ public class FollowController {
         );
     }
 
-    @DeleteMapping("/{followId}")
+    @DeleteMapping("/delete/{followId}")
     public ResponseEntity<String> deleteFollow(@PathVariable int followId) {
         var follow = followQuery.getById(followId);
         if(follow == null)

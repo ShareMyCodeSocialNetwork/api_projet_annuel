@@ -13,6 +13,6 @@ public class RoleValidationService {
     public boolean isValid(Role role){
         if(role == null)
             return false;
-        return !Objects.equals(role.getName(), "") && !role.getName().isBlank();
+        return !Objects.equals(role.getTitlePermission(), "") && !role.getTitlePermission().isBlank();
     }
 }

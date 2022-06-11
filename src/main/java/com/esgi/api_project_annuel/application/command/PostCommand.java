@@ -38,7 +38,7 @@ public class PostCommand {
         return postRepository.save(post);
     }
 
-    public Post update(int postId, PostRequest postRequest){
+    /*public Post update(int postId, PostRequest postRequest){
         Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
         if(dbPost.isPresent()){
             dbPost.get().setContent(postRequest.content);
@@ -47,14 +47,14 @@ public class PostCommand {
             return postRepository.save(dbPost.get());
         }
         return null;
-
-    }
+    }*/
 
     public void delete(int postId){
         Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
         dbPost.ifPresent(post ->{
             post.setUser(null);
             postRepository.save(post);
+            commentCommand.deleteCommentsInPost(post);
             likeCommand.deleteAllLikesPost(post);
             postRepository.delete(post);
         }
@@ -78,7 +78,8 @@ public class PostCommand {
         Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
         if(dbPost.isPresent()){
             dbPost.get().setContent(postRequest.content);
-            return postRepository.save(dbPost.get());
+            if (postValidationService.isValid(dbPost.get()))
+                return postRepository.save(dbPost.get());
         }
         return null;
     }

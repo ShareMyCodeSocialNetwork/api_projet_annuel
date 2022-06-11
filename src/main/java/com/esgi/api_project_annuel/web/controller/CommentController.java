@@ -63,7 +63,7 @@ public class CommentController {
         );
     }
 
-    @PatchMapping("/{commentId}")
+    @PatchMapping("/update/{commentId}")
     public ResponseEntity<CommentResponse> changeContent(@PathVariable int commentId, @RequestBody CommentRequest commentRequest){
         var comment = commentQuery.getById(commentId);
         if(comment == null)
@@ -99,8 +99,6 @@ public class CommentController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createCommentOnPost(@RequestBody CommentRequest commentRequest){
-        if(!isValidCommentRequest(commentRequest))
-            return new ResponseEntity<>("Missing Properties", HttpStatus.BAD_REQUEST);
 
         var user = userQuery.getById(commentRequest.user_id);
         var post = postQuery.getById(commentRequest.post_id);
@@ -113,26 +111,16 @@ public class CommentController {
     }
 
 
-    @DeleteMapping("/{commentId}")
+    @DeleteMapping("/delete/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable int commentId){
-        try{
-            if(null == commentQuery.getById(commentId))
-                return new ResponseEntity<>("Comment does not exist", HttpStatus.NOT_FOUND);
-            commentCommand.delete(commentId);
-            return new ResponseEntity<>("Comment deleted",HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>("Bad request", HttpStatus.BAD_REQUEST);
-        }
+        if(null == commentQuery.getById(commentId))
+            return new ResponseEntity<>("Comment does not exist", HttpStatus.NOT_FOUND);
+        commentCommand.delete(commentId);
+        return new ResponseEntity<>("Comment deleted",HttpStatus.NO_CONTENT);
     }
 
 
 
-
-
-    private boolean isValidCommentRequest(CommentRequest commentRequest){
-        return !( null == commentRequest.content || commentRequest.content.equals("") ||
-                commentRequest.user_id <= 0 || commentRequest.post_id <= 0 );
-    }
 
     private CommentResponse commentToCommentResponse(Comment comment){
         return new CommentResponse()

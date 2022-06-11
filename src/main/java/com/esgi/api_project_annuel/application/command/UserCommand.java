@@ -1,19 +1,32 @@
 package com.esgi.api_project_annuel.application.command;
+import com.esgi.api_project_annuel.Domain.entities.Role;
 import com.esgi.api_project_annuel.Domain.entities.User;
+import com.esgi.api_project_annuel.Domain.repository.RoleRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
 import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.application.validation.UserValidationService;
 import com.esgi.api_project_annuel.web.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class UserCommand {
+public class UserCommand implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Autowired
     UserQuery userQuery;
@@ -21,6 +34,8 @@ public class UserCommand {
     PostCommand postCommand;
     @Autowired
     CommentCommand commentCommand;
+    @Autowired
+    LikeCommand likeCommand;
     @Autowired
     FollowCommand followCommand;
     @Autowired
@@ -35,6 +50,18 @@ public class UserCommand {
     UserValidationService userValidationService = new UserValidationService();
 
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        User user = userRepository.findByEmail(email);
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(user.getRoles().getTitlePermission()));
+        return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword(),authorities);
+    }
+
     public User create(UserRequest userRequest){
         var user = new User();
         user.setEmail(userRequest.email);
@@ -45,8 +72,12 @@ public class UserCommand {
         user.setProfilePicture(
                 Objects.requireNonNullElse(userRequest.profilePicture, "default_profile_picture")
         );
+        user.setRoles(roleRepository.findById(1));
         if (!userValidationService.isUserValid(user))
             return null;
+        String encodedPassword = passwordEncoder.encode(userRequest.password);
+        System.out.println("ENCODED PASSWORD : " + encodedPassword);
+        user.setPassword(encodedPassword);
         return userRepository.save(user);
     }
 
@@ -56,8 +87,10 @@ public class UserCommand {
         if(dbUser.isPresent()){
             var user = dbUser.get();
             user.setPassword(userRequest.password);
-            if(userValidationService.isUserValid(user))
+            if(userValidationService.isUserValid(user)){
+                user.setPassword(passwordEncoder.encode(userRequest.password));
                 return userRepository.save(user);
+            }
         }
         return null;
     }
@@ -87,11 +120,10 @@ public class UserCommand {
     public User changeEmail(int userId, UserRequest userRequest){
         Optional<User> userFromDB = Optional.ofNullable(userRepository.findById(userId));
         if(userFromDB.isPresent()){
-            var user = userFromDB.get();
-            user.setEmail(userRequest.email);
-            if(userValidationService.isUserValid(user))
-                if(!userQuery.userEmailExist(user.getEmail()))
-                    return userRepository.save(user);
+            userFromDB.get().setEmail(userRequest.email);
+            if(userValidationService.isUserValid(userFromDB.get()))
+                if(!userQuery.userEmailExist(userFromDB.get().getEmail()))
+                    return userRepository.save(userFromDB.get());
         }
         return null;
     }
@@ -112,17 +144,28 @@ public class UserCommand {
         Optional<User> userFromDb = Optional.ofNullable(userRepository.findById(userId));
         userFromDb.ifPresent(user ->{
                     commentCommand.deleteAllUserComments(user);
-                    projectCommand.deleteAllProjectsUser(user);
                     codeCommand.deleteAllByUser(user);
+                    projectCommand.deleteAllProjectsUser(user);
                     postCommand.deleteAllUserPosts(user);
+                    likeCommand.deleteAllLikesUser(user);
                     snippetCommand.deleteAllByUser(user);
                     followCommand.deleteAllByFollowed(user);
                     followCommand.deleteAllByFollower(user);
                     userRoleGroupCommand.deleteAllByUser(user);
+                    user.setRoles(null);
+                    userRepository.save(user);
                     userRepository.delete(user);
                 }
 
         );
     }
+
+    /*public void assignUserWithRole(int role_id,int user_id){
+        User user = userRepository.findById(user_id);
+        Role role = roleRepository.findById(role_id);
+
+        user.setRoles(role);
+        userRepository.save(user);
+    }*/
 
 }
