@@ -1,9 +1,11 @@
 package com.esgi.api_project_annuel.web.controller;
 
+import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.Domain.entities.Language;
+import com.esgi.api_project_annuel.Domain.entities.Snippet;
 import com.esgi.api_project_annuel.GlobalObject;
-import com.esgi.api_project_annuel.web.controller.fixture.LanguageFixture;
-import com.esgi.api_project_annuel.web.controller.fixture.TokenFixture;
+import com.esgi.api_project_annuel.web.controller.fixture.*;
+import com.esgi.api_project_annuel.web.response.ProjectResponse;
 import com.esgi.api_project_annuel.web.response.RoleResponse;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -99,5 +101,44 @@ class LanguageControllerTest {
 
         LanguageFixture.deleteById(response.getId(), token).then()
                 .statusCode(404);
+    }
+    @Test
+    void should_delete_link(){
+        var request = LanguageFixture.languageToLanguageRequest(globalObject.validLanguage);
+        var adminToken = TokenFixture.adminToken();
+        var language = LanguageFixture.create(request,adminToken).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Language.class);
+
+        var token = TokenFixture.userToken();
+        var snippetRequest = SnippetFixture.snippetToSnippetRequest(globalObject.validSnippet);
+        snippetRequest.language_id = language.getId();
+        snippetRequest.user_id = 3;
+
+        var snippet = SnippetFixture.create(snippetRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Snippet.class);
+
+
+        var codeRequest = CodeFixture.codeToCodeRequest(globalObject.validCode);
+
+        codeRequest.userId = 3;
+        codeRequest.language_id = language.getId();
+        var code = CodeFixture.create(codeRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+
+        LanguageFixture.deleteById(language.getId(), adminToken).then().statusCode(204);
+        LikeFixture.getById(language.getId(), adminToken).then().statusCode(404);
+
+        code = CodeFixture.getById(code.getId(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", Code.class);
+        assertThat(code.getLanguage()).isEqualTo(null);
+
+        snippet = SnippetFixture.getById(snippet.getId(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", Snippet.class);
+        assertThat(snippet.getLanguage()).isEqualTo(null);
     }
 }
