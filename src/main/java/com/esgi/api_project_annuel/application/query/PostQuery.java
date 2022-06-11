@@ -38,6 +38,7 @@ public class PostQuery {
         return postRepository.findByUser(userRepository.getById(userId));
     }
 
+    /*
     public List<Like> getLikes(int postId){
         var post = postRepository.findById(postId);
         return likeRepository.findAllByPost(post);
@@ -49,6 +50,6 @@ public class PostQuery {
             posts.addAll(postRepository.findByUser(user))
         );
         return posts;
-    }
+    }*/
 
 }

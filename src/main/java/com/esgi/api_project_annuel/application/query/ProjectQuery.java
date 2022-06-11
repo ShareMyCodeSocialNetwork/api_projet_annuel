@@ -38,7 +38,7 @@ public class ProjectQuery {
         return projectRepository.findAllByGroup(group);
     }
 
-    public boolean existsById(int id){
+    /*public boolean existsById(int id){
         return projectRepository.existsById(id);
-    }
+    }*/
 }
