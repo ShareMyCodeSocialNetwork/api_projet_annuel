@@ -1,6 +1,7 @@
 package com.esgi.api_project_annuel.application.query;
 
 import com.esgi.api_project_annuel.Domain.entities.Snippet;
+import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.SnippetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,10 @@ public class SnippetQuery {
 
     public Snippet getById(int snippetId) {
         return snippetRepository.findById(snippetId);
+    }
+
+    public List<Snippet> getAllByUser(User user){
+        return snippetRepository.getAllByUser(user);
     }
 
 }
