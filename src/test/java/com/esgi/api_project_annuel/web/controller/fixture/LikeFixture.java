@@ -24,6 +24,14 @@ public class LikeFixture {
                 .get("/like/" + id);
     }
 
+    public static Response getByUser(int userId,Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/like/user/" + userId);
+    }
+
 
     public static Response deleteById(int id,Token token){
         return given()
