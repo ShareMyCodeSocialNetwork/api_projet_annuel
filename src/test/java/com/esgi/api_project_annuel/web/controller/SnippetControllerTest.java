@@ -60,6 +60,22 @@ class SnippetControllerTest {
                 .extract().body().jsonPath().getList(".",Snippet.class);
         assertThat(snippets).isNotEmpty();
     }
+    @Test
+    void getAllSnippetsByUser() {
+        var token = TokenFixture.userToken();
+        var request = SnippetFixture.snippetToSnippetRequest(globalObject.validSnippet);
+        request.language_id = 1;
+        request.user_id = 3;
+
+        SnippetFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Snippet.class);
+
+        var snippets = SnippetFixture.getByUser(3,token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".",Snippet.class);
+        assertThat(snippets).isNotEmpty();
+    }
 
     @Test
     void getSnippetById() {

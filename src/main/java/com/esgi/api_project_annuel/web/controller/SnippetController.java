@@ -4,6 +4,7 @@ import com.esgi.api_project_annuel.Domain.entities.Snippet;
 import com.esgi.api_project_annuel.application.command.SnippetCommand;
 import com.esgi.api_project_annuel.application.query.LanguageQuery;
 import com.esgi.api_project_annuel.application.query.SnippetQuery;
+import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.web.request.SnippetRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,8 @@ public class SnippetController {
     private final SnippetQuery snippetQuery;
     @Autowired
     LanguageQuery languageQuery;
+    @Autowired
+    UserQuery userQuery;
 
 
     public SnippetController(SnippetCommand snippetCommand, SnippetQuery snippetQuery) {
@@ -40,6 +43,16 @@ public class SnippetController {
     @GetMapping("/snippet")
     public ResponseEntity<?> getAllSnippets(){
         return new ResponseEntity<>(snippetQuery.getAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("/snippet/user/{userId}")
+    public ResponseEntity<?> getAllSnippetsByUser(@PathVariable int userId){
+        return new ResponseEntity<>(
+                snippetQuery.getAllByUser(
+                        userQuery.getById(userId)
+                ),
+                HttpStatus.OK
+        );
     }
 
     @GetMapping("/snippet/{snippetId}")

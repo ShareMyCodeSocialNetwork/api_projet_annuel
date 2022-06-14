@@ -56,6 +56,18 @@ public class LikeController {
                 HttpStatus.OK);
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<LikeResponse>> getAllByUser(@PathVariable int userId){
+        return new ResponseEntity<>(
+                this.listLikeToListLikeResponse(
+                        likeQuery.getByUser(
+                                userQuery.getById(userId)
+                        )
+                ),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("/{likeId}")
     public ResponseEntity<LikeResponse> getLikeById(@PathVariable int likeId){
         var like = likeQuery.getById(likeId);

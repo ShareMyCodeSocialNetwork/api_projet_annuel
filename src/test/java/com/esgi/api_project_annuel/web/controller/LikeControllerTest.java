@@ -77,6 +77,29 @@ class LikeControllerTest {
                 .extract().body().jsonPath().getList(".", LikeResponse.class);
         assertThat(likes).isNotEmpty();
     }
+    @Test
+    void getAllByUser() {
+        var token = TokenFixture.userToken();
+
+        var postRequest = PostFixture.postToPostRequest(globalObject.validPost);
+        postRequest.user_id = 3;
+        var post = PostFixture.create(postRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
+
+        var request = new LikeRequest();
+        request.post_id = post.getId();
+        request.user_id = 3;
+
+        LikeFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", LikeResponse.class);
+
+        var likes = LikeFixture.getByUser(3,token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", LikeResponse.class);
+        assertThat(likes).isNotEmpty();
+    }
 
     @Test
     void getLikeById() {
