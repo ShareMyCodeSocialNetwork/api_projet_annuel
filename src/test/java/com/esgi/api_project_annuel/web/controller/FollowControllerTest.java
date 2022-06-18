@@ -36,7 +36,7 @@ class FollowControllerTest {
 
         var request = new FollowRequest();
         request.followerUserId = 3;
-        request.followedUserId = 1;
+        request.followedUserId = 3;
         var response = FollowFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", FollowResponse.class);
@@ -56,7 +56,7 @@ class FollowControllerTest {
         var responseALL  = FollowFixture.getAll(token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", FollowResponse.class);
-        assertThat(responseALL).isEmpty();
+        assertThat(responseALL).isNotEmpty();
     }
 
     @Test
@@ -104,22 +104,9 @@ class FollowControllerTest {
     @Test
     void deleteFollow() {
         var token = TokenFixture.userToken();
-        var user1 = UserFixture.getById(2,token).then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject(".", UserResponse.class);
-        var user2 = UserFixture.getById(3,token).then()
-                .statusCode(200)
-                .extract().body().jsonPath().getObject(".", UserResponse.class);
 
-        var request = new FollowRequest();
-        request.followerUserId = user2.getId();
-        request.followedUserId = user1.getId();
 
-        var response = FollowFixture.create(request,token).then()
-                .statusCode(201)
-                .extract().body().jsonPath().getObject(".", FollowResponse.class);
-
-        FollowFixture.deleteById(response.getId(),token).then()
+        FollowFixture.deleteById(1,token).then()
                 .statusCode(204);
 
         FollowFixture.deleteById(0,token).then()
