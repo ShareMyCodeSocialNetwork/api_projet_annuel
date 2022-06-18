@@ -1,8 +1,10 @@
 package com.esgi.api_project_annuel;
 
+import com.esgi.api_project_annuel.Domain.entities.Follow;
 import com.esgi.api_project_annuel.Domain.entities.Language;
 import com.esgi.api_project_annuel.Domain.entities.Role;
 import com.esgi.api_project_annuel.Domain.entities.User;
+import com.esgi.api_project_annuel.Domain.repository.FollowRepository;
 import com.esgi.api_project_annuel.Domain.repository.LanguageRepository;
 import com.esgi.api_project_annuel.Domain.repository.RoleRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
@@ -24,15 +26,10 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 
 
 	@Bean
-	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, LanguageRepository languageRepository){
+	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, LanguageRepository languageRepository, FollowRepository followRepository){
 		return args -> {
 			var role_USER = roleRepository.save(createRole("USER"));
 			var role_ADMIN = roleRepository.save(createRole("ADMIN"));
-
-			languageRepository.save(createLanguage("JavaScript"));
-			languageRepository.save(createLanguage("Python"));
-			languageRepository.save(createLanguage("Java"));
-			languageRepository.save(createLanguage("Ruby"));
 
 
 			System.out.println("----------------------------");
@@ -46,12 +43,42 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 			var saved_user2 = userRepository.save(createUser("Lucas","Jehanno","lucas@hotmail.fr","azerty1234"));
 			var saved_user3 = userRepository.save(createUser("Test","Test","test@test.fr","test1234test"));
 
+
+
 			saved_user1.setRoles(role_ADMIN);
 			saved_user2.setRoles(role_ADMIN);
 			saved_user3.setRoles(role_USER);
 			userRepository.save(saved_user1);
 			userRepository.save(saved_user2);
 			userRepository.save(saved_user3);
+
+			languageRepository.save(createLanguage("JavaScript"));
+			languageRepository.save(createLanguage("Python"));
+			languageRepository.save(createLanguage("Java"));
+			languageRepository.save(createLanguage("Ruby"));
+
+			var f1 = followRepository.save(new Follow());
+			var f2 = followRepository.save(new Follow());
+			var f3 = followRepository.save(new Follow());
+			var f4 = followRepository.save(new Follow());
+
+			f1.setFollowedUser(saved_user1);
+			f1.setFollowerUser(saved_user3);
+			followRepository.save(f1);
+
+			f2.setFollowedUser(saved_user2);
+			f2.setFollowerUser(saved_user3);
+			followRepository.save(f2);
+
+			f3.setFollowedUser(saved_user3);
+			f3.setFollowerUser(saved_user1);
+			followRepository.save(f3);
+
+			f4.setFollowedUser(saved_user2);
+			f4.setFollowerUser(saved_user1);
+			followRepository.save(f4);
+
+
 
 			System.out.println("----------------------------");
 			System.out.println(saved_user1.getId());
@@ -67,9 +94,17 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 			System.out.println(saved_user3.getEmail());
 			System.out.println(saved_user3.getRoles().getTitlePermission());
 			System.out.println("----------------------------");
+
+
 		};
 	}
 
+	private Follow createFollow(User follower, User followed){
+		var follow = new Follow();
+		follow.setFollowerUser(follower);
+		follow.setFollowedUser(followed);
+		return follow;
+	}
 	private Role createRole(String nameRole){
 		Role role = new Role();
 		role.setTitlePermission(nameRole);
