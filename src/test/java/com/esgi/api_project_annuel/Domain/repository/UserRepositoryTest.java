@@ -105,16 +105,6 @@ class UserRepositoryTest {
         assertThat(users).hasSize(5).contains(user1, user3);
     }
 
-
-    @Test
-    public void should_delete_all_user() {
-        entityManager.persist(user1);
-        entityManager.persist(user2);
-
-        userRepository.deleteAll();
-        assertThat(userRepository.findAll()).isEmpty();
-    }
-
     @Test
     void findByEmail() {
         entityManager.persist(user1);

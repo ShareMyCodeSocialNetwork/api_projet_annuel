@@ -34,13 +34,13 @@ class FollowRepositoryTest {
     @Test
     public void should_find_empty() {
         var result = repository.findAll();
-        assertThat(result).isEmpty();
+        assertThat(result).isNotEmpty();
     }
 
     @Test
     public void should_find_nothing_if_repository_is_empty() {
         var result = repository.findAll();
-        assertThat(result).size().isEqualTo(0);
+        assertThat(result).size().isEqualTo(4);
     }
 
     @Test
@@ -51,7 +51,7 @@ class FollowRepositoryTest {
         entityManager.persist(object2);
 
         var results = repository.findAll();
-        assertThat(results).hasSize(2).contains(object1, object2);
+        assertThat(results).hasSize(6).contains(object1, object2);
     }
 
     @Test
