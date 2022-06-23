@@ -83,6 +83,16 @@ public class ProjectFixture {
                 .header("Authorization","Bearer "+token.access_token)
                 .patch("/project/" + id + "/name");
     }
+
+    public static Response changeDescription(int id, ProjectRequest request,Token token) {
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(request)
+                .header("Authorization","Bearer "+token.access_token)
+                .patch("/project/" + id + "/description");
+    }
+
     public static Response deleteById(int id,Token token){
         return given()
                 .contentType(ContentType.JSON)
@@ -100,6 +110,7 @@ public class ProjectFixture {
     public static ProjectRequest projectToProjectRequest(Project project){
         var request = new ProjectRequest();
         request.name = project.getName();
+        request.description = project.getDescription();
         return request;
     }
 

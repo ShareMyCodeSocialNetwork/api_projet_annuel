@@ -233,6 +233,29 @@ class ProjectControllerTest {
                 .statusCode(400);
     }
 
+
+    @Test
+    void changeDescription() {
+        var token = TokenFixture.userToken();
+
+        var request = ProjectFixture.projectToProjectRequest(globalObject.validProject);
+        request.user_id = 3;
+        var response = ProjectFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", ProjectResponse.class);
+
+        request.description = "newDescription";
+
+        response = ProjectFixture.changeDescription(response.getId(),request,token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", ProjectResponse.class);
+
+
+        request.description = "";
+        ProjectFixture.changeDescription(response.getId(),request,token).then()
+                .statusCode(400);
+    }
+
     @Test
     void deleteProject() {
         var token = TokenFixture.userToken();

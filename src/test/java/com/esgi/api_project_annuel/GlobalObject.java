@@ -114,6 +114,7 @@ public class GlobalObject {
         project.setOwner(validUser);
         project.setGroup(validGroup);
         project.setName("valid name");
+        project.setDescription("valid description");
         return project;
     }
 
@@ -125,6 +126,7 @@ public class GlobalObject {
     public Group buildValidGroup() {
         var group = new Group();
         group.setName("valid name");
+        group.setDescription("valid description");
         return group;
     }
 

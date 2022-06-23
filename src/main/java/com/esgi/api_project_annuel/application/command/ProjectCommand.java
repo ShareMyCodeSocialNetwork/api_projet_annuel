@@ -30,6 +30,7 @@ public class ProjectCommand {
         Project project = new Project();
         project.setOwner(user);
         project.setName(projectRequest.name);
+        project.setDescription(projectRequest.description);
 
         //si group pas valide, ca veux dire que le projet n'est pas dans un groupe
         if(groupValidationService.isValid(group))
@@ -98,6 +99,15 @@ public class ProjectCommand {
         Optional<Project> project = Optional.ofNullable(projectRepository.findById(id));
         if(project.isPresent()){
             project.get().setName(projectRequest.name);
+            if(projectValidationService.isValid(project.get()))
+                return projectRepository.save(project.get());
+        }
+        return null;
+    }
+    public Project changeDescription(int id, ProjectRequest projectRequest){
+        Optional<Project> project = Optional.ofNullable(projectRepository.findById(id));
+        if(project.isPresent()){
+            project.get().setDescription(projectRequest.description);
             if(projectValidationService.isValid(project.get()))
                 return projectRepository.save(project.get());
         }

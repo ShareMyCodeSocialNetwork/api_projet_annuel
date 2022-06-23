@@ -3,6 +3,7 @@ package com.esgi.api_project_annuel.web.response;
 public class GroupResponse {
     public int id;
     public String name;
+    public String description;
 
     public GroupResponse() {
     }
@@ -22,6 +23,15 @@ public class GroupResponse {
 
     public GroupResponse setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public GroupResponse setDescription(String description) {
+        this.description = description;
         return this;
     }
 }

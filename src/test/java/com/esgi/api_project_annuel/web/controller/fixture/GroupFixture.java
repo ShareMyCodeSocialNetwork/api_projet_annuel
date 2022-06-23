@@ -9,7 +9,8 @@ import org.assertj.core.api.Java6BDDSoftAssertionsProvider;
 import static io.restassured.RestAssured.given;
 
 public class GroupFixture {
-    public static Response create(GroupRequest groupRequest,Token token){
+
+    public static Response create(GroupRequest groupRequest, Token token){
         return given()
                 .contentType(ContentType.JSON)
                 .when()
@@ -64,6 +65,14 @@ public class GroupFixture {
                 .header("Authorization","Bearer "+token.access_token)
                 .patch("/group/update/name/" + id);
     }
+    public static Response changeDescription(int id, GroupRequest request,Token token) {
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(request)
+                .header("Authorization","Bearer "+token.access_token)
+                .patch("/group/update/description/" + id);
+    }
 
     public static Response getByName(String groupName, Token token) {
         return given()
@@ -77,6 +86,7 @@ public class GroupFixture {
     public static GroupRequest groupToGroupRequest(Group group){
         var request = new GroupRequest();
         request.name = group.getName();
+        request.description = group.getDescription();
         return request;
     }
 
