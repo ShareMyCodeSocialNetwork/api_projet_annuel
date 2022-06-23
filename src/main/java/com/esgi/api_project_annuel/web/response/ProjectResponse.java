@@ -6,6 +6,7 @@ import com.esgi.api_project_annuel.Domain.entities.User;
 public class ProjectResponse {
     public int id;
     public String name;
+    public String description;
     public User user;
     public Group group;
 
@@ -45,6 +46,15 @@ public class ProjectResponse {
 
     public ProjectResponse setGroup(Group group) {
         this.group = group;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public ProjectResponse setDescription(String description) {
+        this.description = description;
         return this;
     }
 }
