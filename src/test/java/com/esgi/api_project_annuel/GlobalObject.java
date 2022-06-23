@@ -114,6 +114,7 @@ public class GlobalObject {
         project.setOwner(validUser);
         project.setGroup(validGroup);
         project.setName("valid name");
+        project.setDescription("valid description");
         return project;
     }
 
