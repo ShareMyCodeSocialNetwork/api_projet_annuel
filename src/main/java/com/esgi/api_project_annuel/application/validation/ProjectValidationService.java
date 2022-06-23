@@ -12,6 +12,8 @@ public class ProjectValidationService {
 
         return userValidationService.isUserValid(project.getOwner()) &&
                 !Objects.equals(project.getName(), "") &&
-                project.getName() != null;
+                project.getName() != null &&
+                !Objects.equals(project.getDescription(), "") &&
+                project.getDescription() != null;
     }
 }
