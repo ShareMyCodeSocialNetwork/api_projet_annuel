@@ -83,6 +83,22 @@ public class GroupController {
         );
     }
 
+    @PatchMapping("/update/description/{groupId}")
+    public ResponseEntity<GroupResponse> changeDescription(@PathVariable int groupId, @RequestBody GroupRequest groupRequest) {
+        var group = groupQuery.getById(groupId);
+        if(group == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        var updatedGroup = groupCommand.changeDescription(groupId, groupRequest);
+        if(updatedGroup == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(
+                groupToGroupResponse(
+                        updatedGroup
+                ),
+                HttpStatus.OK
+        );
+    }
+
 
     @PutMapping("/update/{groupId}")
     public ResponseEntity<GroupResponse> updateGroup(@PathVariable int groupId, @RequestBody GroupRequest groupRequest) {
@@ -113,6 +129,7 @@ public class GroupController {
     private GroupResponse groupToGroupResponse(Group group){
         return new GroupResponse()
                 .setId(group.getId())
+                .setDescription(group.getDescription())
                 .setName(group.getName());
     }
 

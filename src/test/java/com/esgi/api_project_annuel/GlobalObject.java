@@ -126,6 +126,7 @@ public class GlobalObject {
     public Group buildValidGroup() {
         var group = new Group();
         group.setName("valid name");
+        group.setDescription("valid description");
         return group;
     }
 

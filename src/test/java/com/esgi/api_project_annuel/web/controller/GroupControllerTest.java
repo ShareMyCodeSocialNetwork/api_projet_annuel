@@ -102,6 +102,28 @@ class GroupControllerTest {
     }
 
     @Test
+    void changeDescription() {
+        var token = TokenFixture.userToken();
+        var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        var response = GroupFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", GroupResponse.class);
+
+        GroupFixture.changeDescription(0, request, token).then()
+                .statusCode(404);
+
+        request.description = "NewDescription";
+        response = GroupFixture.changeDescription(response.id,request,token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", GroupResponse.class);
+        assertThat(response.name).isEqualTo(request.name);
+
+        request.description = "";
+        GroupFixture.changeDescription(response.id,request,token).then()
+                .statusCode(400);
+    }
+
+    @Test
     void updateGroup() {
         var token = TokenFixture.userToken();
         var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);

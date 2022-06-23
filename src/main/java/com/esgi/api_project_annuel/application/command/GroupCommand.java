@@ -27,6 +27,7 @@ public class GroupCommand {
     public Group create(GroupRequest groupRequest) {
         var group = new Group();
         group.setName(groupRequest.name);
+        group.setDescription(groupRequest.description);
         if (!groupValidationService.isValid(group))
             return null;
         return groupRepository.save(group);
@@ -34,11 +35,10 @@ public class GroupCommand {
 
 
     public Group update(int groupId, GroupRequest groupRequest) {
-        if (Objects.equals(groupRequest.name, "") || groupRequest.name.isBlank())
-            return null;
         Optional<Group> groupFromDB = Optional.ofNullable(groupRepository.findById(groupId));
         if(groupFromDB.isPresent()) {
             groupFromDB.get().setName(groupRequest.name);
+            groupFromDB.get().setDescription(groupRequest.description);
             if (groupValidationService.isValid(groupFromDB.get()))
                 return groupRepository.save(groupFromDB.get());
         }
@@ -50,6 +50,16 @@ public class GroupCommand {
         Optional<Group> dbGroup = Optional.ofNullable(groupRepository.findById(groupId));
         if(dbGroup.isPresent()){
             dbGroup.get().setName(groupRequest.name);
+            if(groupValidationService.isValid(dbGroup.get()))
+                return groupRepository.save(dbGroup.get());
+        }
+        return null;
+    }
+
+    public Group changeDescription(int groupId, GroupRequest groupRequest){
+        Optional<Group> dbGroup = Optional.ofNullable(groupRepository.findById(groupId));
+        if(dbGroup.isPresent()){
+            dbGroup.get().setDescription(groupRequest.description);
             if(groupValidationService.isValid(dbGroup.get()))
                 return groupRepository.save(dbGroup.get());
         }
