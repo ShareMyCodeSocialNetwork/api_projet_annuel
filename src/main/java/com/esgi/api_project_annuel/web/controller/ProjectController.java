@@ -117,6 +117,14 @@ public class ProjectController {
         return new ResponseEntity<>(projectToProjectResponse(project), HttpStatus.OK);
     }
 
+    @PatchMapping("/{projectId}/description")
+    public ResponseEntity<ProjectResponse> changeDescription(@PathVariable int projectId,@RequestBody ProjectRequest projectRequest){
+        var project = projectCommand.changeDescription(projectId,projectRequest);
+        if(project == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(projectToProjectResponse(project), HttpStatus.OK);
+    }
+
 
     @DeleteMapping("/delete/{projectId}")
     public ResponseEntity<String> deleteProject(@PathVariable int projectId){
@@ -142,6 +150,7 @@ public class ProjectController {
         return new ProjectResponse()
                 .setId(project.getId())
                 .setName(project.getName())
+                .setDescription(project.getDescription())
                 .setGroup(project.getGroup())
                 .setUser(project.getOwner());
     }
