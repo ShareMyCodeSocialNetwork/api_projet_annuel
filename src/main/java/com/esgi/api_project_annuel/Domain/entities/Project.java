@@ -23,6 +23,9 @@ public class Project {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "description")
+    private String description;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User owner;
