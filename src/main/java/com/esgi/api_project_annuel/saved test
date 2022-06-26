@@ -1,0 +1,127 @@
+@Bean
+	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, LanguageRepository languageRepository, FollowRepository followRepository){
+		return args -> {
+			var role_USER = roleRepository.findRoleByTitlePermission("USER");
+			if(role_USER == null){
+				role_USER = roleRepository.save(createRole("USER"));
+				System.out.println("----------------------------");
+				System.out.println(role_USER.getId());
+				System.out.println(role_USER.getTitlePermission());
+				System.out.println("----------------------------");
+			}
+			var role_ADMIN = roleRepository.findRoleByTitlePermission("ADMIN");
+			if(role_ADMIN == null){
+				role_ADMIN = roleRepository.save(createRole("ADMIN"));
+				System.out.println("----------------------------");
+				System.out.println(role_ADMIN.getId());
+				System.out.println(role_ADMIN.getTitlePermission());
+				System.out.println("----------------------------");
+			}
+
+
+			var userAdmin1 = createUser("David","Arnaud","david@hotmail.fr","coucou1234");
+			var userAdmin2 = createUser("Lucas","Jehanno","lucas@hotmail.fr","azerty1234");
+			var userUser1 = createUser("Test","Test","test@test.fr","test1234test");
+
+
+			var saved_user1 = userRepository.findByEmail(userAdmin1.getEmail());
+			if(saved_user1 == null)
+				saved_user1 = userRepository.save(userAdmin1);
+
+			var saved_user2 = userRepository.findByEmail(userAdmin2.getEmail());
+			if(saved_user2 == null)
+				saved_user2 = userRepository.save(userAdmin2);
+
+			var saved_user3 = userRepository.findByEmail(userUser1.getEmail());
+			if(saved_user3 == null)
+				saved_user3 = userRepository.save(userAdmin1);
+
+
+
+			saved_user1.setRoles(role_ADMIN);
+			saved_user2.setRoles(role_ADMIN);
+			saved_user3.setRoles(role_USER);
+			userRepository.save(saved_user1);
+			userRepository.save(saved_user2);
+			userRepository.save(saved_user3);
+
+
+			var js = createLanguage("JavaScript");
+			var python = createLanguage("Python");
+			var java = createLanguage("Java");
+			var ruby = createLanguage("Ruby");
+
+			var dbJs = languageRepository.findByName(js.getName());
+			if(dbJs == null)
+				dbJs = languageRepository.save(js);
+
+
+			var dbPython = languageRepository.findByName(python.getName());
+			if(dbPython == null)
+				dbPython = languageRepository.save(python);
+
+
+			var dbJava = languageRepository.findByName(java.getName());
+			if(dbJava == null)
+				dbJava = languageRepository.save(java);
+
+
+			var dbRuby = languageRepository.findByName(js.getName());
+			if(dbRuby == null)
+				dbRuby = languageRepository.save(ruby);
+
+
+			var dbF1 = followRepository.getFollowByFollowedUserAndFollowerUser(saved_user1,saved_user3);
+			if(dbF1 == null){
+				var f1 = followRepository.save(new Follow());
+				f1.setFollowedUser(saved_user1);
+				f1.setFollowerUser(saved_user3);
+				followRepository.save(f1);
+			}
+
+
+			var dbF2 = followRepository.getFollowByFollowedUserAndFollowerUser(saved_user2,saved_user3);
+			if(dbF2 == null){
+				var f2 = followRepository.save(new Follow());
+				f2.setFollowedUser(saved_user2);
+				f2.setFollowerUser(saved_user3);
+				followRepository.save(f2);
+			}
+
+			var dbF3 = followRepository.getFollowByFollowedUserAndFollowerUser(saved_user3,saved_user1);
+			if(dbF3 == null){
+				var f3 = followRepository.save(new Follow());
+				f3.setFollowedUser(saved_user3);
+				f3.setFollowerUser(saved_user1);
+				followRepository.save(f3);
+			}
+
+			var dbF4 = followRepository.getFollowByFollowedUserAndFollowerUser(saved_user3,saved_user1);
+			if(dbF4 == null){
+				var f4 = followRepository.save(new Follow());
+				f4.setFollowedUser(saved_user2);
+				f4.setFollowerUser(saved_user1);
+				followRepository.save(f4);
+			}
+
+
+
+
+			System.out.println("----------------------------");
+			System.out.println(saved_user1.getId());
+			System.out.println(saved_user1.getPseudo());
+			System.out.println(saved_user1.getEmail());
+			System.out.println(saved_user1.getRoles().getTitlePermission());
+			System.out.println(saved_user2.getId());
+			System.out.println(saved_user2.getPseudo());
+			System.out.println(saved_user2.getEmail());
+			System.out.println(saved_user2.getRoles().getTitlePermission());
+			System.out.println(saved_user3.getId());
+			System.out.println(saved_user3.getPseudo());
+			System.out.println(saved_user3.getEmail());
+			System.out.println(saved_user3.getRoles().getTitlePermission());
+			System.out.println("----------------------------");
+
+
+		};
+	}

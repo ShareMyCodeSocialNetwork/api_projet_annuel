@@ -56,9 +56,17 @@ public class RoleController {
     }
 
     @GetMapping("/name/{roleName}")
-    public ResponseEntity<List<RoleResponse>> getRoleByName(@PathVariable String roleName){
-        return new ResponseEntity<>(listRoleToListRoleResponse(
-                roleQuery.getByName(roleName)),
+    public ResponseEntity<RoleResponse> getRoleByName(@PathVariable String roleName){
+        var role = roleQuery.getByName(roleName);
+        if(role == null)
+            return new ResponseEntity<>(
+                    null,
+                    HttpStatus.NOT_FOUND
+            );
+        return new ResponseEntity<>(
+                roleToRoleResponse(
+                        role
+                ),
                 HttpStatus.OK
         );
     }
