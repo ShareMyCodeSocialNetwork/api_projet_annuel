@@ -78,6 +78,9 @@ class RoleControllerTest {
                 .statusCode(200);
         RoleFixture.getByName(request.name,token).then()
                 .statusCode(200);
+
+        RoleFixture.getByName("role qui n'existe pas",token).then()
+                .statusCode(404);
     }
 
     @Test

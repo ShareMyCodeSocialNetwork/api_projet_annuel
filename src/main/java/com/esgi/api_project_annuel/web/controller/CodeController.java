@@ -65,6 +65,14 @@ public class CodeController {
         }
         return new ResponseEntity<>("Id for this code snippet not existing",HttpStatus.NOT_FOUND);
     }
+    @GetMapping("/code/project/{projectId}")
+    public ResponseEntity<?> getCodeByProject(@PathVariable int projectId){
+        var project = projectQuery.getById(projectId);
+        return new ResponseEntity<>(
+                codeQuery.findAllByProject(project),
+                HttpStatus.OK
+        );
+    }
 
     @PutMapping("/code/update/{codeId}")
     public ResponseEntity<?> updateCode(@PathVariable int codeId, @RequestBody CodeRequest updatedCode) {

@@ -69,7 +69,7 @@ public class GlobalObject {
 
     public Role buildValidRole() {
         var role = new Role();
-        role.setTitlePermission("valid title");
+        role.setTitlePermission(randomPseudo());
         return role;
     }
 

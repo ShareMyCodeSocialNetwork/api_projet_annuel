@@ -25,6 +25,14 @@ public class CodeFixture {
                 .get("/code/" + id);
     }
 
+    public static Response getByProject(int projectId, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/code/project/" + projectId);
+    }
+
 
 
     public static Response update(int id, CodeRequest codeRequest,Token token){

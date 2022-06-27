@@ -104,6 +104,35 @@ class CodeControllerTest {
                 .then()
                 .statusCode(404);
     }
+    @Test
+    void getCodeByProject() {
+        var token = TokenFixture.userToken();
+
+        var request = CodeFixture.codeToCodeRequest(globalObject.validCode);
+        var project = ProjectFixture.projectToProjectRequest(globalObject.validProject);
+        project.user_id = 3;
+        var createdProject = ProjectFixture.create(project,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", ProjectResponse.class);
+
+        request.userId = 3;
+        request.language_id = 1;
+        request.project_id = createdProject.id;
+        var code = CodeFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+
+        var codeGet = CodeFixture.getByProject(createdProject.getId(), token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", Code.class);
+        assertThat(codeGet.size()).isEqualTo(1);
+        codeGet = CodeFixture.getByProject(0,token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", Code.class);
+        assertThat(codeGet.size()).isEqualTo(0);
+    }
 
     @Test
     void updateCode() {

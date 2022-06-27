@@ -24,7 +24,7 @@ public class RoleQuery {
         return roleRepository.findById(id);
     }
 
-    public List<Role> getByName(String roleName) {
+    public Role getByName(String roleName) {
         return roleRepository.findRoleByTitlePermission(roleName);
     }
 }
