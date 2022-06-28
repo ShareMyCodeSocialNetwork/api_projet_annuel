@@ -8,6 +8,8 @@ public class UserResponse {
     String pseudo;
     String profilePicture;
 
+    String password;
+
     public UserResponse() {
     }
 
@@ -62,6 +64,15 @@ public class UserResponse {
 
     public UserResponse setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+        return this;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public UserResponse setPassword(String password) {
+        this.password = password;
         return this;
     }
 }
