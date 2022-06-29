@@ -296,6 +296,9 @@ class ProjectControllerTest {
         var getCodeByProject = CodeFixture.getByProject(createdProject.getId(), token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", Code.class);
+        CodeFixture.getById(createdCode.getId(), token).then()
+                        .statusCode(404);
+
 
         assertThat(getCodeByProject.size()).isEqualTo(0);
     }
