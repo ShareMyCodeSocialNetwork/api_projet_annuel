@@ -1,11 +1,9 @@
 package com.esgi.api_project_annuel.web.controller;
 
+import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.Domain.entities.Project;
 import com.esgi.api_project_annuel.GlobalObject;
-import com.esgi.api_project_annuel.web.controller.fixture.GroupFixture;
-import com.esgi.api_project_annuel.web.controller.fixture.ProjectFixture;
-import com.esgi.api_project_annuel.web.controller.fixture.TokenFixture;
-import com.esgi.api_project_annuel.web.controller.fixture.UserFixture;
+import com.esgi.api_project_annuel.web.controller.fixture.*;
 import com.esgi.api_project_annuel.web.response.GroupResponse;
 import com.esgi.api_project_annuel.web.response.ProjectResponse;
 import com.esgi.api_project_annuel.web.response.UserResponse;
@@ -269,5 +267,36 @@ class ProjectControllerTest {
                 .statusCode(204);
         ProjectFixture.deleteById(response.getId(),token).then()
                 .statusCode(404);
+    }
+
+
+    @Test
+    void should_set_code_project_to_null() {
+        var request = CodeFixture.codeToCodeRequest(globalObject.validCode);
+        var token = TokenFixture.userToken();
+
+        var project = ProjectFixture.projectToProjectRequest(globalObject.validProject);
+        project.user_id = 3;
+        var createdProject = ProjectFixture.create(project,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", ProjectResponse.class);
+
+        request.userId = 3;
+        request.language_id = 1;
+        request.project_id = createdProject.id;
+        var createdCode = CodeFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+
+        ProjectFixture.deleteById(createdProject.getId(),token).then()
+                .statusCode(204);
+        ProjectFixture.deleteById(createdProject.getId(),token).then()
+                .statusCode(404);
+
+        var getCodeByProject = CodeFixture.getByProject(createdProject.getId(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", Code.class);
+
+        assertThat(getCodeByProject.size()).isEqualTo(0);
     }
 }

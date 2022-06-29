@@ -82,8 +82,7 @@ public class CodeCommand {
     public void setProjectToNull(Project project){
         var codes = codeRepository.findAllByProject(project);
         codes.forEach(code -> {
-            code.setProject(null);
-            codeRepository.save(code);
+            delete(code.getId());
         });
     }
 
