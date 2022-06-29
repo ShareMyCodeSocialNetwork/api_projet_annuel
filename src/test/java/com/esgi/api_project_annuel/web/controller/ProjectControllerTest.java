@@ -293,13 +293,15 @@ class ProjectControllerTest {
         ProjectFixture.deleteById(createdProject.getId(),token).then()
                 .statusCode(404);
 
-        var getCodeByProject = CodeFixture.getByProject(createdProject.getId(), token).then()
-                .statusCode(200)
-                .extract().body().jsonPath().getList(".", Code.class);
+        ProjectFixture.getById(createdProject.getId(),token).then()
+                .statusCode(404);
         CodeFixture.getById(createdCode.getId(), token).then()
                         .statusCode(404);
 
 
-        assertThat(getCodeByProject.size()).isEqualTo(0);
+        /*var getCodeByProject = CodeFixture.getByProject(createdProject.getId(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", Code.class);
+        assertThat(getCodeByProject.size()).isEqualTo(0);*/
     }
 }

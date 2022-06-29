@@ -56,8 +56,10 @@ public class CodeCommand {
         code.setNameCode(codeRequest.name);
         code.setContent(codeRequest.content);
         code.setUser(user);
-        code.setLanguage(language);
-        code.setProject(project);
+        if(language != null)
+            code.setLanguage(language);
+        if (project != null)
+            code.setProject(project);
 
         if(codeValidationService.codeIsValid(code))
             return codeRepository.save(code);
@@ -94,9 +96,7 @@ public class CodeCommand {
 
     public void setProjectToNull(Project project){
         var codes = codeRepository.findAllByProject(project);
-        codes.forEach(code -> {
-            delete(code.getId());
-        });
+        codes.forEach(code -> delete(code.getId()));
     }
 
     public void deleteLanguage(Language language){
