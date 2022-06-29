@@ -36,6 +36,19 @@ public class CodeCommand {
 
     CodeValidationService codeValidationService = new CodeValidationService();
 
+    public Code createNotProject(CodeRequest codeRequest, Language language, User user){
+
+        Code code = new Code();
+
+        code.setNameCode(codeRequest.name);
+        code.setContent(codeRequest.content);
+        code.setUser(user);
+        code.setLanguage(language);
+
+        if(codeValidationService.codeIsValid(code))
+            return codeRepository.save(code);
+        return null;
+    }
     public Code create(CodeRequest codeRequest, Language language, User user, Project project){
 
         Code code = new Code();
