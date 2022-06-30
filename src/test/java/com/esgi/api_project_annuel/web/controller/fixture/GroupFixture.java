@@ -26,6 +26,13 @@ public class GroupFixture {
                 .header("Authorization","Bearer "+token.access_token)
                 .get("/group/" + id);
     }
+    public static Response getByOwner(int ownerId,Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/group/owner/" + ownerId);
+    }
 
 
 

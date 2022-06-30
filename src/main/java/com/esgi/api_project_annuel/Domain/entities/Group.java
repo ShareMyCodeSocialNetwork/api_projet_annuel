@@ -21,6 +21,10 @@ public class Group {
 
     @Column(name = "description")
     private String description;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User owner;
 }
 
 

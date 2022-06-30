@@ -342,6 +342,7 @@ class UserControllerTest {
           CREATE GROUP
          */
         var groupRequest = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        groupRequest.user_id = 3;
         var group = GroupFixture.create(groupRequest,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);

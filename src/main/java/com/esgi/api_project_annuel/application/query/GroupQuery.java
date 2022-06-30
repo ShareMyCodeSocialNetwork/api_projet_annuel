@@ -2,6 +2,7 @@ package com.esgi.api_project_annuel.application.query;
 
 
 import com.esgi.api_project_annuel.Domain.entities.Group;
+import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,10 @@ public class GroupQuery {
 
     public List<Group> getAll() {
         return this.groupRepository.findAll();
+    }
+
+    public List<Group> getByOwner(User owner) {
+        return this.groupRepository.findAllByOwner(owner);
     }
 
     public Group getById(int id) {return this.groupRepository.findById(id);}

@@ -37,7 +37,7 @@ class ProjectControllerTest {
         var token = TokenFixture.userToken();
         var request = ProjectFixture.projectToProjectRequest(globalObject.validProject);
         var groupRequest = GroupFixture.groupToGroupRequest(globalObject.validGroup);
-
+        groupRequest.user_id = 3;
         var group = GroupFixture.create(groupRequest,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);
@@ -124,6 +124,7 @@ class ProjectControllerTest {
 
         var request = ProjectFixture.projectToProjectRequest(globalObject.validProject);
         var groupRequest = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        groupRequest.user_id = 3;
         var group = GroupFixture.create(groupRequest,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);
@@ -170,7 +171,7 @@ class ProjectControllerTest {
                 .extract().body().jsonPath().getObject(".", ProjectResponse.class);
 
         var groupRequest = GroupFixture.groupToGroupRequest(globalObject.validGroup);
-
+        groupRequest.user_id = 3;
         var group = GroupFixture.create(groupRequest,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);

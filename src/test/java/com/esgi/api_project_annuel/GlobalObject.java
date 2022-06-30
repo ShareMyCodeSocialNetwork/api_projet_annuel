@@ -127,6 +127,7 @@ public class GlobalObject {
         var group = new Group();
         group.setName("valid name");
         group.setDescription("valid description");
+        group.setOwner(buildValidUser());
         return group;
     }
 

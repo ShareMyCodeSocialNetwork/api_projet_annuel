@@ -1,9 +1,12 @@
 package com.esgi.api_project_annuel.web.response;
 
+import com.esgi.api_project_annuel.Domain.entities.User;
+
 public class GroupResponse {
     public int id;
     public String name;
     public String description;
+    public User owner;
 
     public GroupResponse() {
     }
@@ -32,6 +35,15 @@ public class GroupResponse {
 
     public GroupResponse setDescription(String description) {
         this.description = description;
+        return this;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public GroupResponse setOwner(User owner) {
+        this.owner = owner;
         return this;
     }
 }
