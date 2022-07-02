@@ -8,7 +8,7 @@ on:
   pull_request:
       branches: [ master ]
 jobs:
-  
+
   test:
     name: Test - Units & Integrations
     runs-on: ubuntu-18.04
