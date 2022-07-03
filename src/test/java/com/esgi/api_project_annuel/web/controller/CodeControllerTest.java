@@ -127,11 +127,11 @@ class CodeControllerTest {
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", Code.class);
         assertThat(codeGet.size()).isEqualTo(1);
-        codeGet = CodeFixture.getByProject(0,token)
+        /*codeGet = CodeFixture.getByProject(0,token)
                 .then()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", Code.class);
-        assertThat(codeGet.size()).isEqualTo(0);
+        assertThat(codeGet.size()).isEqualTo(0);*/
     }
 
     @Test
