@@ -36,7 +36,7 @@ public class CodeCommand {
 
     CodeValidationService codeValidationService = new CodeValidationService();
 
-    public Code create(CodeRequest codeRequest, Language language, User user, Project project){
+    public Code createNotProject(CodeRequest codeRequest, Language language, User user){
 
         Code code = new Code();
 
@@ -44,7 +44,22 @@ public class CodeCommand {
         code.setContent(codeRequest.content);
         code.setUser(user);
         code.setLanguage(language);
-        code.setProject(project);
+
+        if(codeValidationService.codeIsValid(code))
+            return codeRepository.save(code);
+        return null;
+    }
+    public Code create(CodeRequest codeRequest, Language language, User user, Project project){
+
+        Code code = new Code();
+
+        code.setNameCode(codeRequest.name);
+        code.setContent(codeRequest.content);
+        code.setUser(user);
+        if(language != null)
+            code.setLanguage(language);
+        if (project != null)
+            code.setProject(project);
 
         if(codeValidationService.codeIsValid(code))
             return codeRepository.save(code);
@@ -76,6 +91,12 @@ public class CodeCommand {
             codeRepository.save(code);
             codeRepository.delete(code);
         });
+    }
+
+
+    public void setProjectToNull(Project project){
+        var codes = codeRepository.findAllByProject(project);
+        codes.forEach(code -> delete(code.getId()));
     }
 
     public void deleteLanguage(Language language){

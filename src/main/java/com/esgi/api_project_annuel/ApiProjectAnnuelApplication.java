@@ -52,10 +52,10 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 			userRepository.save(saved_user2);
 			userRepository.save(saved_user3);
 
-			languageRepository.save(createLanguage("JavaScript"));
-			languageRepository.save(createLanguage("Python"));
-			languageRepository.save(createLanguage("Java"));
-			languageRepository.save(createLanguage("Ruby"));
+			languageRepository.save(createLanguage("python"));
+			languageRepository.save(createLanguage("js"));
+			languageRepository.save(createLanguage("java"));
+			languageRepository.save(createLanguage("ruby"));
 
 			var f1 = followRepository.save(new Follow());
 			var f2 = followRepository.save(new Follow());

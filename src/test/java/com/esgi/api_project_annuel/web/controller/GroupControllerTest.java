@@ -33,6 +33,7 @@ class GroupControllerTest {
     void addGroup() {
         var token = TokenFixture.userToken();
         var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        request.user_id = 3;
         GroupFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);
@@ -45,6 +46,7 @@ class GroupControllerTest {
     void getGroupAll() {
         var token = TokenFixture.userToken();
         var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        request.user_id = 3;
         GroupFixture.create(request,token).then()
                 .statusCode(201);
         var response  = GroupFixture.getAll(token).then()
@@ -57,6 +59,7 @@ class GroupControllerTest {
     void getGroupByName() {
         var token = TokenFixture.userToken();
         var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        request.user_id = 3;
         GroupFixture.create(request,token).then()
                 .statusCode(201);
         GroupFixture.getByName(request.name,token).then()
@@ -67,6 +70,7 @@ class GroupControllerTest {
     void getGroupById() {
         var token = TokenFixture.userToken();
         var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        request.user_id = 3;
         var response = GroupFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);
@@ -78,11 +82,32 @@ class GroupControllerTest {
         GroupFixture.getById(0,token).then()
                 .statusCode(404);
     }
+    @Test
+    void getGroupByOwner() {
+        var token = TokenFixture.userToken();
+        var init = GroupFixture.getByOwner(1,token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", GroupResponse.class);
+        var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        request.user_id = 1;
+        var response = GroupFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", GroupResponse.class);
+
+        var ownerResponse = GroupFixture.getByOwner(1,token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", GroupResponse.class);
+
+        assertThat(ownerResponse.size()).isEqualTo(init.size() + 1);
+        GroupFixture.getByOwner(0,token).then()
+                .statusCode(200);
+    }
 
     @Test
     void changeName() {
         var token = TokenFixture.userToken();
         var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        request.user_id = 3;
         var response = GroupFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);
@@ -105,6 +130,7 @@ class GroupControllerTest {
     void changeDescription() {
         var token = TokenFixture.userToken();
         var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        request.user_id = 3;
         var response = GroupFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);
@@ -127,6 +153,7 @@ class GroupControllerTest {
     void updateGroup() {
         var token = TokenFixture.userToken();
         var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        request.user_id = 3;
         var response = GroupFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);
@@ -149,6 +176,7 @@ class GroupControllerTest {
     void deleteGroup() {
         var token = TokenFixture.userToken();
         var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        request.user_id = 3;
         var response = GroupFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);
@@ -164,6 +192,7 @@ class GroupControllerTest {
     void should_delete_link(){
         var token = TokenFixture.userToken();
         var request = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        request.user_id = 3;
         var group = GroupFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);

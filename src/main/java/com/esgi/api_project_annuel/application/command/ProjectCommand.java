@@ -20,6 +20,9 @@ public class ProjectCommand {
     ProjectRepository projectRepository;
 
     @Autowired
+    CodeCommand codeCommand;
+
+    @Autowired
     GroupQuery groupQuery;
 
 
@@ -47,6 +50,7 @@ public class ProjectCommand {
         project.ifPresent(project1 -> {
             project.get().setGroup(null);
             project.get().setOwner(null);
+            codeCommand.setProjectToNull(project.get());
             projectRepository.save(project.get());
             projectRepository.delete(project.get());
         });

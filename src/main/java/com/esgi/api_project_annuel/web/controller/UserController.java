@@ -210,6 +210,7 @@ public class UserController {
                 .setEmail(user.getEmail())
                 .setLastname(user.getLastname())
                 .setPseudo(user.getPseudo())
+                .setPassword(user.getPassword())
                 .setProfilePicture(user.getProfilePicture());
     }
 

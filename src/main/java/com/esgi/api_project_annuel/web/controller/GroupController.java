@@ -5,6 +5,7 @@ package com.esgi.api_project_annuel.web.controller;
 import com.esgi.api_project_annuel.Domain.entities.Group;
 import com.esgi.api_project_annuel.application.command.GroupCommand;
 import com.esgi.api_project_annuel.application.query.GroupQuery;
+import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.web.request.GroupRequest;
 import com.esgi.api_project_annuel.web.response.GroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class GroupController {
     @Autowired
     private final GroupQuery groupQuery;
 
+    @Autowired
+    UserQuery userQuery;
+
     public GroupController(GroupCommand groupCommand, GroupQuery demandQuery){
         this.groupCommand = groupCommand;
         this.groupQuery = demandQuery;
@@ -34,7 +38,8 @@ public class GroupController {
 
     @PostMapping("/create")
     public ResponseEntity<GroupResponse> addGroup(@RequestBody GroupRequest groupRequest) {
-        var group = groupCommand.create(groupRequest);
+        var user = userQuery.getById(groupRequest.user_id)
+;        var group = groupCommand.create(groupRequest, user);
         if(group != null)
             return new ResponseEntity<>(groupToGroupResponse(group), HttpStatus.CREATED);
         return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
@@ -63,6 +68,17 @@ public class GroupController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(groupToGroupResponse(
                 group),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/owner/{ownerId}")
+    public ResponseEntity<List<GroupResponse>> getGroupByOwner(@PathVariable int ownerId) {
+        var owner = userQuery.getById(ownerId);
+        return new ResponseEntity<>(
+                listGroupToListGroupResponse(
+                        groupQuery.getByOwner(owner)
+                ),
                 HttpStatus.OK
         );
     }
@@ -130,7 +146,8 @@ public class GroupController {
         return new GroupResponse()
                 .setId(group.getId())
                 .setDescription(group.getDescription())
-                .setName(group.getName());
+                .setName(group.getName())
+                .setOwner(group.getOwner());
     }
 
     private List<GroupResponse> listGroupToListGroupResponse(List<Group> groups){

@@ -16,6 +16,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.InvalidObjectException;
+import java.util.Optional;
+
+import static org.apache.logging.log4j.ThreadContext.isEmpty;
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -42,11 +45,15 @@ public class CodeController {
 
     @PostMapping("/code/create")
     public ResponseEntity<?> create(@RequestBody CodeRequest codeRequest){
-
+        Code code;
         var language = languageQuery.getById(codeRequest.language_id);
         var user = userQuery.getById(codeRequest.userId);
-        var project = projectQuery.getById(codeRequest.project_id);
-        Code code = codeCommand.create(codeRequest,language,user,project);
+        if(Optional.ofNullable(codeRequest.project_id).orElse(0) != 0){
+            var project = projectQuery.getById(codeRequest.project_id);
+             code = codeCommand.create(codeRequest,language,user,project);
+        }else{
+             code = codeCommand.createNotProject(codeRequest,language,user);
+        }
 
         if(code != null) return new ResponseEntity<>(code, HttpStatus.CREATED);
         else return new ResponseEntity<>("Code not created",HttpStatus.NOT_ACCEPTABLE);
