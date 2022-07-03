@@ -65,7 +65,7 @@ jobs:
  #Acheter sever
  #Installer docker , portainer
  #Acheter un nom de domain
-
+#todo
  #Fix docker build
  # Push limage dans un registry docker hub, github registry
  # Portainer swarm
