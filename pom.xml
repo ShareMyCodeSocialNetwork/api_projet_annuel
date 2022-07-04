@@ -16,8 +16,10 @@
 	<properties>
 		<java.version>11</java.version>
 		<sonar.organization>sharemycodesocialnetwork</sonar.organization>
+		<sonar.pr>sharemycodesocialnetwork</sonar.pr>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
+
 
 	<dependencies>
 		<dependency>
