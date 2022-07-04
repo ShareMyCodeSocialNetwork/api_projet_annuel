@@ -49,6 +49,9 @@ class CodeControllerTest {
         request.name = "";
         CodeFixture.create(request,token).then()
                 .statusCode(406);
+        request.project_id = 0;
+        CodeFixture.create(request,token).then()
+                .statusCode(406);
     }
 
     @Test

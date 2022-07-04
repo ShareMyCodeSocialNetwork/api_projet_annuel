@@ -15,6 +15,9 @@ class GroupValidationServiceTest {
         var invalidGroup = globalObject.validGroup;
         invalidGroup.setName("");
         assertThat(validationService.isValid(invalidGroup)).isEqualTo(false);
+        var invalid2 = globalObject.validGroup;
+        invalid2.setOwner(null);
+        assertThat(validationService.isValid(invalid2)).isEqualTo(false);
         assertThat(validationService.isValid(null)).isEqualTo(false);
     }
 }

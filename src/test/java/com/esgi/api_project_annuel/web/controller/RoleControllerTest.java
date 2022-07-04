@@ -2,6 +2,7 @@ package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.GlobalObject;
 import com.esgi.api_project_annuel.web.controller.fixture.RoleFixture;
+import com.esgi.api_project_annuel.web.controller.fixture.Token;
 import com.esgi.api_project_annuel.web.controller.fixture.TokenFixture;
 import com.esgi.api_project_annuel.web.response.RoleResponse;
 import io.restassured.RestAssured;
@@ -40,6 +41,11 @@ class RoleControllerTest {
         RoleFixture.create(request,token).then()
                 .statusCode(400);
 
+
+        RoleFixture.create(request, TokenFixture.userToken()).then()
+                .statusCode(403);
+        RoleFixture.create(request,new Token()).then()
+                .statusCode(403);
     }
 
     @Test
