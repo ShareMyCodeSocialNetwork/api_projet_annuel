@@ -28,7 +28,7 @@ public class PostCommand {
     public Post create(PostRequest postRequest, User user, Code code){
         Post post = new Post();
         post.setContent(postRequest.content);
-        //if (code != null)
+        if (code != null)
             post.setCode(code);
         if(!userValidationService.isUserValid(user))
             return null;
