@@ -4,9 +4,9 @@
 name: CI
 on:
   push:
-    branches: [ ci ]
+    branches: [ main ]
   pull_request:
-      branches: [ master ]
+      branches: [ main ]
 jobs:
 
   test:
@@ -28,7 +28,7 @@ jobs:
   sonar:
     name: Test - SonarCloud Scan
     runs-on: ubuntu-18.04
-    needs: [test]
+    needs: [ test ]
     steps:
       - uses: actions/checkout@v1
       - name: Set up JDK 11
@@ -39,7 +39,6 @@ jobs:
         run: mvn -B clean verify -Psonar -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   docker:
     name: Build - Docker
     runs-on: ubuntu-18.04
@@ -65,7 +64,6 @@ jobs:
  #Acheter sever
  #Installer docker , portainer
  #Acheter un nom de domain
-
  #Fix docker build
  # Push limage dans un registry docker hub, github registry
  # Portainer swarm
