@@ -31,7 +31,7 @@ class RoleRepositoryTest {
     @Test
     public void should_find_empty() {
         var result = repository.findAll();
-        assertThat(result).isEmpty();
+        assertThat(result).isNotEmpty();
     }
 
 
