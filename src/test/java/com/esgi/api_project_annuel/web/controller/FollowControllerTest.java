@@ -62,13 +62,24 @@ class FollowControllerTest {
     @Test
     void getFollowers() {
         var token = TokenFixture.userToken();
+
+        var user1 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        var user1Created = UserFixture.create(user1).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var user2 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        var user2Created = UserFixture.create(user2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
         var request = new FollowRequest();
-        request.followerUserId = 2;
-        request.followedUserId = 3;
+        request.followerUserId = user1Created.getId();
+        request.followedUserId = user2Created.getId();
         FollowFixture.create(request,token).then()
                 .statusCode(201);
 
-        var responseALL  = FollowFixture.getFollower(3,token).then()
+        var responseALL  = FollowFixture.getFollower(user2Created.getId(), token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", FollowResponse.class);
         assertThat(responseALL).isNotEmpty();
@@ -88,10 +99,19 @@ class FollowControllerTest {
         var token = TokenFixture.userToken();
          FollowFixture.getById(0,token).then()
                 .statusCode(404);
+        var user1 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        var user1Created = UserFixture.create(user1).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var user2 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        var user2Created = UserFixture.create(user2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
 
         var request = new FollowRequest();
-        request.followerUserId = 3;
-        request.followedUserId = 1;
+        request.followerUserId = user1Created.getId();
+        request.followedUserId = user2Created.getId();
         var response = FollowFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", FollowResponse.class);
@@ -105,8 +125,24 @@ class FollowControllerTest {
     void deleteFollow() {
         var token = TokenFixture.userToken();
 
+        var user1 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        var user1Created = UserFixture.create(user1).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
 
-        FollowFixture.deleteById(1,token).then()
+        var user2 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        var user2Created = UserFixture.create(user2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var request = new FollowRequest();
+        request.followerUserId = user1Created.getId();
+        request.followedUserId = user2Created.getId();
+        var follow = FollowFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", FollowResponse.class);
+
+        FollowFixture.deleteById(follow.getId(),token).then()
                 .statusCode(204);
 
         FollowFixture.deleteById(0,token).then()

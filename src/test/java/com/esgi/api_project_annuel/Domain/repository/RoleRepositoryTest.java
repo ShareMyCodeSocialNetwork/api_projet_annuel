@@ -29,26 +29,21 @@ class RoleRepositoryTest {
     }
 
     @Test
-    public void should_find_2() {
+    public void should_find_empty() {
         var result = repository.findAll();
-        assertThat(result).size().isEqualTo(2);
+        assertThat(result).isEmpty();
     }
 
-    @Test
-    public void should_find_2_role() {
-        var result = repository.findAll();
-        assertThat(result).size().isEqualTo(2);
-    }
 
     @Test
     public void should_find_all() {
-
+        var init = repository.findAll();
         entityManager.persist(object1);
 
         entityManager.persist(object2);
 
         var results = repository.findAll();
-        assertThat(results).hasSize(4).contains(object1, object2);
+        assertThat(results).hasSize(init.size() + 2 ).contains(object1, object2);
     }
 
     @Test

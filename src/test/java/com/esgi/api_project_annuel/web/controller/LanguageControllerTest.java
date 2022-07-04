@@ -129,7 +129,7 @@ class LanguageControllerTest {
                 .extract().body().jsonPath().getObject(".", Code.class);
 
         LanguageFixture.deleteById(language.getId(), adminToken).then().statusCode(204);
-        LikeFixture.getById(language.getId(), adminToken).then().statusCode(404);
+        LanguageFixture.getById(language.getId(), adminToken).then().statusCode(404);
 
         code = CodeFixture.getById(code.getId(), token).then()
                 .statusCode(200)

@@ -1,11 +1,13 @@
 package com.esgi.api_project_annuel.web.response;
 
+import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.Domain.entities.User;
 
 public class PostResponse {
     public int id;
     public String content;
     public User user;
+    public Code code;
 
     public PostResponse() {}
 
@@ -34,6 +36,15 @@ public class PostResponse {
 
     public PostResponse setUser(User user) {
         this.user = user;
+        return this;
+    }
+
+    public Code getCode() {
+        return code;
+    }
+
+    public PostResponse setCode(Code code) {
+        this.code = code;
         return this;
     }
 }
