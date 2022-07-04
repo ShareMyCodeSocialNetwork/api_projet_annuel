@@ -1,4 +1,5 @@
 package com.esgi.api_project_annuel.application.command;
+import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.PostRepository;
@@ -24,10 +25,11 @@ public class PostCommand {
     PostValidationService postValidationService = new PostValidationService();
     UserValidationService userValidationService = new UserValidationService();
 
-    public Post create(PostRequest postRequest, User user){
+    public Post create(PostRequest postRequest, User user, Code code){
         Post post = new Post();
         post.setContent(postRequest.content);
-
+        //if (code != null)
+            post.setCode(code);
         if(!userValidationService.isUserValid(user))
             return null;
         post.setUser(user);
@@ -53,6 +55,7 @@ public class PostCommand {
         Optional<Post> dbPost = Optional.ofNullable(postRepository.findById(postId));
         dbPost.ifPresent(post ->{
             post.setUser(null);
+            post.setCode(null);
             postRepository.save(post);
             commentCommand.deleteCommentsInPost(post);
             likeCommand.deleteAllLikesPost(post);

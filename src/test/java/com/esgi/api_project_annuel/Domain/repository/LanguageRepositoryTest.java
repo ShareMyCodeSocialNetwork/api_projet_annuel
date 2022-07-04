@@ -32,24 +32,18 @@ class LanguageRepositoryTest {
     @Test
     public void should_be_NotEmpty() {
         var result = repository.findAll();
-        assertThat(result).isNotEmpty();
-    }
-
-    @Test
-    public void should_find_4() {
-        var result = repository.findAll();
-        assertThat(result).size().isEqualTo(4);
+        assertThat(result).isEmpty();
     }
 
     @Test
     public void should_find_all() {
-
+        var init = repository.findAll();
         entityManager.persist(object1);
 
         entityManager.persist(object2);
 
         var results = repository.findAll();
-        assertThat(results).hasSize(6).contains(object1, object2);
+        assertThat(results).hasSize(init.size() + 2).contains(object1, object2);
     }
 
     @Test

@@ -53,21 +53,16 @@ class UserRepositoryTest {
         user3.setRoles(new Role());
     }
 
-    @Test
-    public void should_find_2() {
-        var users = userRepository.findAll();
-        assertThat(users).hasSize(3);
-    }
 
     @Test
-    public void should_find_2_ROLE() {
+    public void should_find_empty_ROLE() {
         var users = userRepository.findAll();
-        assertThat(users).size().isEqualTo(3);
+        assertThat(users).isEmpty();
     }
 
     @Test
     public void should_find_all_user() {
-
+        var init = userRepository.findAll();
         entityManager.persist(user1);
 
         entityManager.persist(user2);
@@ -75,7 +70,7 @@ class UserRepositoryTest {
         entityManager.persist(user3);
 
         var users = userRepository.findAll();
-        assertThat(users).hasSize(6).contains(user1, user2, user3);
+        assertThat(users).hasSize(init.size() + 3).contains(user1, user2, user3);
     }
 
     @Test
@@ -96,13 +91,13 @@ class UserRepositoryTest {
 
     @Test
     public void should_delete_User_by_id() {
-
+        var init = userRepository.findAll();
         entityManager.persist(user1);
         entityManager.persist(user2);
         entityManager.persist(user3);
         userRepository.deleteById(user2.getId());
         var users = userRepository.findAll();
-        assertThat(users).hasSize(5).contains(user1, user3);
+        assertThat(users).hasSize(init.size() + 2).contains(user1, user3);
     }
 
     @Test

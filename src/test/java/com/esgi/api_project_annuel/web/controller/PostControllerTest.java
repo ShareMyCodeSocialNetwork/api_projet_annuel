@@ -1,12 +1,10 @@
 package com.esgi.api_project_annuel.web.controller;
 
+import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.GlobalObject;
 import com.esgi.api_project_annuel.web.controller.fixture.*;
 import com.esgi.api_project_annuel.web.request.LikeRequest;
-import com.esgi.api_project_annuel.web.response.CommentResponse;
-import com.esgi.api_project_annuel.web.response.GroupResponse;
-import com.esgi.api_project_annuel.web.response.LikeResponse;
-import com.esgi.api_project_annuel.web.response.PostResponse;
+import com.esgi.api_project_annuel.web.response.*;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -49,7 +47,43 @@ class PostControllerTest {
         PostFixture.create(request,token).then()
                 .statusCode(406);
 
+
+
     }
+
+    @Test
+    void addPostWithCode() {
+        var token = TokenFixture.userToken();
+        var request = PostFixture.postToPostRequest(globalObject.validPost);
+        request.user_id = 3;
+
+        var codeRequest = CodeFixture.codeToCodeRequest(globalObject.validCode);
+        codeRequest.userId = 3;
+        codeRequest.language_id = 1;
+        var codeCreated = CodeFixture.create(codeRequest, token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+
+        request.code_id = codeCreated.getId();
+        var post = PostFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
+        assertThat(post.getUser().getId()).isEqualTo(request.user_id);
+        assertThat(post.getCode().getId()).isEqualTo(request.code_id);
+
+        request.user_id = 42000;
+        PostFixture.create(request,token).then()
+                .statusCode(406);
+
+        request.content = "";
+        request.user_id = 3;
+        PostFixture.create(request,token).then()
+                .statusCode(406);
+
+
+
+    }
+
 
     @Test
     void getPostById() {

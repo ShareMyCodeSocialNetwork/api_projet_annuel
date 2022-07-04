@@ -2,6 +2,7 @@ package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.application.command.PostCommand;
+import com.esgi.api_project_annuel.application.query.CodeQuery;
 import com.esgi.api_project_annuel.application.query.PostQuery;
 import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.web.request.PostRequest;
@@ -25,11 +26,15 @@ public class PostController {
     private final PostQuery postQuery;
 
     @Autowired
+    private final CodeQuery codeQuery;
+
+    @Autowired
     private final UserQuery userQuery;
 
-    public PostController(PostCommand postCommand, PostQuery postQuery, UserQuery userQuery) {
+    public PostController(PostCommand postCommand, PostQuery postQuery, CodeQuery codeQuery, UserQuery userQuery) {
         this.postCommand = postCommand;
         this.postQuery = postQuery;
+        this.codeQuery = codeQuery;
         this.userQuery = userQuery;
     }
 
@@ -37,7 +42,8 @@ public class PostController {
     public ResponseEntity<?> addPost(@RequestBody PostRequest postRequest){
 
         var user = userQuery.getById(postRequest.user_id);
-        var post = postCommand.create(postRequest, user);
+        var code = codeQuery.getById(postRequest.code_id);
+        var post = postCommand.create(postRequest, user, code);
 
         if(post == null)
             return new ResponseEntity<>("Post not created",HttpStatus.NOT_ACCEPTABLE);
@@ -102,6 +108,7 @@ public class PostController {
         return new PostResponse()
                 .setId(post.getId())
                 .setUser(post.getUser())
+                .setCode(post.getCode())
                 .setContent(post.getContent());
     }
 
