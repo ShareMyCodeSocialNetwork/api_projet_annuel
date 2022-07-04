@@ -57,7 +57,7 @@ class UserRepositoryTest {
     @Test
     public void should_find_empty_ROLE() {
         var users = userRepository.findAll();
-        assertThat(users).isEmpty();
+        assertThat(users).isNotEmpty();
     }
 
     @Test

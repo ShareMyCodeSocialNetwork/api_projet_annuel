@@ -32,7 +32,7 @@ class LanguageRepositoryTest {
     @Test
     public void should_be_NotEmpty() {
         var result = repository.findAll();
-        assertThat(result).isEmpty();
+        assertThat(result).isNotEmpty();
     }
 
     @Test
