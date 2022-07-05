@@ -19,4 +19,6 @@ public interface CodeRepository extends JpaRepository<Code,Integer> {
     List<Code> getAllByLanguage(Language language);
 
     List<Code> getAllByUser(User user);
+
+    List<Code> findAllByUser(User user);
 }

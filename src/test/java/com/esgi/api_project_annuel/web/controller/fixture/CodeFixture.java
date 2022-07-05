@@ -32,6 +32,13 @@ public class CodeFixture {
                 .header("Authorization","Bearer "+token.access_token)
                 .get("/code/project/" + projectId);
     }
+    public static Response getByUser(int userId, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/code/user/" + userId);
+    }
 
 
 

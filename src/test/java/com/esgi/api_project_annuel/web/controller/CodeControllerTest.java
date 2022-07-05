@@ -138,6 +138,30 @@ class CodeControllerTest {
     }
 
     @Test
+    void getCodeByUser() {
+        var token = TokenFixture.userToken();
+
+        var init = CodeFixture.getByUser(3, token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", Code.class);
+
+        var request = CodeFixture.codeToCodeRequest(globalObject.validCode);
+
+        request.userId = 3;
+        request.language_id = 1;
+        CodeFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+
+        var codeGet = CodeFixture.getByUser(request.userId, token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", Code.class);
+        assertThat(codeGet.size()).isEqualTo(init.size() + 1);
+    }
+
+    @Test
     void updateCode() {
         var request = CodeFixture.codeToCodeRequest(globalObject.validCode);
         var token = TokenFixture.userToken();
