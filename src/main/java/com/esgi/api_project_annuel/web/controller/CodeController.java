@@ -80,6 +80,14 @@ public class CodeController {
                 HttpStatus.OK
         );
     }
+    @GetMapping("/code/user/{userId}")
+    public ResponseEntity<?> getCodeByUser(@PathVariable int userId){
+        var user = userQuery.getById(userId);
+        return new ResponseEntity<>(
+                codeQuery.getCodesByUser(user),
+                HttpStatus.OK
+        );
+    }
 
     @PutMapping("/code/update/{codeId}")
     public ResponseEntity<?> updateCode(@PathVariable int codeId, @RequestBody CodeRequest updatedCode) {
