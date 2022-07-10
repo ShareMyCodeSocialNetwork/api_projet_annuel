@@ -89,4 +89,14 @@ public class UserRoleGroupCommand {
             userRoleGroupRepository.delete(userRoleGroup);
         });
     }
+
+    public UserRoleGroup changeUserRoleInGroup(Group group, User user, Role role) {
+        Optional<UserRoleGroup> userRoleGroup = Optional.ofNullable(userRoleGroupRepository.findByGroupAndUser(group, user));
+        if(userRoleGroup.isPresent()){
+            userRoleGroup.get().setRole(role);
+            if (userRoleGroupValidationService.isValid(userRoleGroup.get()))
+                return userRoleGroup.get();
+        }
+        return null;
+    }
 }
