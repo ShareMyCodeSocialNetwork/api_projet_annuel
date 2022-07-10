@@ -104,12 +104,10 @@ public class UserRoleGroupController {
         );
     }
 
-    @PatchMapping("/change/user/role")
-    public ResponseEntity<UserRoleGroupResponse> changeUserRoleInGroup(@RequestBody UserRoleGroupRequest request){
-        var group = groupQuery.getById(request.group_id);
-        var user = userQuery.getById(request.user_id);
+    @PatchMapping("/{userRoleGroupId}/change/user/role")
+    public ResponseEntity<UserRoleGroupResponse> changeUserRoleInGroup(@RequestBody UserRoleGroupRequest request, @PathVariable int userRoleGroupId){
         var role = roleQuery.getById(request.role_id);
-        var updatedRole = userRoleGroupCommand.changeUserRoleInGroup(group, user, role);
+        var updatedRole = userRoleGroupCommand.changeUserRoleInGroup(userRoleGroupId, role);
         if (updatedRole != null)
             return new ResponseEntity<>(userRoleGroupToUserRoleGroupResponse(updatedRole), HttpStatus.OK);
         return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);

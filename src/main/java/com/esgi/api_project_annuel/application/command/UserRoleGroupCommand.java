@@ -82,16 +82,14 @@ public class UserRoleGroupCommand {
     public void deleteAllByRole(Role role){
         var userRoleGroups = userRoleGroupRepository.findAllByRole(role);
         userRoleGroups.forEach(userRoleGroup -> {
-            userRoleGroup.setGroup(null);
-            userRoleGroup.setRole(null);
-            userRoleGroup.setUser(null);
+            userRoleGroup.setRole(roleRepository.findRoleByTitlePermission("USER"));
             userRoleGroupRepository.save(userRoleGroup);
             userRoleGroupRepository.delete(userRoleGroup);
         });
     }
 
-    public UserRoleGroup changeUserRoleInGroup(Group group, User user, Role role) {
-        Optional<UserRoleGroup> userRoleGroup = Optional.ofNullable(userRoleGroupRepository.findByGroupAndUser(group, user));
+    public UserRoleGroup changeUserRoleInGroup(int userRoleGroupId, Role role) {
+        Optional<UserRoleGroup> userRoleGroup = Optional.ofNullable(userRoleGroupRepository.findById(userRoleGroupId));
         if(userRoleGroup.isPresent()){
             userRoleGroup.get().setRole(role);
             if (userRoleGroupValidationService.isValid(userRoleGroup.get()))
