@@ -240,32 +240,46 @@ class UserRoleGroupControllerTest {
     void should_delete_link2(){
         var token = TokenFixture.userToken();
         var adminToken = TokenFixture.adminToken();
+
         var roleRequest = new RoleRequest();
         roleRequest.name = "test";
         var role = RoleFixture.create(roleRequest, adminToken).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getObject(".", RoleResponse.class);
+        assertThat(role.name).isEqualTo(roleRequest.name);
 
-        var request = new UserRoleGroupRequest();
-        request.user_id = 3;
-        request.role_id = role.getId();
         var groupRequest = GroupFixture.groupToGroupRequest(globalObject.validGroup);
         groupRequest.user_id = 3;
         var group = GroupFixture.create(groupRequest,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", GroupResponse.class);
+
+        var request = new UserRoleGroupRequest();
+        request.user_id = 3;
+        request.role_id = role.getId();
         request.group_id = group.getId();
 
-        var created = UserRoleGroupFixture.create(request,token).then()
+        var created  = UserRoleGroupFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", UserRoleGroupResponse.class);
+
+        var updated = UserRoleGroupFixture.changeUserRoleInGroup(created.getId(), request, adminToken).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", UserRoleGroupResponse.class);
+        assertThat(updated.getRole().getTitlePermission()).isEqualTo(role.getName());
 
         RoleFixture.deleteById(role.getId(), adminToken).then()
                 .statusCode(200);
 
         RoleFixture.getById(role.getId(), adminToken).then()
                 .statusCode(400);
-        UserRoleGroupFixture.getById(created.getId(), token).then()
-                .statusCode(404);
+        UserRoleGroupFixture.getById(updated.getId(), token).then()
+                .statusCode(200);
+
+        var get = UserRoleGroupFixture.getById(updated.getId(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", UserRoleGroupResponse.class);
+
+        assertThat(get.getRole().getTitlePermission()).isEqualTo("USER");
     }
 }
