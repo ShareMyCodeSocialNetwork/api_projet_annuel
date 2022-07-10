@@ -31,6 +31,14 @@ public class UserRoleGroupFixture {
                 .header("Authorization","Bearer "+token.access_token)
                 .get("/user_role_group/" + id);
     }
+    public static Response changeUserRoleInGroup(int userRoleGroupId, UserRoleGroupRequest request,Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(request)
+                .header("Authorization","Bearer "+token.access_token)
+                .patch("/user_role_group/" + userRoleGroupId + "/change/user/role");
+    }
 
 
     public static Response getByGroup(int groupId, Token token) {
