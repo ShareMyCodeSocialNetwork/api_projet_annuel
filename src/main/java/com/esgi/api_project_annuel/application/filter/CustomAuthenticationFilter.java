@@ -47,7 +47,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         User user = (User)authentication.getPrincipal();
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 
-        var oneDayMs = 8640000;
+        var oneDayMs = 86400000;
         var accessExpire = new Date(System.currentTimeMillis() + oneDayMs);
 
         String access_token = JWT.create()
