@@ -32,4 +32,8 @@ public class FollowQuery {
     public List<Follow> getAllByFollowerUser(User follower){
         return followRepository.getAllByFollowerUser(follower);
     }
+
+    public Follow getFollowByFollowedAndFollower(User followed, User follower){
+        return followRepository.getFollowByFollowedUserAndFollowerUser(followed, follower);
+    }
 }

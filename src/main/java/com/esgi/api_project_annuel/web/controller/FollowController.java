@@ -61,6 +61,19 @@ public class FollowController {
         );
     }
 
+    @GetMapping("/followed/and/follower")
+    public ResponseEntity<FollowResponse> getByFollowedAndFollower(@RequestBody FollowRequest request){
+        var followed = userQuery.getById(request.followedUserId);
+        var follower = userQuery.getById(request.followerUserId);
+        var follow = followQuery.getFollowByFollowedAndFollower(followed, follower);
+        if (follow == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(followToFollowResponse(
+                follow),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("/follower/{followerId}")
     public ResponseEntity<List<FollowResponse>> getFollowed(@PathVariable int followerId){
         var followed = followQuery.getAllByFollowerUser(userQuery.getById(followerId));
