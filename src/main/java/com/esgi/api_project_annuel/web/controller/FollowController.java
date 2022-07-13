@@ -61,7 +61,7 @@ public class FollowController {
         );
     }
 
-    @GetMapping("/followed/and/follower")
+    @PostMapping("/followed/and/follower")
     public ResponseEntity<FollowResponse> getByFollowedAndFollower(@RequestBody FollowRequest request){
         var followed = userQuery.getById(request.followedUserId);
         var follower = userQuery.getById(request.followerUserId);
