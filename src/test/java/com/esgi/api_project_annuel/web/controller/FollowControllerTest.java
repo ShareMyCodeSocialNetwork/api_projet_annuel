@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -142,11 +143,21 @@ class FollowControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", FollowResponse.class);
 
+        var getFollow = FollowFixture.getByFollowedAndFollower(request, token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", FollowResponse.class);
+
+        assertThat(follow.followed.getId()).isEqualTo(getFollow.getFollowed().getId());
+        assertThat(follow.follower.getId()).isEqualTo(getFollow.getFollower().getId());
+
         FollowFixture.deleteById(follow.getId(),token).then()
                 .statusCode(204);
 
         FollowFixture.deleteById(0,token).then()
             .statusCode(400);
+
+        FollowFixture.getByFollowedAndFollower(request, token).then()
+                .statusCode(404);
 
     }
 }
