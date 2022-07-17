@@ -39,7 +39,7 @@ class CodeControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", ProjectResponse.class);
 
-        request.userId = 3;
+        request.user_id = 3;
         request.language_id = 1;
         request.project_id = createdProject.id;
         CodeFixture.create(request,token).then()
@@ -65,7 +65,7 @@ class CodeControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", ProjectResponse.class);
 
-        request.userId = 3;
+        request.user_id = 3;
         request.language_id = 1;
         request.project_id = createdProject.id;
         CodeFixture.create(request,token).then()
@@ -89,7 +89,7 @@ class CodeControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", ProjectResponse.class);
 
-        request.userId = 3;
+        request.user_id = 3;
         request.language_id = 1;
         request.project_id = createdProject.id;
         var code = CodeFixture.create(request,token).then()
@@ -118,7 +118,7 @@ class CodeControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", ProjectResponse.class);
 
-        request.userId = 3;
+        request.user_id = 3;
         request.language_id = 1;
         request.project_id = createdProject.id;
         var code = CodeFixture.create(request,token).then()
@@ -148,13 +148,13 @@ class CodeControllerTest {
 
         var request = CodeFixture.codeToCodeRequest(globalObject.validCode);
 
-        request.userId = 3;
+        request.user_id = 3;
         request.language_id = 1;
         CodeFixture.create(request,token).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", Code.class);
 
-        var codeGet = CodeFixture.getByUser(request.userId, token)
+        var codeGet = CodeFixture.getByUser(request.user_id, token)
                 .then()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", Code.class);
@@ -172,7 +172,7 @@ class CodeControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", ProjectResponse.class);
 
-        request.userId = 3;
+        request.user_id = 3;
         request.language_id = 1;
         request.project_id = createdProject.id;
         var code = CodeFixture.create(request,token).then()
@@ -212,7 +212,7 @@ class CodeControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", ProjectResponse.class);
 
-        request.userId = 3;
+        request.user_id = 3;
         request.language_id = 1;
         request.project_id = createdProject.id;
         var code = CodeFixture.create(request,token).then()

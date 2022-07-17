@@ -122,7 +122,7 @@ class LanguageControllerTest {
 
         var codeRequest = CodeFixture.codeToCodeRequest(globalObject.validCode);
 
-        codeRequest.userId = 3;
+        codeRequest.user_id = 3;
         codeRequest.language_id = language.getId();
         var code = CodeFixture.create(codeRequest,token).then()
                 .statusCode(201)

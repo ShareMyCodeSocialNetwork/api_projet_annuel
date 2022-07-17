@@ -58,7 +58,7 @@ class PostControllerTest {
         request.user_id = 3;
 
         var codeRequest = CodeFixture.codeToCodeRequest(globalObject.validCode);
-        codeRequest.userId = 3;
+        codeRequest.user_id = 3;
         codeRequest.language_id = 1;
         var codeCreated = CodeFixture.create(codeRequest, token).then()
                 .statusCode(201)

@@ -361,7 +361,7 @@ class UserControllerTest {
           CREATE CODE
          */
         var codeRequest = CodeFixture.codeToCodeRequest(globalObject.validCode);
-        codeRequest.userId = user.getId();
+        codeRequest.user_id = user.getId();
         codeRequest.language_id = 1;
         codeRequest.project_id = project.getId();
         var code = CodeFixture.create(codeRequest,token).then()
