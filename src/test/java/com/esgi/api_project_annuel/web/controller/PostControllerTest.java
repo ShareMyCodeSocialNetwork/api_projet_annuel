@@ -205,4 +205,126 @@ class PostControllerTest {
         LikeFixture.getById(like.getId(), token).then().statusCode(404);
 
     }
+
+    @Test
+    public void should_get_post_with_comments_and_likes(){
+        var initialSize = PostFixture.getAllFull(TokenFixture.userToken()).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+
+        /** create first user  **/
+        var userRequest = UserFixture.userToUserRequest(globalObject.buildValidUser());
+
+        var userResponse = UserFixture.create(userRequest).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+        var token = TokenFixture.getToken(userRequest);
+        var initialSizeUser1 = PostFixture.getByUserFull(userResponse.getId(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+
+        /** first user create post  **/
+        var postRequest = PostFixture.postToPostRequest(globalObject.validPost);
+        postRequest.user_id = userResponse.getId();
+
+        var postResponse = PostFixture.create(postRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
+
+        /** first user create comment**/
+        var commentRequest = CommentFixture.commentToCommentRequest(globalObject.validComment);
+        commentRequest.post_id = postResponse.getId();
+        commentRequest.user_id = userResponse.getId();
+
+        var commentResponse = CommentFixture.create(commentRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", CommentResponse.class);
+
+        /** first user create like  **/
+        var likeRequest = new LikeRequest();
+        likeRequest.post_id = postResponse.getId();
+        likeRequest.user_id = userResponse.getId();
+
+        var likeResponse = LikeFixture.create(likeRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", LikeResponse.class);
+
+
+        /** create second user  **/
+        var userRequest2 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+
+        var userResponse2 = UserFixture.create(userRequest2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+        var token2 = TokenFixture.getToken(userRequest2);
+
+        var initialSizeUser2 = PostFixture.getByUser(userResponse2.getId(), token2).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+
+        /** first user create post  **/
+        var postRequest2 = PostFixture.postToPostRequest(globalObject.validPost);
+        postRequest2.user_id = userResponse2.getId();
+
+        var postResponse2 = PostFixture.create(postRequest2,token2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
+
+        /** first user create comment**/
+        var commentRequest2 = CommentFixture.commentToCommentRequest(globalObject.validComment);
+        commentRequest2.post_id = postResponse.getId();
+        commentRequest2.user_id = userResponse2.getId();
+
+        var commentResponse2 = CommentFixture.create(commentRequest2,token2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", CommentResponse.class);
+
+        /** first user create like  **/
+        var likeRequest2 = new LikeRequest();
+        likeRequest2.post_id = postResponse2.getId();
+        likeRequest2.user_id = userResponse2.getId();
+
+        var likeResponse2 = LikeFixture.create(likeRequest2,token2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", LikeResponse.class);
+
+        /** get full post by id **/
+        var fullPostResponse = PostFixture.getByFullId(postResponse.getId(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", FullPostResponse.class);
+
+        var fullPostResponse2 = PostFixture.getByFullId(postResponse2.getId(), token2).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", FullPostResponse.class);
+
+
+        assertThat(fullPostResponse.getPost().getId()).isEqualTo(postResponse.getId());
+        assertThat(fullPostResponse.getLikes()).isNotEmpty();
+        assertThat(fullPostResponse.getComments()).isNotEmpty();
+
+        assertThat(fullPostResponse2.getPost().getId()).isEqualTo(postResponse2.getId());
+        assertThat(fullPostResponse2.getLikes()).isNotEmpty();
+        assertThat(fullPostResponse2.getComments()).isEmpty();
+
+
+        PostFixture.getByFullId(0, token).then()
+                .statusCode(404);
+
+
+        var posts = PostFixture.getAllFull(token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(posts.size()).isEqualTo(initialSize.size() + 2);
+
+
+        var postsUser1 = PostFixture.getByUserFull(userResponse.getId(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(postsUser1.size()).isEqualTo(initialSizeUser1.size() + 1);
+
+        var postsUser2 = PostFixture.getByUserFull(userResponse2.getId() ,token2).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(postsUser2.size()).isEqualTo(initialSizeUser2.size() + 1);
+    }
 }
