@@ -2,10 +2,9 @@ package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.application.command.PostCommand;
-import com.esgi.api_project_annuel.application.query.CodeQuery;
-import com.esgi.api_project_annuel.application.query.PostQuery;
-import com.esgi.api_project_annuel.application.query.UserQuery;
+import com.esgi.api_project_annuel.application.query.*;
 import com.esgi.api_project_annuel.web.request.PostRequest;
+import com.esgi.api_project_annuel.web.response.FullPostResponse;
 import com.esgi.api_project_annuel.web.response.PostResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,11 +30,19 @@ public class PostController {
     @Autowired
     private final UserQuery userQuery;
 
-    public PostController(PostCommand postCommand, PostQuery postQuery, CodeQuery codeQuery, UserQuery userQuery) {
+    @Autowired
+    private final CommentQuery commentQuery;
+
+    @Autowired
+    private final LikeQuery likeQuery;
+
+    public PostController(PostCommand postCommand, PostQuery postQuery, CodeQuery codeQuery, UserQuery userQuery, CommentQuery commentQuery, LikeQuery likeQuery) {
         this.postCommand = postCommand;
         this.postQuery = postQuery;
         this.codeQuery = codeQuery;
         this.userQuery = userQuery;
+        this.commentQuery = commentQuery;
+        this.likeQuery = likeQuery;
     }
 
     @PostMapping("/create")
@@ -61,6 +68,46 @@ public class PostController {
                 HttpStatus.OK
         );
     }
+
+    @GetMapping("/full/{postId}")
+    public ResponseEntity<FullPostResponse> getFullPostById(@PathVariable int postId){
+        var post = postQuery.getById(postId);
+        if(post == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        var comments = commentQuery.findByPost(post);
+        var likes = likeQuery.getByPost(post);
+
+        var fullPostResponse = new FullPostResponse();
+        fullPostResponse
+                .setPost(post)
+                .setComments(comments)
+                .setLikes(likes);
+
+        return new ResponseEntity<>(
+                fullPostResponse,
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/full")
+    public ResponseEntity<List<FullPostResponse>> getFullPostById(){
+        var posts = postQuery.getAll();
+        var fullPostsResponse = new ArrayList<FullPostResponse>();
+
+        posts.forEach(post -> {
+            var fullPostResponse = new FullPostResponse();
+            fullPostResponse
+                    .setComments(commentQuery.findByPost(post))
+                    .setLikes(likeQuery.getByPost(post))
+                    .setPost(post);
+            fullPostsResponse.add(fullPostResponse);
+        });
+        return new ResponseEntity<>(
+                fullPostsResponse,
+                HttpStatus.OK
+        );
+    }
+
 
     @GetMapping("/")
     public ResponseEntity<List<PostResponse>> getAll(){
