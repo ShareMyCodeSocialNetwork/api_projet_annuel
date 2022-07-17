@@ -107,6 +107,24 @@ public class PostController {
                 HttpStatus.OK
         );
     }
+    @GetMapping("/user/{userId}/full")
+    public ResponseEntity<List<FullPostResponse>> getFullPostByUser(@PathVariable int userId){
+        var posts = postQuery.getByUser(userId);
+        var fullPostsResponse = new ArrayList<FullPostResponse>();
+
+        posts.forEach(post -> {
+            var fullPostResponse = new FullPostResponse();
+            fullPostResponse
+                    .setComments(commentQuery.findByPost(post))
+                    .setLikes(likeQuery.getByPost(post))
+                    .setPost(post);
+            fullPostsResponse.add(fullPostResponse);
+        });
+        return new ResponseEntity<>(
+                fullPostsResponse,
+                HttpStatus.OK
+        );
+    }
 
 
     @GetMapping("/")
