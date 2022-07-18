@@ -30,7 +30,7 @@ public class FollowFixture {
                 .when()
                 .body(request)
                 .header("Authorization","Bearer "+token.access_token)
-                .get("/follow/full");
+                .post("/follow/full");
     }
 
     public static Response getByFollowedAndFollower(FollowRequest request, Token token){
