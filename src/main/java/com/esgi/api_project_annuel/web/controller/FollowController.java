@@ -62,7 +62,7 @@ public class FollowController {
         );
     }
 
-    @GetMapping("/full}")
+    @GetMapping("/full")
     public ResponseEntity<FullFollowResponse> getFullFollow(@RequestBody FollowRequest request){
         var followers = followQuery.getAllByFollowedUser(userQuery.getById(request.followedUserId));
         var followed = followQuery.getAllByFollowerUser(userQuery.getById(request.followedUserId));
