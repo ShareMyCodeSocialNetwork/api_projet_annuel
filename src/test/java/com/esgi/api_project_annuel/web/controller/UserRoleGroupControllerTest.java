@@ -2,15 +2,10 @@ package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.Domain.entities.UserRoleGroup;
 import com.esgi.api_project_annuel.GlobalObject;
-import com.esgi.api_project_annuel.web.controller.fixture.GroupFixture;
-import com.esgi.api_project_annuel.web.controller.fixture.RoleFixture;
-import com.esgi.api_project_annuel.web.controller.fixture.TokenFixture;
-import com.esgi.api_project_annuel.web.controller.fixture.UserRoleGroupFixture;
+import com.esgi.api_project_annuel.web.controller.fixture.*;
 import com.esgi.api_project_annuel.web.request.RoleRequest;
 import com.esgi.api_project_annuel.web.request.UserRoleGroupRequest;
-import com.esgi.api_project_annuel.web.response.GroupResponse;
-import com.esgi.api_project_annuel.web.response.RoleResponse;
-import com.esgi.api_project_annuel.web.response.UserRoleGroupResponse;
+import com.esgi.api_project_annuel.web.response.*;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -281,5 +276,59 @@ class UserRoleGroupControllerTest {
                 .extract().body().jsonPath().getObject(".", UserRoleGroupResponse.class);
 
         assertThat(get.getRole().getTitlePermission()).isEqualTo("USER");
+    }
+
+    @Test
+    public void should_test_get_full_userrolegroup(){
+        var userRequest = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        var userResponse = UserFixture.create(userRequest).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var userRequest2 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        var userResponse2 = UserFixture.create(userRequest2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var token = TokenFixture.getToken(userRequest);
+
+        var groupRequest = GroupFixture.groupToGroupRequest(globalObject.validGroup);
+        groupRequest.user_id = userResponse.getId();
+        var groupResponse = GroupFixture.create(groupRequest,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", GroupResponse.class);
+
+        var roleRequest = new RoleRequest();
+        roleRequest.name = "USER";
+        var roleResponse = RoleFixture.getByName("USER", token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", RoleResponse.class);
+
+        var userRoleGroupRequest = new UserRoleGroupRequest();
+        userRoleGroupRequest.group_id = groupResponse.getId();
+        userRoleGroupRequest.role_id = roleResponse.getId();
+        userRoleGroupRequest.user_id = userResponse2.getId();
+        var userRoleGroupResponse = UserRoleGroupFixture.create(userRoleGroupRequest, token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserRoleGroupResponse.class);
+
+        var fullResponse = UserRoleGroupFixture.getFullResponse(token, groupResponse.getId(), userResponse.getId())
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", FullUserRoleGroupResponse.class);
+
+        assertThat(fullResponse.getIsInGroup()).isEqualTo(null);
+        assertThat(fullResponse.getUserInGroupWithRole().size()).isEqualTo(1);
+
+        var fullResponse2 = UserRoleGroupFixture.getFullResponse(token, groupResponse.getId(), userResponse2.getId())
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", FullUserRoleGroupResponse.class);
+
+        assertThat(fullResponse2.getIsInGroup().getGroup().getId()).isEqualTo(userRoleGroupResponse.getGroup().getId());
+        assertThat(fullResponse2.getIsInGroup().getUser().getId()).isEqualTo(userRoleGroupResponse.getUser().getId());
+        assertThat(fullResponse2.getIsInGroup().getRole().getId()).isEqualTo(userRoleGroupResponse.getRole().getId());
+        assertThat(fullResponse2.getUserInGroupWithRole().size()).isEqualTo(1);
     }
 }

@@ -24,6 +24,14 @@ public class UserRoleGroupFixture {
                 .get("/user_role_group/");
     }
 
+    public static Response getFullResponse(Token token, int groupId, int userId){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/user_role_group/full/group/" + groupId + "/user/" + userId);
+    }
+
     public static Response getById(int id,Token token){
         return given()
                 .contentType(ContentType.JSON)
