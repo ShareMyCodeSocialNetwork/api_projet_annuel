@@ -345,9 +345,21 @@ class PostControllerTest {
                 .extract().body().jsonPath().getObject(".", UserResponse.class);
         var token2 = TokenFixture.getToken(userRequest2);
 
+        var userRequest3 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        var userResponse3 = UserFixture.create(userRequest3).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+        var token3 = TokenFixture.getToken(userRequest2);
+
         var postRequest = PostFixture.postToPostRequest(globalObject.buildValidPost());
         postRequest.user_id = userResponse1.getId();
         var postResponse = PostFixture.create(postRequest,token1).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
+
+        var postRequest3 = PostFixture.postToPostRequest(globalObject.buildValidPost());
+        postRequest3.user_id = userResponse3.getId();
+        var postResponse3 = PostFixture.create(postRequest3,token1).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", PostResponse.class);
 
@@ -356,6 +368,13 @@ class PostControllerTest {
         followRequest.followedUserId = userResponse1.getId();
         followRequest.followerUserId = userResponse2.getId();
         var user2FollowUser1 = FollowFixture.create(followRequest,token2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", FollowResponse.class);
+
+        var followRequest2 = new FollowRequest();
+        followRequest2.followedUserId = userResponse1.getId();
+        followRequest2.followerUserId = userResponse3.getId();
+        var user3FollowUser1 = FollowFixture.create(followRequest2,token3).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", FollowResponse.class);
 

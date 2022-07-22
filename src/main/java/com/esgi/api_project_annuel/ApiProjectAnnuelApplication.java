@@ -39,7 +39,7 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 			System.out.println(role_ADMIN.getTitlePermission());
 			System.out.println("----------------------------");
 
-				var saved_user1 = userRepository.save(createUser("David","Arnaud","david@hotmail.fr","coucou1234"));
+			var saved_user1 = userRepository.save(createUser("David","Arnaud","david@hotmail.fr","coucou1234"));
 			var saved_user2 = userRepository.save(createUser("Lucas","Jehanno","lucas@hotmail.fr","azerty1234"));
 			var saved_user3 = userRepository.save(createUser("Test","Test","test@test.fr","test1234test"));
 
