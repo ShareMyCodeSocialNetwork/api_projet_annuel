@@ -358,18 +358,13 @@ class PostControllerTest {
         var user2FollowUser1 = FollowFixture.create(followRequest,token2).then()
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", FollowResponse.class);
-        System.out.println("------------------------------------------------");
-        System.out.println("------------------------------------------------");
-        System.out.println(user2FollowUser1.followed.getId());
-        System.out.println(user2FollowUser1.follower.getId());
-        System.out.println("------------------------------------------------");
-        System.out.println("------------------------------------------------");
 
         var allFollowedUsersPostsOfUser2 = PostFixture.getFullFollowedUserPosts(userResponse2.getId(), token2).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", FullPostResponse.class);
 
         assertThat(allFollowedUsersPostsOfUser2.size()).isEqualTo(1);
+        assertThat(allFollowedUsersPostsOfUser2.get(0).getPost().getId()).isEqualTo(postResponse.getId());
 
         var allFollowedUsersPostsOfUser1 = PostFixture.getFullFollowedUserPosts(userResponse1.getId(), token1).then()
                 .statusCode(200)
