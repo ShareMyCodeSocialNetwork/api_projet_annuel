@@ -3,6 +3,7 @@ package com.esgi.api_project_annuel.web.controller;
 import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.GlobalObject;
 import com.esgi.api_project_annuel.web.controller.fixture.*;
+import com.esgi.api_project_annuel.web.request.FollowRequest;
 import com.esgi.api_project_annuel.web.request.LikeRequest;
 import com.esgi.api_project_annuel.web.response.*;
 import io.restassured.RestAssured;
@@ -326,5 +327,55 @@ class PostControllerTest {
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", FullPostResponse.class);
         assertThat(postsUser2.size()).isEqualTo(initialSizeUser2.size() + 1);
+    }
+
+    @Test
+    public void should_test_get_all_followed_user_post(){
+        var userRequest1 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+
+        var userResponse1 = UserFixture.create(userRequest1).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+        var token1 = TokenFixture.getToken(userRequest1);
+
+        var userRequest2 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+
+        var userResponse2 = UserFixture.create(userRequest2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+        var token2 = TokenFixture.getToken(userRequest2);
+
+        var postRequest = PostFixture.postToPostRequest(globalObject.buildValidPost());
+        postRequest.user_id = userResponse1.getId();
+        var postResponse = PostFixture.create(postRequest,token1).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
+
+
+        var followRequest = new FollowRequest();
+        followRequest.followedUserId = userResponse1.getId();
+        followRequest.followerUserId = userResponse2.getId();
+        var user2FollowUser1 = FollowFixture.create(followRequest,token2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", FollowResponse.class);
+        System.out.println("------------------------------------------------");
+        System.out.println("------------------------------------------------");
+        System.out.println(user2FollowUser1.followed.getId());
+        System.out.println(user2FollowUser1.follower.getId());
+        System.out.println("------------------------------------------------");
+        System.out.println("------------------------------------------------");
+
+        var allFollowedUsersPostsOfUser2 = PostFixture.getFullFollowedUserPosts(userResponse2.getId(), token2).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+
+        assertThat(allFollowedUsersPostsOfUser2.size()).isEqualTo(1);
+
+        var allFollowedUsersPostsOfUser1 = PostFixture.getFullFollowedUserPosts(userResponse1.getId(), token1).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+
+        assertThat(allFollowedUsersPostsOfUser1.size()).isEqualTo(0);
+
     }
 }

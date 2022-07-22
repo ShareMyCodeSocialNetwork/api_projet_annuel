@@ -46,6 +46,14 @@ public class PostFixture {
                 .header("Authorization","Bearer "+token.access_token)
                 .get("/post/user/" + idUser + "/full");
     }
+
+    public static Response getFullFollowedUserPosts(int followerUserId, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/post/full/follower/" + followerUserId);
+    }
     public static Response getByUser(int idUser, Token token){
         return given()
                 .contentType(ContentType.JSON)
