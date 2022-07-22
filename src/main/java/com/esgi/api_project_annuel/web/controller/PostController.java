@@ -36,13 +36,17 @@ public class PostController {
     @Autowired
     private final LikeQuery likeQuery;
 
-    public PostController(PostCommand postCommand, PostQuery postQuery, CodeQuery codeQuery, UserQuery userQuery, CommentQuery commentQuery, LikeQuery likeQuery) {
+    @Autowired
+    private final FollowQuery followQuery;
+
+    public PostController(PostCommand postCommand, PostQuery postQuery, CodeQuery codeQuery, UserQuery userQuery, CommentQuery commentQuery, LikeQuery likeQuery, FollowQuery followQuery) {
         this.postCommand = postCommand;
         this.postQuery = postQuery;
         this.codeQuery = codeQuery;
         this.userQuery = userQuery;
         this.commentQuery = commentQuery;
         this.likeQuery = likeQuery;
+        this.followQuery = followQuery;
     }
 
     @PostMapping("/create")
@@ -148,6 +152,35 @@ public class PostController {
         if(post == null)
             return new ResponseEntity<>("Invalid properties", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(postToPostResponse(post), HttpStatus.OK);
+    }
+
+    @GetMapping("/full/follower/{userId}")
+    public ResponseEntity<List<FullPostResponse>> getAllFollowedUserPostByUser(@PathVariable int userId){
+        var user = userQuery.getById(userId);
+        var followed = followQuery.getAllByFollowerUser(user);
+        var followedPosts = new ArrayList<Post>();
+
+        followed.forEach(follow-> followedPosts.addAll(
+                postQuery.getByUser(
+                                follow.getFollowedUser().getId()
+                )
+        ));
+
+        var fullPostResponses = new ArrayList<FullPostResponse>();
+        followedPosts.forEach(post -> {
+            var fullPostResponse = new FullPostResponse();
+            var comments = commentQuery.findByPost(post);
+            var likes = likeQuery.getByPost(post);
+            fullPostResponse.setComments(comments)
+                    .setLikes(likes)
+                    .setPost(post);
+            fullPostResponses.add(fullPostResponse);
+        });
+
+        return new ResponseEntity<>(
+                fullPostResponses,
+                HttpStatus.OK
+        );
     }
 
 
