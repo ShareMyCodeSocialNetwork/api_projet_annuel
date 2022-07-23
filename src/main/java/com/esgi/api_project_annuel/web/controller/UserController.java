@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -79,13 +76,18 @@ public class UserController {
         var byFirstname = userQuery.getAllByFirstname(value);
         var byLastname = userQuery.getAllByLastname(value);
 
-        users.add(byPseudo);
-        users.add(byEmail);
-        users.addAll(byFirstname);
-        users.addAll(byLastname);
+        if (byEmail != null)
+            users.add(byEmail);
+        if (byPseudo != null)
+            users.add(byPseudo);
+        if (byFirstname.size() > 0)
+            users.addAll(byFirstname);
+        if (byLastname.size() > 0)
+            users.addAll(byLastname);
 
+        HashSet<User> uniqueUsers = new HashSet<>(users);
         return new ResponseEntity<>(
-                listUserToListUserResponse(users),
+                hashSetUserToListUserResponse(uniqueUsers),
                 HttpStatus.OK
         );
     }
@@ -236,6 +238,11 @@ public class UserController {
     }
 
     private List<UserResponse> listUserToListUserResponse(List<User> users){
+        List<UserResponse> userResponses = new ArrayList<>();
+        users.forEach(user -> userResponses.add(userToUserResponse(user)));
+        return userResponses;
+    }
+    private List<UserResponse> hashSetUserToListUserResponse(HashSet<User> users){
         List<UserResponse> userResponses = new ArrayList<>();
         users.forEach(user -> userResponses.add(userToUserResponse(user)));
         return userResponses;
