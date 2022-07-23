@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import java.util.Locale;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -475,6 +477,60 @@ class UserControllerTest {
                 .getById(userRoleGroup.getId(), token)
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    public void should_test_search_user(){
+        var token = TokenFixture.userToken();
+
+        var reqUser1 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        reqUser1.firstname = GlobalObject.randomPseudo();
+        reqUser1.lastname = GlobalObject.randomPseudo();
+        UserFixture.create(reqUser1).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var reqUser2 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        reqUser2.firstname = reqUser1.firstname;
+        UserFixture.create(reqUser2).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var reqUser3 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        reqUser3.lastname = reqUser1.firstname;
+        reqUser3.firstname = reqUser1.firstname;
+        UserFixture.create(reqUser3).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+
+        var resSearch = UserFixture.searchUser(reqUser1.firstname, token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", UserResponse.class);
+        assertThat(resSearch.size()).isEqualTo(3);
+
+        resSearch = UserFixture.searchUser("Not Found", token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", UserResponse.class);
+
+        assertThat(resSearch.size()).isEqualTo(0);
+
+        resSearch = UserFixture.searchUser(reqUser1.email, token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", UserResponse.class);
+
+        assertThat(resSearch.size()).isEqualTo(1);
+
+        resSearch = UserFixture.searchUser(reqUser2.pseudo, token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", UserResponse.class);
+
+        assertThat(resSearch.size()).isEqualTo(1);
+
+        //sensible a la casse
+        resSearch = UserFixture.searchUser(reqUser1.firstname.toUpperCase(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", UserResponse.class);
+        assertThat(resSearch.size()).isEqualTo(0);
     }
 
 }
