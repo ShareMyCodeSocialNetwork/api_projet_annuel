@@ -44,6 +44,13 @@ public class UserQuery {
         return userRepository.findByEmail(email);
     }
 
+    public List<User> getAllByFirstname(String firstname){
+        return userRepository.findAllByFirstname(firstname);
+    }
+    public List<User> getAllByLastname(String lastname){
+        return userRepository.findAllByLastname(lastname);
+    }
+
     /*public User getByEmailAndPassword(String email, String password){
         return userRepository.findUserByEmailAndPassword(email, password);
     }

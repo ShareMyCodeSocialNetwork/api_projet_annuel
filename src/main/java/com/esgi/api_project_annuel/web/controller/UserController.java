@@ -69,6 +69,27 @@ public class UserController {
         );
     }
 
+
+    @GetMapping("/search/{value}")
+    public ResponseEntity<List<UserResponse>> searchUser(@PathVariable String value){
+        var users = new ArrayList<User>();
+
+        var byPseudo = userQuery.getByPseudo(value);
+        var byEmail = userQuery.getByEmail(value);
+        var byFirstname = userQuery.getAllByFirstname(value);
+        var byLastname = userQuery.getAllByLastname(value);
+
+        users.add(byPseudo);
+        users.add(byEmail);
+        users.addAll(byFirstname);
+        users.addAll(byLastname);
+
+        return new ResponseEntity<>(
+                listUserToListUserResponse(users),
+                HttpStatus.OK
+        );
+    }
+
     @GetMapping("/email/{email}")
     public ResponseEntity<UserResponse> getByEmail(@PathVariable String email){
         var user = userQuery.getByEmail(email);
