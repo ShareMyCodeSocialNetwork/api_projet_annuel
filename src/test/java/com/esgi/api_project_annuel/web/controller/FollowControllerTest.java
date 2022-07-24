@@ -6,6 +6,7 @@ import com.esgi.api_project_annuel.web.controller.fixture.TokenFixture;
 import com.esgi.api_project_annuel.web.controller.fixture.UserFixture;
 import com.esgi.api_project_annuel.web.request.FollowRequest;
 import com.esgi.api_project_annuel.web.response.FollowResponse;
+import com.esgi.api_project_annuel.web.response.FullFollowResponse;
 import com.esgi.api_project_annuel.web.response.UserResponse;
 import io.restassured.RestAssured;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -159,5 +160,53 @@ class FollowControllerTest {
         FollowFixture.getByFollowedAndFollower(request, token).then()
                 .statusCode(404);
 
+    }
+
+    @Test
+    public void should_test_get_full_follow(){
+        var userRequest = UserFixture.userToUserRequest(globalObject.buildValidUser());
+
+        var userResponse1 = UserFixture.create(userRequest).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+        var token = TokenFixture.getToken(userRequest);
+
+        userRequest = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        var userResponse2 = UserFixture.create(userRequest).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+        var token2 = TokenFixture.getToken(userRequest);
+
+
+        var request = new FollowRequest();
+        request.followerUserId = userResponse1.getId();
+        request.followedUserId = userResponse2.getId();
+        var user1FollowUser2 = FollowFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", FollowResponse.class);
+        assertThat(user1FollowUser2.getFollowed().getId()).isEqualTo(request.followedUserId);
+        assertThat(user1FollowUser2.getFollower().getId()).isEqualTo(request.followerUserId);
+
+
+        request.followerUserId = userResponse1.getId();
+        request.followedUserId = userResponse2.getId();
+        var fullFollow = FollowFixture.getFullFollow(request, token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", FullFollowResponse.class);
+
+        assertThat(fullFollow.getIsFollow().getFollowerUser().getId()).isEqualTo(request.followerUserId);
+        assertThat(fullFollow.getIsFollow().getFollowedUser().getId()).isEqualTo(request.followedUserId);
+        assertThat(fullFollow.getFollowers().size()).isEqualTo(1);
+        assertThat(fullFollow.getFollowed().size()).isEqualTo(0);
+
+        request.followerUserId = userResponse2.getId();
+        request.followedUserId = userResponse1.getId();
+        fullFollow = FollowFixture.getFullFollow(request, token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", FullFollowResponse.class);
+
+        assertThat(fullFollow.getIsFollow()).isEqualTo(null);
+        assertThat(fullFollow.getFollowers().size()).isEqualTo(0);
+        assertThat(fullFollow.getFollowed().size()).isEqualTo(1);
     }
 }

@@ -24,13 +24,49 @@ public class PostFixture {
                 .header("Authorization","Bearer "+token.access_token)
                 .get("/post/" + id);
     }
+    public static Response getByFullId(int id, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/post/full/" + id);
+    }
+    public static Response getAllFull(Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/post/full/");
+    }
 
+    public static Response getByUserFull(int idUser, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/post/user/" + idUser + "/full");
+    }
+
+    public static Response getFullFollowedUserPosts(int followerUserId, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/post/full/follower/" + followerUserId);
+    }
     public static Response getByUser(int idUser, Token token){
         return given()
                 .contentType(ContentType.JSON)
                 .when()
                 .header("Authorization","Bearer "+token.access_token)
                 .get("/post/user/" + idUser);
+    }
+    public static Response searchLevenshtein(String value, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/post/search/levenshtein/" + value);
     }
 
 

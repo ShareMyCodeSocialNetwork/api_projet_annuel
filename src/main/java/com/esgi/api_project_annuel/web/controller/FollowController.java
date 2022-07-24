@@ -6,6 +6,7 @@ import com.esgi.api_project_annuel.application.query.FollowQuery;
 import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.web.request.FollowRequest;
 import com.esgi.api_project_annuel.web.response.FollowResponse;
+import com.esgi.api_project_annuel.web.response.FullFollowResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,25 @@ public class FollowController {
         var followers = followQuery.getAllByFollowedUser(userQuery.getById(followedId));
         return new ResponseEntity<>(listFollowToListFollowResponse(
                 followers),
+                HttpStatus.OK
+        );
+    }
+
+    @PostMapping("/full")
+    public ResponseEntity<FullFollowResponse> getFullFollow(@RequestBody FollowRequest request){
+        var followers = followQuery.getAllByFollowedUser(userQuery.getById(request.followedUserId));
+        var followed = followQuery.getAllByFollowerUser(userQuery.getById(request.followedUserId));
+        var isFollow = followQuery.getFollowByFollowedAndFollower(
+                userQuery.getById(request.followedUserId),
+                userQuery.getById(request.followerUserId)
+        );
+        var fullFollowResponse = new FullFollowResponse();
+        fullFollowResponse
+                .setFollowers(followers)
+                .setFollowed(followed)
+                .setIsFollow(isFollow);
+        return new ResponseEntity<>(
+                fullFollowResponse,
                 HttpStatus.OK
         );
     }

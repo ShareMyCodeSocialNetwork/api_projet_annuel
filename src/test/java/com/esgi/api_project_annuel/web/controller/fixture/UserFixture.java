@@ -23,6 +23,20 @@ public class UserFixture {
                 .header("Authorization","Bearer "+token.access_token)
                 .get("/user/" + userId);
     }
+    public static Response searchUser(String value, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/user/search/" + value);
+    }
+    public static Response searchUserLevenshtein(String value, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/user/search/levenshtein/" + value);
+    }
 
     public static Response getByPseudo(String pseudo, Token token){
         return given()

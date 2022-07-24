@@ -47,7 +47,7 @@ public class CodeController {
     public ResponseEntity<?> create(@RequestBody CodeRequest codeRequest){
         Code code;
         var language = languageQuery.getById(codeRequest.language_id);
-        var user = userQuery.getById(codeRequest.userId);
+        var user = userQuery.getById(codeRequest.user_id);
         if(Optional.ofNullable(codeRequest.project_id).orElse(0) != 0){
             var project = projectQuery.getById(codeRequest.project_id);
              code = codeCommand.create(codeRequest,language,user,project);

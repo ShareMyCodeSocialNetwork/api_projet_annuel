@@ -7,6 +7,7 @@ import com.esgi.api_project_annuel.application.query.RoleQuery;
 import com.esgi.api_project_annuel.application.query.UserRoleGroupQuery;
 import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.web.request.UserRoleGroupRequest;
+import com.esgi.api_project_annuel.web.response.FullUserRoleGroupResponse;
 import com.esgi.api_project_annuel.web.response.UserRoleGroupResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,6 +78,24 @@ public class UserRoleGroupController {
         var userRoleGroup = userRoleGroupQuery.getAllByGroup(group);
         return new ResponseEntity<>(listUserRoleGroupToListUserRoleGroupResponse(
                 userRoleGroup),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/full/group/{groupId}/user/{userId}")
+    public ResponseEntity<FullUserRoleGroupResponse> getFullUserRoleGroup(@PathVariable int groupId, @PathVariable int userId){
+        var group = groupQuery.getById(groupId);
+        var userInGroupWithRole = userRoleGroupQuery.getAllByGroup(group);
+        var user = userQuery.getById(userId);
+        var isInGroup = userRoleGroupQuery.getByGroupAndUser(group, user);
+
+        var fullUserRoleGroupResponse = new FullUserRoleGroupResponse();
+        fullUserRoleGroupResponse
+                .setIsInGroup(isInGroup)
+                .setUserInGroupWithRole(userInGroupWithRole);
+
+        return new ResponseEntity<>(
+                fullUserRoleGroupResponse,
                 HttpStatus.OK
         );
     }

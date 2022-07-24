@@ -282,7 +282,7 @@ class ProjectControllerTest {
                 .statusCode(201)
                 .extract().body().jsonPath().getObject(".", ProjectResponse.class);
 
-        request.userId = 3;
+        request.user_id = 3;
         request.language_id = 1;
         request.project_id = createdProject.id;
         var createdCode = CodeFixture.create(request,token).then()

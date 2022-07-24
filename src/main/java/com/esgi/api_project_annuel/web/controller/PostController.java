@@ -2,11 +2,11 @@ package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.Domain.entities.Post;
 import com.esgi.api_project_annuel.application.command.PostCommand;
-import com.esgi.api_project_annuel.application.query.CodeQuery;
-import com.esgi.api_project_annuel.application.query.PostQuery;
-import com.esgi.api_project_annuel.application.query.UserQuery;
+import com.esgi.api_project_annuel.application.query.*;
 import com.esgi.api_project_annuel.web.request.PostRequest;
+import com.esgi.api_project_annuel.web.response.FullPostResponse;
 import com.esgi.api_project_annuel.web.response.PostResponse;
+import com.esgi.api_project_annuel.web.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,11 +31,23 @@ public class PostController {
     @Autowired
     private final UserQuery userQuery;
 
-    public PostController(PostCommand postCommand, PostQuery postQuery, CodeQuery codeQuery, UserQuery userQuery) {
+    @Autowired
+    private final CommentQuery commentQuery;
+
+    @Autowired
+    private final LikeQuery likeQuery;
+
+    @Autowired
+    private final FollowQuery followQuery;
+
+    public PostController(PostCommand postCommand, PostQuery postQuery, CodeQuery codeQuery, UserQuery userQuery, CommentQuery commentQuery, LikeQuery likeQuery, FollowQuery followQuery) {
         this.postCommand = postCommand;
         this.postQuery = postQuery;
         this.codeQuery = codeQuery;
         this.userQuery = userQuery;
+        this.commentQuery = commentQuery;
+        this.likeQuery = likeQuery;
+        this.followQuery = followQuery;
     }
 
     @PostMapping("/create")
@@ -62,6 +74,84 @@ public class PostController {
         );
     }
 
+    @GetMapping("/full/{postId}")
+    public ResponseEntity<FullPostResponse> getFullPostById(@PathVariable int postId){
+        var post = postQuery.getById(postId);
+        if(post == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        var comments = commentQuery.findByPost(post);
+        var likes = likeQuery.getByPost(post);
+
+        var fullPostResponse = new FullPostResponse();
+        fullPostResponse
+                .setPost(post)
+                .setComments(comments)
+                .setLikes(likes);
+
+        return new ResponseEntity<>(
+                fullPostResponse,
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/full")
+    public ResponseEntity<List<FullPostResponse>> getFullPostById(){
+        var posts = postQuery.getAll();
+        var fullPostsResponse = new ArrayList<FullPostResponse>();
+
+        posts.forEach(post -> {
+            var fullPostResponse = new FullPostResponse();
+            fullPostResponse
+                    .setComments(commentQuery.findByPost(post))
+                    .setLikes(likeQuery.getByPost(post))
+                    .setPost(post);
+            fullPostsResponse.add(fullPostResponse);
+        });
+        return new ResponseEntity<>(
+                fullPostsResponse,
+                HttpStatus.OK
+        );
+    }
+    @GetMapping("/user/{userId}/full")
+    public ResponseEntity<List<FullPostResponse>> getFullPostByUser(@PathVariable int userId){
+        var posts = postQuery.getByUser(userId);
+        var fullPostsResponse = new ArrayList<FullPostResponse>();
+
+        posts.forEach(post -> {
+            var fullPostResponse = new FullPostResponse();
+            fullPostResponse
+                    .setComments(commentQuery.findByPost(post))
+                    .setLikes(likeQuery.getByPost(post))
+                    .setPost(post);
+            fullPostsResponse.add(fullPostResponse);
+        });
+        return new ResponseEntity<>(
+                fullPostsResponse,
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/search/levenshtein/{value}")
+    public ResponseEntity<List<FullPostResponse>> searchUserLevenshtein(@PathVariable String value){
+        var fullPostResponses = new ArrayList<FullPostResponse>();
+        var posts = postQuery.findPostLevenshtein(value);
+
+        posts.forEach(post -> {
+            var comments = commentQuery.findByPost(post);
+            var likes = likeQuery.getByPost(post);
+            var fullPost = new FullPostResponse();
+            fullPost.setPost(post)
+                    .setComments(comments)
+                    .setLikes(likes);
+            fullPostResponses.add(fullPost);
+        });
+        return new ResponseEntity<>(
+                fullPostResponses,
+                HttpStatus.OK
+        );
+    }
+
+
     @GetMapping("/")
     public ResponseEntity<List<PostResponse>> getAll(){
         return new ResponseEntity<>(
@@ -83,6 +173,35 @@ public class PostController {
         if(post == null)
             return new ResponseEntity<>("Invalid properties", HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(postToPostResponse(post), HttpStatus.OK);
+    }
+
+    @GetMapping("/full/follower/{userId}")
+    public ResponseEntity<List<FullPostResponse>> getAllFollowedUserPostByUser(@PathVariable int userId){
+        var user = userQuery.getById(userId);
+        var followed = followQuery.getAllByFollowerUser(user);
+        var followedPosts = new ArrayList<Post>();
+
+        followed.forEach(follow-> followedPosts.addAll(
+                postQuery.getByUser(
+                                follow.getFollowedUser().getId()
+                )
+        ));
+
+        var fullPostResponses = new ArrayList<FullPostResponse>();
+        followedPosts.forEach(post -> {
+            var fullPostResponse = new FullPostResponse();
+            var comments = commentQuery.findByPost(post);
+            var likes = likeQuery.getByPost(post);
+            fullPostResponse.setComments(comments)
+                    .setLikes(likes)
+                    .setPost(post);
+            fullPostResponses.add(fullPostResponse);
+        });
+
+        return new ResponseEntity<>(
+                fullPostResponses,
+                HttpStatus.OK
+        );
     }
 
 

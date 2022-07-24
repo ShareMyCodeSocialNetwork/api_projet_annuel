@@ -24,6 +24,15 @@ public class FollowFixture {
                 .get("/follow/" + id);
     }
 
+    public static Response getFullFollow(FollowRequest request,Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(request)
+                .header("Authorization","Bearer "+token.access_token)
+                .post("/follow/full");
+    }
+
     public static Response getByFollowedAndFollower(FollowRequest request, Token token){
         return given()
                 .contentType(ContentType.JSON)

@@ -20,10 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -65,6 +62,41 @@ public class UserController {
         if(user == null)
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userToUserResponse(user),
+                HttpStatus.OK
+        );
+    }
+
+
+    @GetMapping("/search/{value}")
+    public ResponseEntity<List<UserResponse>> searchUser(@PathVariable String value){
+        var users = new ArrayList<User>();
+
+        var byPseudo = userQuery.getByPseudo(value);
+        var byEmail = userQuery.getByEmail(value);
+        var byFirstname = userQuery.getAllByFirstname(value);
+        var byLastname = userQuery.getAllByLastname(value);
+
+        if (byEmail != null)
+            users.add(byEmail);
+        if (byPseudo != null)
+            users.add(byPseudo);
+        if (byFirstname.size() > 0)
+            users.addAll(byFirstname);
+        if (byLastname.size() > 0)
+            users.addAll(byLastname);
+
+        HashSet<User> uniqueUsers = new HashSet<>(users);
+        return new ResponseEntity<>(
+                hashSetUserToListUserResponse(uniqueUsers),
+                HttpStatus.OK
+        );
+    }
+
+
+    @GetMapping("/search/levenshtein/{value}")
+    public ResponseEntity<List<UserResponse>> searchUserLevenshtein(@PathVariable String value){
+        return new ResponseEntity<>(
+                hashSetUserToListUserResponse(userQuery.SearchLevenshtein(value)),
                 HttpStatus.OK
         );
     }
@@ -215,6 +247,11 @@ public class UserController {
     }
 
     private List<UserResponse> listUserToListUserResponse(List<User> users){
+        List<UserResponse> userResponses = new ArrayList<>();
+        users.forEach(user -> userResponses.add(userToUserResponse(user)));
+        return userResponses;
+    }
+    private List<UserResponse> hashSetUserToListUserResponse(HashSet<User> users){
         List<UserResponse> userResponses = new ArrayList<>();
         users.forEach(user -> userResponses.add(userToUserResponse(user)));
         return userResponses;
