@@ -6,6 +6,7 @@ import com.esgi.api_project_annuel.application.query.*;
 import com.esgi.api_project_annuel.web.request.PostRequest;
 import com.esgi.api_project_annuel.web.response.FullPostResponse;
 import com.esgi.api_project_annuel.web.response.PostResponse;
+import com.esgi.api_project_annuel.web.response.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -126,6 +127,26 @@ public class PostController {
         });
         return new ResponseEntity<>(
                 fullPostsResponse,
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/search/levenshtein/{value}")
+    public ResponseEntity<List<FullPostResponse>> searchUserLevenshtein(@PathVariable String value){
+        var fullPostResponses = new ArrayList<FullPostResponse>();
+        var posts = postQuery.findPostLevenshtein(value);
+
+        posts.forEach(post -> {
+            var comments = commentQuery.findByPost(post);
+            var likes = likeQuery.getByPost(post);
+            var fullPost = new FullPostResponse();
+            fullPost.setPost(post)
+                    .setComments(comments)
+                    .setLikes(likes);
+            fullPostResponses.add(fullPost);
+        });
+        return new ResponseEntity<>(
+                fullPostResponses,
                 HttpStatus.OK
         );
     }
