@@ -582,7 +582,7 @@ class UserControllerTest {
 
         assertThat(resSearch.size()).isEqualTo(1);
 
-        //sensible a la casse
+
         resSearch = UserFixture.searchUserLevenshtein(reqUser1.firstname.toUpperCase(), token).then()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", UserResponse.class);
