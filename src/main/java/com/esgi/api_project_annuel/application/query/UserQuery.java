@@ -3,9 +3,11 @@ package com.esgi.api_project_annuel.application.query;
 import com.esgi.api_project_annuel.Domain.entities.User;
 import com.esgi.api_project_annuel.Domain.repository.PostRepository;
 import com.esgi.api_project_annuel.Domain.repository.UserRepository;
+import com.esgi.api_project_annuel.application.util.Levenshtein;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,6 +18,9 @@ public class UserQuery {
 
     @Autowired
     PostRepository postRepository;
+
+    @Autowired
+    Levenshtein levenshtein = new Levenshtein();
 
     public UserQuery(){}
 
@@ -49,6 +54,48 @@ public class UserQuery {
     }
     public List<User> getAllByLastname(String lastname){
         return userRepository.findAllByLastname(lastname);
+    }
+
+    public List<User> getByPseudoLevenshtein(String pseudo){
+        var users = userRepository.findAll();
+        var usersFound = new ArrayList<User>();
+        users.forEach(user -> {
+            if(levenshtein.calculate(pseudo.toUpperCase(), user.getPseudo().toUpperCase()) < 3){
+                usersFound.add(user);
+            }
+        });
+        return usersFound;
+    }
+    public List<User> getByEmailLevenshtein(String email){
+        var users = userRepository.findAll();
+        var usersFound = new ArrayList<User>();
+        users.forEach(user -> {
+            if(levenshtein.calculate(email.toUpperCase(), user.getEmail().toUpperCase()) < 3){
+                usersFound.add(user);
+            }
+        });
+        return usersFound;
+    }
+
+    public List<User> getAllByFirstnameLevenshtein(String firstname){
+        var users = userRepository.findAll();
+        var usersFound = new ArrayList<User>();
+        users.forEach(user -> {
+            if(levenshtein.calculate(firstname.toUpperCase(), user.getFirstname().toUpperCase()) < 3){
+                usersFound.add(user);
+            }
+        });
+        return usersFound;
+    }
+    public List<User> getAllByLastnameLevenshtein(String lastname){
+        var users = userRepository.findAll();
+        var usersFound = new ArrayList<User>();
+        users.forEach(user -> {
+            if(levenshtein.calculate(lastname.toUpperCase(), user.getLastname().toUpperCase()) < 3){
+                usersFound.add(user);
+            }
+        });
+        return usersFound;
     }
 
     /*public User getByEmailAndPassword(String email, String password){
