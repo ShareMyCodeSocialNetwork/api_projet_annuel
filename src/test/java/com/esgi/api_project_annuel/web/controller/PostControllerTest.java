@@ -14,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
+import java.util.Locale;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -390,6 +392,112 @@ class PostControllerTest {
                 .extract().body().jsonPath().getList(".", FullPostResponse.class);
 
         assertThat(allFollowedUsersPostsOfUser1.size()).isEqualTo(0);
+
+    }
+
+    @Test
+    public void should_test_levenshtein_search_posts(){
+        var reqUser1 = UserFixture.userToUserRequest(globalObject.buildValidUser());
+        reqUser1.firstname = GlobalObject.randomPseudo();
+        reqUser1.lastname = GlobalObject.randomPseudo();
+        var resUser1 = UserFixture.create(reqUser1).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", UserResponse.class);
+        var token = TokenFixture.getToken(reqUser1);
+
+        var levenshteinSearchPost = PostFixture.searchLevenshtein("qqchose qui nexiste pas", token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(levenshteinSearchPost.size()).isEqualTo(0);
+
+        var reqCode1 = CodeFixture.codeToCodeRequest(globalObject.validCode);
+        reqCode1.user_id = resUser1.getId();
+        reqCode1.language_id = 1;
+        reqCode1.name = GlobalObject.randomPseudo();
+        var resCode1 = CodeFixture.create(reqCode1,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+
+        var reqCode2 = CodeFixture.codeToCodeRequest(globalObject.validCode);
+        reqCode2.user_id = resUser1.getId();
+        reqCode2.language_id = 2;
+        reqCode2.name = GlobalObject.randomPseudo();
+        var resCode2 = CodeFixture.create(reqCode2,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+
+        var reqPost1 = PostFixture.postToPostRequest(globalObject.buildValidPost());
+        reqPost1.user_id = resUser1.getId();
+        reqPost1.code_id = resCode1.getId();
+        reqPost1.content = GlobalObject.randomPseudo();
+        var postResponse1 = PostFixture.create(reqPost1,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
+
+
+
+        var reqPost2 = PostFixture.postToPostRequest(globalObject.buildValidPost());
+        reqPost2.user_id = resUser1.getId();
+        reqPost2.code_id = resCode2.getId();
+        reqPost2.content = GlobalObject.randomPseudo();
+        var resPost2 = PostFixture.create(reqPost2,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", PostResponse.class);
+
+        // pass user info
+        var searchPost = PostFixture.searchLevenshtein( resUser1.getEmail(), token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(searchPost.size()).isEqualTo(2);
+
+        searchPost = PostFixture.searchLevenshtein( resUser1.getFirstname(), token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(searchPost.size()).isEqualTo(2);
+
+        searchPost = PostFixture.searchLevenshtein( resUser1.getPseudo(), token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(searchPost.size()).isEqualTo(2);
+
+        searchPost = PostFixture.searchLevenshtein( resUser1.getLastname(), token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(searchPost.size()).isEqualTo(2);
+
+
+        //pass postContent
+        searchPost = PostFixture.searchLevenshtein(resPost2.content.toUpperCase(), token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(searchPost.size()).isEqualTo(1);
+
+        searchPost = PostFixture.searchLevenshtein(resPost2.content.toUpperCase(), token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(searchPost.size()).isEqualTo(1);
+
+        //code info
+        searchPost = PostFixture.searchLevenshtein(resCode1.getNameCode().toLowerCase(), token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(searchPost.size()).isEqualTo(1);
+
+        searchPost = PostFixture.searchLevenshtein(resCode1.getLanguage().getName().toUpperCase(), token)
+                .then()
+                .statusCode(200)
+                .extract().body().jsonPath().getList(".", FullPostResponse.class);
+        assertThat(searchPost.size()).isEqualTo(1);
+
+
 
     }
 }

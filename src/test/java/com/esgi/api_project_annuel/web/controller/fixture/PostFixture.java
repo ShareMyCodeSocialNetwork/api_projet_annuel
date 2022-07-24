@@ -61,6 +61,13 @@ public class PostFixture {
                 .header("Authorization","Bearer "+token.access_token)
                 .get("/post/user/" + idUser);
     }
+    public static Response searchLevenshtein(String value, Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/post/search/levenshtein/" + value);
+    }
 
 
     public static Response changeContent(int id, PostRequest postRequest,Token token){
