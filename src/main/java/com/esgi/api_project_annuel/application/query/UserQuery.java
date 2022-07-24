@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -96,6 +97,26 @@ public class UserQuery {
             }
         });
         return usersFound;
+    }
+
+    public HashSet<User> SearchLevenshtein(String value){
+        var users = new ArrayList<User>();
+
+        var byPseudo = this.getByPseudoLevenshtein(value);
+        var byEmail = this.getByEmailLevenshtein(value);
+        var byFirstname = this.getAllByFirstnameLevenshtein(value);
+        var byLastname = this.getAllByLastnameLevenshtein(value);
+
+        if (byEmail.size() > 0)
+            users.addAll(byEmail);
+        if (byPseudo.size() > 0)
+            users.addAll(byPseudo);
+        if (byFirstname.size() > 0)
+            users.addAll(byFirstname);
+        if (byLastname.size() > 0)
+            users.addAll(byLastname);
+
+        return new HashSet<>(users);
     }
 
     /*public User getByEmailAndPassword(String email, String password){

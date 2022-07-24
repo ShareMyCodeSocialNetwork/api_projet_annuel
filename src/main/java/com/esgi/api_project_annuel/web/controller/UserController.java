@@ -95,25 +95,8 @@ public class UserController {
 
     @GetMapping("/search/levenshtein/{value}")
     public ResponseEntity<List<UserResponse>> searchUserLevenshtein(@PathVariable String value){
-        var users = new ArrayList<User>();
-
-        var byPseudo = userQuery.getByPseudoLevenshtein(value);
-        var byEmail = userQuery.getByEmailLevenshtein(value);
-        var byFirstname = userQuery.getAllByFirstnameLevenshtein(value);
-        var byLastname = userQuery.getAllByLastnameLevenshtein(value);
-
-        if (byEmail.size() > 0)
-            users.addAll(byEmail);
-        if (byPseudo.size() > 0)
-            users.addAll(byPseudo);
-        if (byFirstname.size() > 0)
-            users.addAll(byFirstname);
-        if (byLastname.size() > 0)
-            users.addAll(byLastname);
-
-        HashSet<User> uniqueUsers = new HashSet<>(users);
         return new ResponseEntity<>(
-                hashSetUserToListUserResponse(uniqueUsers),
+                hashSetUserToListUserResponse(userQuery.SearchLevenshtein(value)),
                 HttpStatus.OK
         );
     }
