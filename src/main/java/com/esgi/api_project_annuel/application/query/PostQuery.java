@@ -57,7 +57,7 @@ public class PostQuery {
         return postsFound;
     }
     public List<Post> getPostByCodeNameLevenshtein(String codeName){
-        var posts = postRepository.findAllByCodeExists();
+        var posts = postRepository.findAllByCodeIsNotNull();
         var postsFound = new ArrayList<Post>();
         posts.forEach(post -> {
             if(levenshtein.calculate(codeName.toUpperCase(), post.getCode().getNameCode().toUpperCase()) < 3){
@@ -67,7 +67,7 @@ public class PostQuery {
         return postsFound;
     }
     public List<Post> getPostByCodeLanguageLevenshtein(String codeLanguage){
-        var posts = postRepository.findAllByCodeExists();
+        var posts = postRepository.findAllByCodeIsNotNull();
         var postsFound = new ArrayList<Post>();
         posts.forEach(post -> {
             if(levenshtein.calculate(codeLanguage.toUpperCase(), post.getCode().getLanguage().getName().toUpperCase()) < 3){
