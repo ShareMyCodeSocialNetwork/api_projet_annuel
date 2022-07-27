@@ -76,6 +76,8 @@ public class ProjectController {
                 .setProject(project)
                 .setCodesInProject(codes);
 
+        if(project == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(
                 fullProjectResponse,
                 HttpStatus.OK
