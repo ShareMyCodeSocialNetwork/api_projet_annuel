@@ -60,6 +60,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/api_projet_annuel:latest
+          build-args: DB_URL=${{ secrets.DB_URL }}, DB_PASSWORD=${{ secrets.DB_PASSWORD }}, DB_USERNAME=${{ secrets.DB_USERNAME }}
 
  #Acheter sever
  #Installer docker , portainer

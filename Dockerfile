@@ -1,4 +1,10 @@
 FROM maven:3.6.3-jdk-11-slim AS build
+ARG DB_URL
+ARG DB_USERNAME
+ARG DB_PASSWORD
+ENV DB_URL_VAR=$DB_URL
+ENV DB_USERNAME_VAR=$DB_USERNAME
+ENV DB_PASSWORD_VAR=$DB_PASSWORD
 RUN mkdir -p /workspace
 WORKDIR /workspace
 COPY pom.xml /workspace
