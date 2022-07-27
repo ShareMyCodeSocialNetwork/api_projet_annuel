@@ -28,59 +28,103 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 	@Bean
 	CommandLineRunner run(RoleRepository roleRepository, UserRepository userRepository, LanguageRepository languageRepository, FollowRepository followRepository){
 		return args -> {
-			var role_USER = roleRepository.save(createRole("USER"));
-			var role_ADMIN = roleRepository.save(createRole("ADMIN"));
+			var role_USER = roleRepository.findRoleByTitlePermission("USER");
+			if(role_USER == null)
+				role_USER = roleRepository.save(createRole("USER"));
+
+			var role_ADMIN = roleRepository.findRoleByTitlePermission("ADMIN");
+			if (role_ADMIN == null)
+				role_ADMIN = roleRepository.save(createRole("ADMIN"));
 
 
+			var saved_user1 = userRepository.findByEmail("lucas@hotmail.fr");
+			if (saved_user1 == null)
+				saved_user1 = userRepository.save(createUser("Lucas","Jehanno","lucas@hotmail.fr","azerty1234"));
+
+			var saved_user2 = userRepository.findByEmail("test@test.fr");
+			if (saved_user2 == null)
+				saved_user2 = userRepository.save(createUser("Test","Test","test@test.fr","test1234test"));
+
+			var saved_user3 = userRepository.findByEmail("david@hotmail.fr");
+			if (saved_user3 == null)
+				saved_user3 = userRepository.save(createUser("David","Arnaud","david@hotmail.fr","coucou1234"));
+
+
+			if (saved_user1.getRoles() == null){
+				saved_user1.setRoles(role_ADMIN);
+				userRepository.save(saved_user1);
+			}
+			if (saved_user2.getRoles() == null){
+				saved_user2.setRoles(role_USER);
+				userRepository.save(saved_user2);
+			}
+			if (saved_user3.getRoles() == null){
+				saved_user3.setRoles(role_USER);
+				userRepository.save(saved_user3);
+			}
+
+			var js = languageRepository.findByName("js");
+			if (js == null)
+				js = languageRepository.save(createLanguage("js"));
+
+			var python = languageRepository.findByName("python");
+			if (python == null)
+				python = languageRepository.save(createLanguage("python"));
+			//languageRepository.save(createLanguage("java"));
+			var ruby = languageRepository.findByName("ruby");
+			if (ruby == null)
+				ruby = languageRepository.save(createLanguage("ruby"));
+
+
+
+			var f1 = followRepository.getFollowByFollowedUserAndFollowerUser(saved_user1, saved_user3);
+			if (f1 == null){
+				f1 = followRepository.save(new Follow());
+				f1.setFollowedUser(saved_user1);
+				f1.setFollowerUser(saved_user3);
+				followRepository.save(f1);
+			}
+
+			var f2 = followRepository.getFollowByFollowedUserAndFollowerUser(saved_user2, saved_user3);
+			if (f2 == null){
+				f2 = followRepository.save(new Follow());
+				f2.setFollowedUser(saved_user2);
+				f2.setFollowerUser(saved_user3);
+				followRepository.save(f2);
+			}
+
+			var f3 = followRepository.getFollowByFollowedUserAndFollowerUser(saved_user3, saved_user1);
+			if (f3 == null){
+				f3 = followRepository.save(new Follow());
+				f3.setFollowedUser(saved_user3);
+				f3.setFollowerUser(saved_user1);
+				followRepository.save(f3);
+			}
+
+			var f4 = followRepository.getFollowByFollowedUserAndFollowerUser(saved_user2, saved_user1);
+			if (f4 == null){
+				f4 = followRepository.save(new Follow());
+				f4.setFollowedUser(saved_user2);
+				f4.setFollowerUser(saved_user1);
+				followRepository.save(f4);
+			}
+
+			System.out.println("Const datas : ");
 			System.out.println("----------------------------");
+			System.out.println("------------roles-----------");
 			System.out.println(role_USER.getId());
 			System.out.println(role_USER.getTitlePermission());
 			System.out.println(role_ADMIN.getId());
 			System.out.println(role_ADMIN.getTitlePermission());
+			System.out.println("------------roles-----------");
 			System.out.println("----------------------------");
-
-			var saved_user1 = userRepository.save(createUser("David","Arnaud","david@hotmail.fr","coucou1234"));
-			var saved_user2 = userRepository.save(createUser("Lucas","Jehanno","lucas@hotmail.fr","azerty1234"));
-			var saved_user3 = userRepository.save(createUser("Test","Test","test@test.fr","test1234test"));
-
-
-
-			saved_user1.setRoles(role_ADMIN);
-			saved_user2.setRoles(role_ADMIN);
-			saved_user3.setRoles(role_USER);
-			userRepository.save(saved_user1);
-			userRepository.save(saved_user2);
-			userRepository.save(saved_user3);
-
-			languageRepository.save(createLanguage("python"));
-			languageRepository.save(createLanguage("js"));
-			languageRepository.save(createLanguage("java"));
-			languageRepository.save(createLanguage("ruby"));
-
-			var f1 = followRepository.save(new Follow());
-			var f2 = followRepository.save(new Follow());
-			var f3 = followRepository.save(new Follow());
-			var f4 = followRepository.save(new Follow());
-
-			f1.setFollowedUser(saved_user1);
-			f1.setFollowerUser(saved_user3);
-			followRepository.save(f1);
-
-			f2.setFollowedUser(saved_user2);
-			f2.setFollowerUser(saved_user3);
-			followRepository.save(f2);
-
-			f3.setFollowedUser(saved_user3);
-			f3.setFollowerUser(saved_user1);
-			followRepository.save(f3);
-
-			f4.setFollowedUser(saved_user2);
-			f4.setFollowerUser(saved_user1);
-			followRepository.save(f4);
-
-
-
+			System.out.println("----------languages---------");
+			System.out.println("js : " + js.getName() + ", id : " + js.getId());
+			System.out.println("python : " + python.getName() + ", id : " + python.getId());
+			System.out.println("ruby : " + ruby.getName() + ", id : " + ruby.getId());
+			System.out.println("----------languages---------");
 			System.out.println("----------------------------");
+			System.out.println("------------users-----------");
 			System.out.println(saved_user1.getId());
 			System.out.println(saved_user1.getPseudo());
 			System.out.println(saved_user1.getEmail());
@@ -93,12 +137,11 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 			System.out.println(saved_user3.getPseudo());
 			System.out.println(saved_user3.getEmail());
 			System.out.println(saved_user3.getRoles().getTitlePermission());
+			System.out.println("------------users-----------");
 			System.out.println("----------------------------");
-
 
 		};
 	}
-
 	private Follow createFollow(User follower, User followed){
 		var follow = new Follow();
 		follow.setFollowerUser(follower);
@@ -115,7 +158,6 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 		language.setName(languageName);
 		return language;
 	}
-
 	private User createUser(String firstName, String lastName, String email, String password){
 		User user = new User();
 		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
