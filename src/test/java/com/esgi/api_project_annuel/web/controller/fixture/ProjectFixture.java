@@ -33,6 +33,14 @@ public class ProjectFixture {
                 .get("/project/" + id);
     }
 
+    public static Response getByIdFull(int id,Token token){
+        return given()
+                .contentType(ContentType.JSON)
+                .when()
+                .header("Authorization","Bearer "+token.access_token)
+                .get("/project/full/" + id);
+    }
+
     public static Response getByName(String projectName, Token token) {
         return given()
                 .contentType(ContentType.JSON)

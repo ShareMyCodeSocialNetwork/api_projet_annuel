@@ -4,6 +4,7 @@ import com.esgi.api_project_annuel.Domain.entities.Code;
 import com.esgi.api_project_annuel.Domain.entities.Project;
 import com.esgi.api_project_annuel.GlobalObject;
 import com.esgi.api_project_annuel.web.controller.fixture.*;
+import com.esgi.api_project_annuel.web.response.FullProjectResponse;
 import com.esgi.api_project_annuel.web.response.GroupResponse;
 import com.esgi.api_project_annuel.web.response.ProjectResponse;
 import com.esgi.api_project_annuel.web.response.UserResponse;
@@ -304,5 +305,46 @@ class ProjectControllerTest {
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", Code.class);
         assertThat(getCodeByProject.size()).isEqualTo(0);*/
+    }
+
+
+    @Test
+    public void should_test_get_full_project(){
+        var request = CodeFixture.codeToCodeRequest(globalObject.validCode);
+        var token = TokenFixture.userToken();
+
+        var project = ProjectFixture.projectToProjectRequest(globalObject.validProject);
+        project.user_id = 3;
+        var createdProject = ProjectFixture.create(project,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", ProjectResponse.class);
+
+        request.user_id = 3;
+        request.language_id = 1;
+        request.project_id = createdProject.id;
+        CodeFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+        CodeFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+
+        var getFullProject = ProjectFixture.getByIdFull(createdProject.getId(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", FullProjectResponse.class);
+        assertThat(getFullProject.getProject().getId()).isEqualTo(createdProject.getId());
+        assertThat(getFullProject.getCodesInProject().size()).isEqualTo(2);
+
+
+        CodeFixture.create(request,token).then()
+                .statusCode(201)
+                .extract().body().jsonPath().getObject(".", Code.class);
+        getFullProject = ProjectFixture.getByIdFull(createdProject.getId(), token).then()
+                .statusCode(200)
+                .extract().body().jsonPath().getObject(".", FullProjectResponse.class);
+        assertThat(getFullProject.getCodesInProject().size()).isEqualTo(3);
+
+        ProjectFixture.getByIdFull(0, token).then()
+                .statusCode(404);
     }
 }

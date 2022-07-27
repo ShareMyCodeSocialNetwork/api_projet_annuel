@@ -2,10 +2,12 @@ package com.esgi.api_project_annuel.web.controller;
 
 import com.esgi.api_project_annuel.Domain.entities.Project;
 import com.esgi.api_project_annuel.application.command.ProjectCommand;
+import com.esgi.api_project_annuel.application.query.CodeQuery;
 import com.esgi.api_project_annuel.application.query.GroupQuery;
 import com.esgi.api_project_annuel.application.query.ProjectQuery;
 import com.esgi.api_project_annuel.application.query.UserQuery;
 import com.esgi.api_project_annuel.web.request.ProjectRequest;
+import com.esgi.api_project_annuel.web.response.FullProjectResponse;
 import com.esgi.api_project_annuel.web.response.ProjectResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ public class ProjectController {
     UserQuery userQuery;
     @Autowired
     GroupQuery groupQuery;
+    @Autowired
+    CodeQuery codeQuery;
 
     public ProjectController(ProjectCommand projectCommand, ProjectQuery projectQuery) {
         this.projectCommand = projectCommand;
@@ -59,6 +63,23 @@ public class ProjectController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(projectToProjectResponse(
                 project),
+                HttpStatus.OK
+        );
+    }
+
+    @GetMapping("/full/{projectId}")
+    public ResponseEntity<FullProjectResponse> getProjectByIdFull(@PathVariable int projectId){
+        var project = projectQuery.getById(projectId);
+        var codes = codeQuery.findAllByProject(project);
+        var fullProjectResponse = new FullProjectResponse();
+        fullProjectResponse
+                .setProject(project)
+                .setCodesInProject(codes);
+
+        if(project == null)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(
+                fullProjectResponse,
                 HttpStatus.OK
         );
     }
