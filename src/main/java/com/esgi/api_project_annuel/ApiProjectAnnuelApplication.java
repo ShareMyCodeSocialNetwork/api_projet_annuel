@@ -59,7 +59,7 @@ public class ApiProjectAnnuelApplication extends SpringBootServletInitializer {
 				userRepository.save(saved_user2);
 			}
 			if (saved_user3.getRoles() == null){
-				saved_user3.setRoles(role_USER);
+				saved_user3.setRoles(role_ADMIN);
 				userRepository.save(saved_user3);
 			}
 
