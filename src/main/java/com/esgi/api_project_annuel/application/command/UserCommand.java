@@ -72,7 +72,7 @@ public class UserCommand implements UserDetailsService {
         user.setProfilePicture(
                 Objects.requireNonNullElse(userRequest.profilePicture, "default_profile_picture")
         );
-        user.setRoles(roleRepository.findById(1));
+        user.setRoles(roleRepository.findRoleByTitlePermission("USER"));
         if (!userValidationService.isUserValid(user))
             return null;
         String encodedPassword = passwordEncoder.encode(userRequest.password);
